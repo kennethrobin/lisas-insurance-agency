@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, pageStubs } from '../data/site';
+---
+
+<Base
+  title="Health, Medicare & Life Insurance"
+  description="Independent insurance agency. Health, Medicare, dental, vision, life and supplemental plans — licensed nationwide."
+>
+  <h1>Navigation scaffold</h1>
+
+  <p class="stub-note">
+    This is the structural skeleton from <code>docs/information-architecture.md</code> — the header,
+    dropdowns, and footer sitemap are real and wired to every canonical route. Page content and
+    visual design are not built yet. Click anything in the nav to see its placeholder.
+  </p>
+
+  <p class="stub-meta">
+    {pageStubs.length} canonical routes, down from 61 URLs on the current site. Every product has exactly
+    one page; a quote is an action on that page, never a separate URL.
+  </p>
+
+  <p><a class="btn" href={site.cta.href}>{site.cta.label}</a></p>
+</Base>

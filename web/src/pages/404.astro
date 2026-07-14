@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Page Not Found" noindex>
+  <h1>We couldn't find that page</h1>
+  <p class="stub-note">
+    The page may have moved during our site rebuild. Use the navigation above, or call us at
+    <a href={site.phoneHref}>{site.phone}</a> and we'll point you the right way.
+  </p>
+  <p><a class="btn" href="/">Back to home</a></p>
+</Base>

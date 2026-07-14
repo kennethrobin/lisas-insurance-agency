@@ -1,0 +1,103 @@
+---
+import { site, utilityNav, mainNav } from '../data/site';
+---
+
+<div class="utility">
+  <div class="wrap">
+    <span>Current client?</span>
+    {utilityNav.map((link) => <a href={link.href}>{link.label}</a>)}
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="logo" href="/">
+      Lisa's Insurance Agency
+      <small>Independent agent · Licensed nationwide</small>
+    </a>
+
+    <ul class="nav">
+      {
+        mainNav.map((item, i) =>
+          item.groups ? (
+            <li data-menu>
+              <button
+                class="nav-top"
+                type="button"
+                aria-expanded="false"
+                aria-controls={`dd-${i}`}
+              >
+                {item.label}
+                <svg class="caret" viewBox="0 0 10 6" aria-hidden="true">
+                  <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+              </button>
+              <div class="dropdown" id={`dd-${i}`}>
+                {item.groups.map((group) => (
+                  <div class="dd-group">
+                    <p class="dd-heading">{group.heading}</p>
+                    <ul>
+                      {group.links.map((link) => (
+                        <li>
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </li>
+          ) : (
+            <li>
+              <a class="nav-top" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          )
+        )
+      }
+    </ul>
+
+    <div class="actions">
+      <a class="phone" href={site.phoneHref}>☎ {site.phone}</a>
+      <a class="btn" href={site.cta.href}>{site.cta.label}</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const menus = document.querySelectorAll<HTMLElement>('[data-menu]');
+
+  const close = (menu: HTMLElement) => {
+    menu.querySelector('button')?.setAttribute('aria-expanded', 'false');
+    menu.querySelector('.dropdown')?.removeAttribute('data-open');
+  };
+
+  const open = (menu: HTMLElement) => {
+    menus.forEach((other) => other !== menu && close(other));
+    menu.querySelector('button')?.setAttribute('aria-expanded', 'true');
+    menu.querySelector('.dropdown')?.setAttribute('data-open', 'true');
+  };
+
+  menus.forEach((menu) => {
+    const button = menu.querySelector('button')!;
+    const isOpen = () => button.getAttribute('aria-expanded') === 'true';
+
+    button.addEventListener('click', () => (isOpen() ? close(menu) : open(menu)));
+    menu.addEventListener('mouseenter', () => open(menu));
+    menu.addEventListener('mouseleave', () => close(menu));
+    menu.addEventListener('focusout', (event) => {
+      if (!menu.contains(event.relatedTarget as Node)) close(menu);
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') menus.forEach(close);
+  });
+
+  document.addEventListener('click', (event) => {
+    menus.forEach((menu) => {
+      if (!menu.contains(event.target as Node)) close(menu);
+    });
+  });
+</script>

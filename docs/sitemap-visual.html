@@ -1,0 +1,374 @@
+<style>
+  :root{
+    --ground:#eef2f8; --surface:#ffffff; --surface-2:#f5f8fc;
+    --ink:#0e1c38; --ink-soft:#51608040; --ink-mid:#4a5878;
+    --line:#d9e1ef;
+    --navy:#0b2f6e; --navy-2:#1746a0;
+    --gold:#b07d0e; --gold-line:#e7d3a0;
+    --merge:#2c8564; --merge-line:#bfe0d2;
+    --clay:#b0503e; --clay-line:#e8cbc3;
+    --shadow:0 1px 2px rgba(11,47,110,.06),0 8px 24px rgba(11,47,110,.06);
+    --r:10px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#0a1428; --surface:#0f1d3a; --surface-2:#13254a;
+      --ink:#e9effb; --ink-mid:#95a4c4;
+      --line:#243458;
+      --navy:#6f9bea; --navy-2:#84acf2;
+      --gold:#e4b545; --gold-line:#5a4a1f;
+      --merge:#54c096; --merge-line:#1f4c3c;
+      --clay:#e08872; --clay-line:#5a3128;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#eef2f8; --surface:#ffffff; --surface-2:#f5f8fc;
+    --ink:#0e1c38; --ink-mid:#4a5878; --line:#d9e1ef;
+    --navy:#0b2f6e; --navy-2:#1746a0;
+    --gold:#b07d0e; --gold-line:#e7d3a0;
+    --merge:#2c8564; --merge-line:#bfe0d2;
+    --clay:#b0503e; --clay-line:#e8cbc3;
+    --shadow:0 1px 2px rgba(11,47,110,.06),0 8px 24px rgba(11,47,110,.06);
+  }
+  :root[data-theme="dark"]{
+    --ground:#0a1428; --surface:#0f1d3a; --surface-2:#13254a;
+    --ink:#e9effb; --ink-mid:#95a4c4; --line:#243458;
+    --navy:#6f9bea; --navy-2:#84acf2;
+    --gold:#e4b545; --gold-line:#5a4a1f;
+    --merge:#54c096; --merge-line:#1f4c3c;
+    --clay:#e08872; --clay-line:#5a3128;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .wrap{
+    background:var(--ground); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5; padding:clamp(20px,5vw,64px) clamp(16px,4vw,40px);
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:960px;margin:0 auto;}
+  .serif{font-family:Georgia,"Times New Roman",serif;}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+
+  /* ---- header ---- */
+  .eyebrow{
+    font:600 12px/1 system-ui; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 14px;
+  }
+  h1{
+    font-family:Georgia,serif; font-weight:600; text-wrap:balance;
+    font-size:clamp(1.9rem,4.5vw,3rem); line-height:1.08; letter-spacing:-.01em;
+    margin:0 0 12px; color:var(--ink);
+  }
+  .lede{font-size:1.05rem;color:var(--ink-mid);max-width:60ch;margin:0;}
+
+  /* ---- stat band ---- */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+    margin:34px 0 8px;
+  }
+  .stat{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px 20px;box-shadow:var(--shadow);
+  }
+  .stat .big{font-family:Georgia,serif;font-size:1.9rem;line-height:1;letter-spacing:-.02em;
+    display:flex;align-items:baseline;gap:.32em;font-variant-numeric:tabular-nums;}
+  .stat .from{color:var(--clay);}
+  .stat .arrow{color:var(--ink-mid);font-size:1.1rem;}
+  .stat .to{color:var(--merge);}
+  .stat .cap{margin-top:8px;font-size:.82rem;color:var(--ink-mid);}
+
+  /* ---- section scaffolding ---- */
+  section{margin-top:44px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);}
+  .sec-head h2{font-family:Georgia,serif;font-weight:600;font-size:1.32rem;margin:0;letter-spacing:-.01em;}
+  .sec-head .note{font-size:.82rem;color:var(--ink-mid);margin-left:auto;}
+
+  /* ---- before / after nav ---- */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:680px){.ba{grid-template-columns:1fr;}}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px;box-shadow:var(--shadow);}
+  .panel.before{border-color:var(--clay-line);}
+  .panel.after{border-color:var(--merge-line);}
+  .panel h3{margin:0 0 4px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+  .panel.before h3{color:var(--clay);}
+  .panel.after h3{color:var(--merge);}
+  .panel .sub{font-size:.82rem;color:var(--ink-mid);margin:0 0 14px;}
+
+  .navbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+  .navbar span{font-size:.8rem;padding:4px 9px;border-radius:6px;background:var(--surface-2);
+    border:1px solid var(--line);white-space:nowrap;}
+  .navbar span.dd::after{content:" \25BE";color:var(--ink-mid);}
+  .navbar span.cta{background:var(--gold);border-color:var(--gold);color:#241a06;font-weight:600;}
+
+  /* mini menu illustration */
+  .mini{font-size:.8rem;border-top:1px dashed var(--line);padding-top:12px;margin-top:2px;}
+  .mini .dup{display:flex;gap:10px;}
+  .mini .dup > div{flex:1;min-width:0;}
+  .mini .lbl{font:700 .7rem/1 system-ui;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--clay);margin-bottom:6px;}
+  .mini ul{list-style:none;margin:0;padding:0;}
+  .mini li{padding:2px 0;color:var(--ink-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mini li.deep{padding-left:12px;border-left:2px solid var(--clay-line);margin-left:2px;font-size:.74rem;}
+  .mini li.deeper{padding-left:12px;border-left:2px solid var(--clay-line);margin-left:14px;font-size:.72rem;opacity:.8;}
+  .dupflag{text-align:center;font-size:.72rem;color:var(--clay);margin:8px 0 2px;font-weight:600;}
+  .groups{display:flex;flex-direction:column;gap:12px;}
+  .grp .lbl{font:700 .68rem/1 system-ui;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--navy);margin-bottom:5px;}
+  .grp .items{font-size:.8rem;color:var(--ink);}
+  .grp .items span{color:var(--ink-mid);}
+
+  /* ---- legend ---- */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:2px 0 20px;font-size:.8rem;color:var(--ink-mid);}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;}
+  .chip{font:600 .68rem/1 ui-monospace,monospace;padding:3px 7px;border-radius:20px;border:1px solid;}
+  .chip.merge{color:var(--merge);border-color:var(--merge-line);background:color-mix(in srgb,var(--merge) 8%,transparent);}
+  .chip.new{color:var(--gold);border-color:var(--gold-line);background:color-mix(in srgb,var(--gold) 10%,transparent);}
+  .chip.flag{color:var(--navy);border-color:var(--line);background:var(--surface-2);}
+
+  /* ---- tree ---- */
+  .tree{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:var(--shadow);padding:8px clamp(10px,3vw,22px) 18px;}
+  .branch{margin-top:22px;}
+  .branch:first-child{margin-top:10px;}
+  .branch-title{display:flex;align-items:center;gap:10px;margin:0 0 8px;
+    font:700 .72rem/1 system-ui;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);}
+  .branch-title .tag{font:600 .64rem/1 ui-monospace,monospace;text-transform:none;letter-spacing:0;
+    color:var(--ink-mid);padding:3px 7px;border:1px solid var(--line);border-radius:20px;background:var(--surface-2);}
+  .branch-title.client{color:var(--gold);}
+
+  ul.nodes{list-style:none;margin:0;padding:0;}
+  ul.nodes ul{list-style:none;margin:0;padding-left:20px;position:relative;}
+  ul.nodes ul::before{content:"";position:absolute;left:7px;top:0;bottom:16px;width:2px;background:var(--line);}
+  .node{display:flex;align-items:center;gap:10px;padding:7px 0;position:relative;flex-wrap:wrap;}
+  ul.nodes ul .node::before{content:"";position:absolute;left:-13px;top:50%;width:11px;height:2px;background:var(--line);}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--navy);box-shadow:0 0 0 3px color-mix(in srgb,var(--navy) 14%,transparent);}
+  .node.pillar .dot{background:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 16%,transparent);}
+  .node .name{font-weight:600;font-size:.95rem;}
+  .node .url{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;color:var(--navy-2);}
+  .node .desc{font-size:.8rem;color:var(--ink-mid);}
+  .spacer{flex:1;}
+  .badge{font:600 .68rem/1 ui-monospace,monospace;padding:3px 8px;border-radius:20px;border:1px solid;
+    white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .badge.merge{color:var(--merge);border-color:var(--merge-line);background:color-mix(in srgb,var(--merge) 8%,transparent);}
+  .badge.new{color:var(--gold);border-color:var(--gold-line);background:color-mix(in srgb,var(--gold) 10%,transparent);}
+  .badge.flag{color:var(--ink-mid);border-color:var(--line);background:var(--surface-2);}
+
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:.82rem;color:var(--ink-mid);display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;}
+  .foot strong{color:var(--ink);font-weight:600;}
+
+  @media (prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(10px);animation:rise .5s ease forwards;}
+    @keyframes rise{to{opacity:1;transform:none;}}
+  }
+</style>
+
+<div class="wrap">
+<div class="page">
+
+  <header class="reveal">
+    <p class="eyebrow">Information Architecture &middot; Rebuild Plan</p>
+    <h1>Lisa&rsquo;s Insurance Agency&mdash;<br>New Sitemap &amp; Navigation</h1>
+    <p class="lede">Consolidating a sprawl of duplicated pages into one canonical page per product, with a navigation a visitor can actually hold in their head. Baseline: the live Weebly site&rsquo;s <span class="mono">sitemap.xml</span> lists 61 URLs.</p>
+  </header>
+
+  <div class="stats reveal">
+    <div class="stat">
+      <div class="big"><span class="from">61</span><span class="arrow">&rarr;</span><span class="to">~30</span></div>
+      <div class="cap">Total pages &mdash; near-halved. One canonical page per product.</div>
+    </div>
+    <div class="stat">
+      <div class="big"><span class="from">~40</span><span class="arrow">&rarr;</span><span class="to">4</span></div>
+      <div class="cap">Top-nav targets &mdash; a duplicated 3-level mega-menu becomes 4 dropdowns.</div>
+    </div>
+    <div class="stat">
+      <div class="big"><span class="from">2&ndash;4</span><span class="arrow">&rarr;</span><span class="to">1</span></div>
+      <div class="cap">URLs per product &mdash; ends the keyword cannibalization.</div>
+    </div>
+  </div>
+
+  <!-- ============ BEFORE / AFTER NAV ============ -->
+  <section class="reveal">
+    <div class="sec-head"><h2>The navigation, before &amp; after</h2>
+      <span class="note">the core fix, in one view</span></div>
+    <div class="ba">
+      <div class="panel before">
+        <h3>Before &mdash; duplicated &amp; deep</h3>
+        <p class="sub">The whole product set appears twice, each tree nested three levels deep.</p>
+        <div class="navbar">
+          <span>Home</span><span class="dd">Quotes</span><span class="dd">Insurance</span><span class="dd">About</span><span>Contact</span>
+        </div>
+        <div class="mini">
+          <div class="dup">
+            <div>
+              <div class="lbl">Quotes &#9662;</div>
+              <ul>
+                <li>Dental &amp; Vision Quote</li>
+                <li>Health Plans Quote</li>
+                <li class="deep">Medicare Options</li>
+                <li class="deeper">Advantage / Supplement / Rx</li>
+                <li class="deep">Under-65 / Short-Term / LTC</li>
+                <li>Life Insurance Quote</li>
+                <li>Critical Illness Quote</li>
+              </ul>
+            </div>
+            <div>
+              <div class="lbl">Insurance &#9662;</div>
+              <ul>
+                <li>Dental &amp; Vision</li>
+                <li>Health Plans</li>
+                <li class="deep">Medicare Options</li>
+                <li class="deeper">Advantage / Supplement / Rx</li>
+                <li class="deep">Under-65 / Short-Term / LTC</li>
+                <li>Life Insurance</li>
+                <li>Critical Illness</li>
+              </ul>
+            </div>
+          </div>
+          <div class="dupflag">&#8776; two near-identical trees &mdash; same products, twice</div>
+        </div>
+      </div>
+
+      <div class="panel after">
+        <h3>After &mdash; flat &amp; grouped</h3>
+        <p class="sub">Four dropdowns, phone always visible, one primary action. The quote lives <em>on</em> each product page.</p>
+        <div class="navbar">
+          <span class="dd">Insurance</span><span class="dd">Medicare</span><span class="dd">About</span><span>Reviews</span><span class="cta">Get a Free Quote</span>
+        </div>
+        <div class="mini">
+          <div class="groups">
+            <div class="grp">
+              <div class="lbl">Insurance &#9662;</div>
+              <div class="items">Health &middot; Short-Term Medical &middot; Long-Term Care &middot; Dental &middot; Vision &middot; Critical Illness &middot; Accident &middot; Life <span>(grouped: Health / Supplemental / Life)</span></div>
+            </div>
+            <div class="grp">
+              <div class="lbl">Medicare &#9662;</div>
+              <div class="items">Overview &middot; Advantage &middot; Supplement &middot; Part&nbsp;D <span>&middot; Education &middot; Resources</span></div>
+            </div>
+            <div class="grp">
+              <div class="lbl">About &#9662;</div>
+              <div class="items">Meet Lisa &middot; Our Carriers &middot; Refer a Friend &middot; Contact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SITEMAP TREE ============ -->
+  <section class="reveal">
+    <div class="sec-head"><h2>Full sitemap</h2>
+      <span class="note">every node is one canonical URL</span></div>
+
+    <div class="legend">
+      <span class="k"><span class="chip merge">&larr;3</span> consolidated from N old URLs (301&rsquo;d)</span>
+      <span class="k"><span class="chip new">NEW</span> new page</span>
+      <span class="k"><span class="chip flag">surfaced</span> was orphaned</span>
+      <span class="k"><span class="dot" style="position:static"></span> page &nbsp; <span class="dot" style="position:static;background:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 16%,transparent)"></span> pillar / hub</span>
+    </div>
+
+    <div class="tree">
+      <!-- CORE -->
+      <div class="branch">
+        <div class="branch-title">Core &amp; Conversion</div>
+        <ul class="nodes">
+          <li><div class="node pillar"><span class="dot"></span><span class="name">Home</span><span class="url">/</span><span class="spacer"></span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Get a Quote</span><span class="url">/get-a-quote</span><span class="spacer"></span><span class="badge merge">&larr;3</span></div></li>
+        </ul>
+      </div>
+
+      <!-- INSURANCE -->
+      <div class="branch">
+        <div class="branch-title">Insurance <span class="tag">product lines</span></div>
+        <ul class="nodes">
+          <li><div class="node"><span class="dot"></span><span class="name">Health Insurance</span><span class="url">/health-insurance</span><span class="desc">incl. under-65 medical</span><span class="spacer"></span><span class="badge merge">&larr;4</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Short-Term Medical</span><span class="url">/short-term-medical</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Long-Term Care</span><span class="url">/long-term-care</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Dental Insurance</span><span class="url">/dental-insurance</span><span class="spacer"></span><span class="badge merge">&larr;3</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Vision Insurance</span><span class="url">/vision-insurance</span><span class="spacer"></span><span class="badge merge">&larr;3</span></div></li>
+          <li>
+            <div class="node pillar"><span class="dot"></span><span class="name">Critical Illness</span><span class="url">/critical-illness</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div>
+            <ul>
+              <li><div class="node"><span class="dot"></span><span class="name">Cancer Insurance</span><span class="url">/cancer-insurance</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Heart Attack &amp; Stroke</span><span class="url">/heart-attack-stroke-insurance</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+            </ul>
+          </li>
+          <li><div class="node"><span class="dot"></span><span class="name">Accident Insurance</span><span class="url">/accident-insurance</span><span class="spacer"></span><span class="badge flag">surfaced</span><span class="badge merge">&larr;2</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Life &amp; Final Expense</span><span class="url">/life-insurance</span><span class="spacer"></span><span class="badge merge">&larr;4</span></div></li>
+        </ul>
+      </div>
+
+      <!-- MEDICARE -->
+      <div class="branch">
+        <div class="branch-title">Medicare <span class="tag">hub &amp; spoke &middot; top-level</span></div>
+        <ul class="nodes">
+          <li>
+            <div class="node pillar"><span class="dot"></span><span class="name">Medicare Overview</span><span class="url">/medicare</span><span class="desc">pillar</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div>
+            <ul>
+              <li><div class="node"><span class="dot"></span><span class="name">Medicare Advantage</span><span class="url">/medicare/advantage</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Medicare Supplement</span><span class="url">/medicare/supplement</span><span class="desc">Medigap</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Part D</span><span class="url">/medicare/part-d</span><span class="desc">prescription drugs</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Medicare Education</span><span class="url">/medicare/education</span><span class="desc">guides &mdash; national organic traffic</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Medicare Resources</span><span class="url">/medicare/resources</span><span class="spacer"></span></div></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="branch">
+        <div class="branch-title">About &amp; Trust</div>
+        <ul class="nodes">
+          <li><div class="node"><span class="dot"></span><span class="name">About / Meet Lisa</span><span class="url">/about</span><span class="spacer"></span><span class="badge merge">&larr;3</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Our Carriers</span><span class="url">/carriers</span><span class="desc">authority proof</span><span class="spacer"></span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Reviews</span><span class="url">/reviews</span><span class="desc">top-level link</span><span class="spacer"></span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Refer a Friend</span><span class="url">/refer-a-friend</span><span class="spacer"></span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Contact</span><span class="url">/contact</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Blog</span><span class="url">/blog</span><span class="desc">was news/</span><span class="spacer"></span><span class="badge merge">&larr;2</span></div></li>
+        </ul>
+      </div>
+
+      <!-- POLICYHOLDER -->
+      <div class="branch">
+        <div class="branch-title client">Policyholder Service <span class="tag">existing clients &middot; utility bar + footer</span></div>
+        <ul class="nodes">
+          <li>
+            <div class="node"><span class="dot" style="background:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 16%,transparent)"></span><span class="name">Policyholder Hub</span><span class="url">/policyholders</span><span class="spacer"></span></div>
+            <ul>
+              <li><div class="node"><span class="dot"></span><span class="name">Proof of Insurance</span><span class="url">/policyholders/proof-of-insurance</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Policy Changes</span><span class="url">/policyholders/policy-changes</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Policy Review</span><span class="url">/policyholders/policy-review</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Update Info</span><span class="url">/policyholders/update-info</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Documents</span><span class="url">/policyholders/documents</span><span class="spacer"></span></div></li>
+              <li><div class="node"><span class="dot"></span><span class="name">Contact My Carrier</span><span class="url">/policyholders/contact-carrier</span><span class="spacer"></span></div></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <!-- UTILITY -->
+      <div class="branch">
+        <div class="branch-title">Utility &amp; Legal <span class="tag">footer</span></div>
+        <ul class="nodes">
+          <li><div class="node"><span class="dot"></span><span class="name">Accessibility</span><span class="url">/accessibility</span><span class="spacer"></span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Privacy Policy</span><span class="url">/privacy</span><span class="spacer"></span><span class="badge new">NEW</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">Thank You</span><span class="url">/thank-you</span><span class="desc">form confirmation</span><span class="spacer"></span><span class="badge flag">noindex</span></div></li>
+          <li><div class="node"><span class="dot"></span><span class="name">404</span><span class="url">/404</span><span class="desc">was invalid.html</span><span class="spacer"></span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span><strong>Strategy:</strong> nationwide &mdash; compete on product/topic keywords, not per-city pages.</span>
+      <span><strong>Migration:</strong> every old URL 301&rsquo;s to its canonical page &mdash; full map in <span class="mono">docs/information-architecture.md</span>.</span>
+    </div>
+  </section>
+
+</div>
+</div>

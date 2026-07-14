@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { pageStubs, type PageStub } from '../data/site';
+
+/**
+ * Generates a placeholder for every canonical route in the IA so the whole
+ * navigation is clickable. Replace a route here with a real .astro page under
+ * src/pages/ whenever it's ready — a real file wins over this catch-all.
+ */
+export function getStaticPaths() {
+  return pageStubs.map((stub) => ({
+    params: { slug: stub.path.replace(/^\//, '') },
+    props: { stub },
+  }));
+}
+
+const { stub } = Astro.props as { stub: PageStub };
+
+const segments = stub.path.split('/').filter(Boolean);
+const parents = segments.slice(0, -1).map((segment, i) => ({
+  label: segment.replace(/-/g, ' '),
+  href: '/' + segments.slice(0, i + 1).join('/'),
+}));
+---
+
+<Base title={stub.title} noindex={stub.path === '/thank-you'}>
+  <p class="crumbs">
+    <a href="/">Home</a>
+    {parents.map((parent) => <> / <a href={parent.href}>{parent.label}</a></>)}
+    {' / '}{stub.title}
+  </p>
+
+  <h1>{stub.title}</h1>
+
+  {stub.note && <p class="stub-note">{stub.note}</p>}
+
+  <p class="stub-meta">
+    Placeholder — content not built yet. Canonical URL: <code>{stub.path}</code>
+  </p>
+</Base>
