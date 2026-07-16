@@ -1,0 +1,43 @@
+---
+// Why work with me — 4 cards, green reassurance checks (never gold here).
+const reasons = [
+  {
+    title: 'Independent',
+    copy: 'I’m not tied to one company. I represent many top carriers and shop them to find what fits you.',
+  },
+  {
+    title: 'Free',
+    copy: 'You pay the same premium with or without me. My help costs you nothing.',
+  },
+  {
+    title: 'Lifetime service',
+    copy: 'Billing questions, claim issues, a move to a new state — you call me, not a call center.',
+  },
+  {
+    title: 'Your way',
+    copy: 'Enroll online in minutes, or talk it through with me first. Both doors are open.',
+  },
+];
+---
+
+<section class="section section--mist" id="why-me" aria-labelledby="why-heading">
+  <div class="container">
+    <div class="section-intro">
+      <h2 id="why-heading">You get me — for the life of your policy.</h2>
+    </div>
+
+    <div class="cards cards--4">
+      {reasons.map((r) => (
+        <article class="card">
+          <span class="check-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+            </svg>
+          </span>
+          <h3>{r.title}</h3>
+          <p>{r.copy}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
