@@ -1,0 +1,55 @@
+---
+// Homepage header: transparent over the hero, solid white after ~40px of scroll
+// (behavior wired in the homepage's inline script). Phone becomes a gold
+// tap-to-call pill on the white state.
+//
+// NOTE: this is the designed homepage chrome from the build plan (wordmark +
+// phone + hamburger with on-page jump links). It does NOT use the site.ts
+// dropdown IA that components/Header.astro renders — see the branch notes;
+// reconciling the two is an open decision.
+import { site } from '../../data/site';
+---
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="/">{site.name}</a>
+
+    <div class="header-right">
+      <a
+        class="header-phone"
+        href={site.phoneHref}
+        aria-label={`Call ${site.phone}. Calling connects you with Lisa, a licensed insurance agent.`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M6.6 10.8a15.3 15.3 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+        </svg>
+        {site.phone}
+      </a>
+
+      <button
+        class="menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label="Open menu"
+      >
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="menu-panel" id="site-menu" aria-label="Main menu">
+    <ul>
+      <li><a href="#medicare">Medicare</a></li>
+      <li><a href="#dental">Dental &amp; Vision</a></li>
+      <li><a href="#why-me">Why me</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <p class="menu-microline container" style="max-width: var(--container);">
+      Calling connects you with Lisa, a licensed insurance agent.
+    </p>
+  </nav>
+</header>

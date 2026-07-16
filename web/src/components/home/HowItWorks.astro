@@ -1,0 +1,34 @@
+---
+// How it works with Lisa — 3 steps.
+const steps = [
+  {
+    title: 'Call or text me',
+    copy: 'Free, no pressure. Tell me about your doctors, prescriptions, and budget.',
+  },
+  {
+    title: 'I shop my carriers',
+    copy: 'I compare the plans I represent and explain the trade-offs in plain English.',
+  },
+  {
+    title: 'You’re covered — and kept',
+    copy: 'I handle the enrollment and stay your agent for the life of the policy.',
+  },
+];
+---
+
+<section class="section" id="how-it-works" aria-labelledby="how-heading">
+  <div class="container">
+    <div class="section-intro">
+      <h2 id="how-heading">How it works with Lisa.</h2>
+    </div>
+
+    <ol class="steps">
+      {steps.map((s) => (
+        <li>
+          <h3>{s.title}</h3>
+          <p>{s.copy}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

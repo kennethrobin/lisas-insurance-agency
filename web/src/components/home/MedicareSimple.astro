@@ -1,0 +1,56 @@
+---
+// Medicare made simple: Supplement vs Advantage, no prices, no superlatives.
+import { site } from '../../data/site';
+
+---
+
+<section class="section" id="medicare" aria-labelledby="medicare-heading">
+  <div class="container">
+    <div class="section-intro">
+      <h2 id="medicare-heading">
+        Confused by Medicare? That’s normal — and it’s exactly what I’m here for.
+      </h2>
+      <p class="lead">
+        Most people come to me with one big question: Supplement or Advantage?
+        Here’s the short version.
+      </p>
+    </div>
+
+    <div class="cards cards--2">
+      <article class="card">
+        <h3>Medicare Supplement (Medigap)</h3>
+        <p>
+          Works alongside Original Medicare to help pay what it leaves behind —
+          deductibles, copays, coinsurance. See any doctor who accepts Medicare.
+          Fewer surprise costs, usually a higher monthly premium.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Medicare Advantage (Part C)</h3>
+        <p>
+          An all-in-one alternative from private carriers. Many plans include
+          extras like prescription, dental, or vision. Usually a lower premium —
+          you work within the plan’s network.
+        </p>
+      </article>
+    </div>
+
+    <div class="medicare-cta">
+      <p>
+        There’s no one-size-fits-all answer — it depends on your doctors, your
+        prescriptions, and your budget. That’s the conversation I have with every
+        client, free of charge.
+      </p>
+      <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+
+    <!-- VIDEO ASSET PENDING: swap this frame for the real 2-minute explainer -->
+    <div class="video-placeholder" role="img" aria-label="Video coming soon">
+      <span class="play-ring" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <p>2-minute explainer — coming soon</p>
+    </div>
+  </div>
+</section>
