@@ -8,9 +8,17 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /**
+   * Designed pages that ship their own chrome and full-bleed sections.
+   * Skips the site Header/Footer and the `.wrap` constraint on <main>.
+   * Scaffold routes leave this off and are unaffected.
+   */
+  bare?: boolean;
+  /** Suppress the "| site.name" suffix when the page sets its own full title. */
+  rawTitle?: boolean;
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, noindex = false, bare = false, rawTitle = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 ---
 
@@ -19,19 +27,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} | {site.name}</title>
+    <title>{rawTitle ? title : `${title} | ${site.name}`}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical.href} />
     {noindex && <meta name="robots" content="noindex" />}
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
-    <main id="main">
-      <div class="wrap">
-        <slot />
-      </div>
+    {!bare && <Header />}
+    <main id="main" class={bare ? 'bare' : undefined}>
+      {bare ? <slot /> : <div class="wrap"><slot /></div>}
     </main>
-    <Footer />
+    {!bare && <Footer />}
   </body>
 </html>

@@ -1,0 +1,90 @@
+---
+// FAQ (native <details>, mirrored by FAQPage schema in Layout) + navy CTA band
+// with the contact form. Form posts nowhere yet — WIRE LATER.
+const faqs = [
+  {
+    q: 'Does it cost extra to use an agent?',
+    a: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
+  },
+  {
+    q: 'Do I have to meet you in person?',
+    a: 'Not at all. Most of my clients I’ve never met in person — we handle everything by phone, and many have been with me for years.',
+  },
+  {
+    q: 'What’s the difference between Supplement and Advantage?',
+    a: 'Supplement works alongside Original Medicare with freedom to see any Medicare doctor; Advantage is an all-in-one alternative with networks and often lower premiums. Which fits depends on your doctors, prescriptions, and budget — that’s what we’d talk through.',
+  },
+  {
+    q: 'Can you help in my state?',
+    a: 'I’m licensed in 43 states. Ask me — if I can’t help, I’ll say so.',
+  },
+];
+import { site } from '../../data/site';
+
+---
+
+<section class="section" id="faq" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-intro">
+      <h2 id="faq-heading">Questions I hear every week.</h2>
+    </div>
+
+    <div class="faq-list">
+      {faqs.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section section--navy cta-band" id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="cta-grid">
+      <div class="cta-copy">
+        <h2 id="contact-heading">Let’s talk. No pressure, no cost — just answers.</h2>
+        <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+
+      <div class="contact-card">
+        <h3>Or send me a note</h3>
+
+        <!-- WIRE LATER: form posts nowhere yet — hook up backend/email service -->
+        <form class="contact-form" novalidate>
+          <div>
+            <label for="contact-name">Name</label>
+            <input id="contact-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div>
+            <label for="contact-phone">Phone</label>
+            <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required />
+          </div>
+          <div>
+            <label for="contact-topic">What can I help with?</label>
+            <select id="contact-topic" name="topic">
+              <option value="medicare">Medicare</option>
+              <option value="dental">Dental &amp; Vision</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <button class="btn btn--gold" type="submit">Send</button>
+        </form>
+
+        <div class="form-success" tabindex="-1" role="status">
+          <span class="check-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+            </svg>
+          </span>
+          <p>
+            Thank you — I got your note. I’ll call you back within one business
+            day. — Lisa
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
