@@ -450,10 +450,18 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* Full-bleed hero photo with a deep-navy overlay so the white serif headline
-     stays readable. Falls back to solid navy if /hero.png is missing. */
+  /* Full-bleed hero photo. The navy overlay leaves the top of the image clear
+     and fades in from the midpoint down, going deep at the bottom where the
+     headline, chip, and quick-start sit. Falls back to solid navy if
+     /hero.png is missing. */
   background:
-    linear-gradient(180deg, rgba(19, 34, 54, 0.60) 0%, rgba(19, 34, 54, 0.72) 55%, rgba(19, 34, 54, 0.88) 100%),
+    linear-gradient(
+      180deg,
+      rgba(19, 34, 54, 0) 0%,
+      rgba(19, 34, 54, 0) 38%,
+      rgba(19, 34, 54, 0.62) 68%,
+      rgba(19, 34, 54, 0.92) 100%
+    ),
     var(--navy) url('/hero.png') center / cover no-repeat;
   color: var(--on-navy-body);
 
