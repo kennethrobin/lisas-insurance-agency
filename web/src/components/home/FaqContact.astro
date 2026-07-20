@@ -24,19 +24,20 @@ import { site } from '../../data/site';
 ---
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
-  <div class="container faq-grid">
-    <div class="section-intro">
-      <p class="eyebrow">FAQ</p>
-      <h2 id="faq-heading">Questions I hear every week.</h2>
-    </div>
+  <div class="container">
+    <p class="eyebrow">FAQ</p>
 
-    <div class="faq-list">
-      {faqs.map((f) => (
-        <details>
-          <summary>{f.q}</summary>
-          <p>{f.a}</p>
-        </details>
-      ))}
+    <div class="faq-grid">
+      <h2 id="faq-heading">Questions I hear every week.</h2>
+
+      <div class="faq-list">
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
     </div>
   </div>
 </section>

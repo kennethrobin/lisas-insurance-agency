@@ -132,17 +132,17 @@ h3 { font-size: var(--fs-h3); }
   background: var(--gold);
   flex: 0 0 auto;
 }
-.section--navy .eyebrow, .hero .eyebrow, .how-panel .eyebrow {
+.section--navy .eyebrow, .how-panel .eyebrow {
   border-color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.08);
   color: var(--gold-soft);
 }
-.section--navy .eyebrow::before, .hero .eyebrow::before, .how-panel .eyebrow::before {
+.section--navy .eyebrow::before, .how-panel .eyebrow::before {
   background: var(--gold-soft);
 }
 .accent { color: var(--gold); }
 
-p { max-width: 65ch; }
+p { max-width: 65ch; text-wrap: pretty; }  /* pretty = no single-word orphan lines */
 
 a { color: var(--steel); text-underline-offset: 3px; }
 a:hover { color: var(--navy); }
@@ -169,26 +169,26 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .section--navy { background: var(--navy); color: var(--on-navy-body); }
 .section--navy h2 { color: #fff; }
 
-/* Centered, constrained section headers — editorial reference look. */
+/* Section headers: one consistent hierarchy — capsule top-most, then the title,
+   everything left-aligned. */
 .section-intro {
   margin-bottom: clamp(36px, 5vw, 56px);
   max-width: 760px;
-  margin-inline: auto;
-  text-align: center;
 }
-.section-intro .lead { margin-inline: auto; }
 
-/* Split section header (reference cue): capsule + title left, lead copy right. */
-.section-intro--split { max-width: none; text-align: left; }
-.section-intro--split .lead { margin-inline: 0; }
+/* Split variant: the capsule still sits on top spanning the full width; below
+   it the title (left) and lead copy (right) start on the same top line. */
+.section-intro--split { max-width: none; }
 @media (min-width: 900px) {
   .section-intro--split {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 1rem clamp(2rem, 5vw, 4.5rem);
-    align-items: end;
+    gap: 0 clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
   }
-  .section-intro--split .lead { margin-top: 0; }
+  .section-intro--split .eyebrow { grid-column: 1 / -1; }
+  /* Small offset so the lead's first line optically tops out with the H2 cap. */
+  .section-intro--split .lead { margin-top: 0.45rem; }
 }
 .lead { font-size: var(--fs-lead); margin-top: 0.9rem; }
 
@@ -484,20 +484,6 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 
 .hero .container { position: relative; z-index: 1; }
 
-/* Two-column editorial hero: copy left, quick-start card floating right. */
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1.5rem, 4vh, 2.25rem);
-  align-items: center;
-}
-.hero-copy { min-width: 0; }
-@media (min-width: 900px) {
-  .hero-grid { grid-template-columns: 1.12fr 0.88fr; gap: clamp(2rem, 5vw, 4rem); }
-  .hero-aside { justify-self: end; width: 100%; max-width: 440px; }
-  .hero-aside .quickstart { max-width: none; margin-top: 0; }
-}
-
 /* Wider cap lets the headline flow further right and balance into 3 lines
    instead of 4 (text-wrap: balance evens the line lengths). The 9vh ceiling
    only bites on very short windows (e.g. a landscape phone), where it keeps
@@ -538,18 +524,19 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .review-chip .stars { color: var(--green-on-navy); letter-spacing: 0.1em; white-space: nowrap; }
 .review-chip .who { color: #BFD3E4; white-space: nowrap; }
 
-/* Quick-start bar */
+/* Quick-start bar — stretches the full container width (same edges as the
+   header's logo and CTA). Single row on desktop, stacks on mobile. */
 .quickstart {
   margin-top: clamp(0.75rem, 2.5vh, 2rem);
   background: var(--paper);
   border-radius: 18px;
-  padding: clamp(0.8rem, 2vh, 1.1rem);
+  padding: clamp(0.8rem, 2vh, 1rem) clamp(0.8rem, 2vh, 1.25rem);
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 0.9rem;
-  max-width: 640px;
+  gap: 0.9rem 1.25rem;
+  width: 100%;
 }
 .quickstart .field { flex: 1 1 260px; }
 .quickstart label {
@@ -581,6 +568,16 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   color: var(--navy);
   margin-bottom: 0.15rem;
 }
+@media (min-width: 900px) {
+  .quickstart { flex-wrap: nowrap; }
+  .quickstart-title {
+    flex: 0 1 auto;
+    align-self: center;
+    margin-bottom: 0;
+    white-space: nowrap;
+    padding-right: 0.5rem;
+  }
+}
 
 /* ---------- Stat strip: outlined capsules on cream, below the hero ---------- */
 .trust-band {
@@ -600,8 +597,8 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   flex-direction: column;
   gap: 0.1rem;
   border: 1.5px solid rgba(27, 46, 74, 0.22);
-  border-radius: 24px;
-  padding: 1.15rem 1.5rem;
+  border-radius: 22px;
+  padding: 0.9rem 1.25rem;
 }
 .stat-lead {
   font-family: var(--font-display);
@@ -622,7 +619,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: clamp(1.75rem, 3vw, 2.5rem);
+  padding: clamp(1.25rem, 2.2vw, 1.75rem);
   box-shadow: var(--shadow-card);
 }
 .section:not(.section--mist) .card { background: var(--mist); box-shadow: none; }
@@ -720,10 +717,10 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .how-panel {
   background: var(--navy);
   border-radius: clamp(20px, 3vw, 36px);
-  padding: clamp(1.75rem, 4vw, 3.5rem);
+  padding: clamp(1.25rem, 2.8vw, 2.5rem);
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
   color: var(--on-navy-body);
 }
 .how-panel h2 { color: #fff; }
@@ -803,13 +800,14 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   margin-top: 2rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 0.9rem;
 }
 .reviews-footnote { margin-top: 1.2rem; font-size: 0.95rem; }
 
 /* ---------- FAQ ---------- */
-/* Editorial split: capsule + title left, accordions right (reference cue). */
+/* Capsule sits above the whole section; below it the title (left) and the
+   accordion stack (right) start on the same top line. */
+.faq-grid h2 { margin-bottom: clamp(20px, 3vw, 32px); }
 @media (min-width: 900px) {
   .faq-grid {
     display: grid;
@@ -817,7 +815,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
     gap: clamp(2rem, 5vw, 4.5rem);
     align-items: start;
   }
-  .faq-grid .section-intro { text-align: left; margin: 0; max-width: none; }
+  .faq-grid h2 { margin-bottom: 0; }
 }
 .faq-list { display: grid; gap: 0.9rem; max-width: 820px; }
 .faq-list details {
@@ -883,7 +881,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .contact-card {
   background: var(--paper);
   border-radius: var(--radius);
-  padding: clamp(1.5rem, 3vw, 2.25rem);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   color: var(--ink);
 }
@@ -1036,7 +1034,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    primary action, so it steps aside — the full Reviews section still carries
    that proof further down the page. */
 @media (max-width: 560px) and (max-height: 720px) {
-  .review-chip, .hero-eyebrow { display: none; }
+  .review-chip { display: none; }
   .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
 
@@ -1049,7 +1047,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
     --hero-gap-offset: 8px;
     padding-bottom: 0.75rem;
   }
-  .review-chip, .hero-eyebrow { display: none; }
+  .review-chip { display: none; }
   .hero-sub { font-size: 1.05rem; }
   .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
