@@ -1,0 +1,40 @@
+---
+/**
+ * Bare document shell: <html>/<head>/<body>, SEO tags, and a skip link.
+ *
+ * Ships NO styles and NO chrome, so a page that uses Shell directly gets only
+ * the CSS it imports itself. That isolation matters: the scaffold's global.css
+ * and the designed brand.css both define `.btn` (and other shared class names),
+ * and whichever loads last wins. Designed pages use Shell so global.css never
+ * reaches them; scaffold pages use Base, which layers global.css + chrome on top.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  /** Suppress the "| site.name" suffix when the page sets its own full title. */
+  rawTitle?: boolean;
+}
+
+const { title, description, noindex = false, rawTitle = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{rawTitle ? title : `${title} | ${site.name}`}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>
