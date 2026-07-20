@@ -306,13 +306,33 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
 .menu-panel .menu-microline { padding: 0.25rem 0.5rem 1rem; font-size: 0.9rem; }
 
 /* ---------- Hero ---------- */
+/* The hero is a self-contained section: it fills the viewport and its contents
+   fit inside it at any browser size, so the quick-start bar is never cut off.
+
+   `--hero-gap` drives BOTH the space above the headline and the space under the
+   subhead, so those two gaps stay visually matched at every size. It's keyed to
+   viewport *height* (vh), so on a short laptop window the whole hero compresses
+   instead of pushing the quick-start bar below the fold. */
 .hero {
+  --hero-gap: clamp(0.75rem, 5.5vh, 5rem);
+  /* Distance from the wordmark's bottom edge to the bottom of the header, so
+     the gap under the subhead renders visually equal to the logo->H1 gap.
+     Smaller on mobile, where the wordmark wraps to two lines. */
+  --hero-gap-offset: 22px;
+
   position: relative;
   overflow: hidden;
   background: linear-gradient(158deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
   color: var(--on-navy-body);
-  padding-top: calc(var(--header-h) + clamp(40px, 7vw, 80px));
-  padding-bottom: clamp(64px, 8vw, 96px);
+
+  /* Fills the viewport, capped so a tall monitor doesn't leave a large empty
+     band under the quick-start bar. Deliberately NOT flex-centred: centring
+     adds slack above the headline, which would break the gap match below. */
+  min-height: 100vh;                 /* fallback for browsers without svh */
+  min-height: min(100svh, 860px);    /* svh = viewport minus mobile browser UI */
+
+  padding-top: calc(var(--header-h) + var(--hero-gap));
+  padding-bottom: clamp(1rem, 4vh, 6rem);
 }
 
 /* Soft decorative shapes — steel/white tints only (never gold) */
@@ -337,22 +357,27 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
 .hero .container { position: relative; z-index: 1; }
 
 /* Wider cap lets the headline flow further right and balance into 3 lines
-   instead of 4 (text-wrap: balance evens the line lengths). */
-.hero h1 { color: #fff; max-width: 24ch; }
+   instead of 4 (text-wrap: balance evens the line lengths). The 9vh ceiling
+   only bites on very short windows (e.g. a landscape phone), where it keeps
+   the headline from crowding out the quick-start bar. */
+.hero h1 {
+  color: #fff;
+  max-width: 24ch;
+  font-size: min(clamp(2.15rem, 4.2vw + 1rem, 3.4rem), 8vh);
+}
 
 .hero-sub {
   font-size: 1.2rem;
   max-width: 62ch;        /* more room so the last line isn't a lone word */
-  margin-top: 1.2rem;
+  margin-top: clamp(0.5rem, 1.5vh, 1.2rem);
   text-wrap: pretty;      /* avoids orphans / hanging single words */
 }
 
-/* Rotating review chip.
-   margin-top matches the gap between the logo and the H1 (~102px on desktop),
-   scaling down on smaller screens so it doesn't over-space on mobile. */
+/* Rotating review chip. Both this gap and the logo->H1 gap above are driven by
+   --hero-gap, so they stay visually matched as the hero compresses to fit. */
 .review-chip {
   position: relative;
-  margin-top: clamp(2.5rem, 9vw, 6.375rem);
+  margin-top: calc(var(--hero-gap) + var(--hero-gap-offset));
   max-width: 560px;
   min-height: 3.4rem;
 }
@@ -373,10 +398,10 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
 
 /* Quick-start bar */
 .quickstart {
-  margin-top: 2rem;
+  margin-top: clamp(0.75rem, 2.5vh, 2rem);
   background: var(--paper);
   border-radius: 18px;
-  padding: 1.1rem;
+  padding: clamp(0.8rem, 2vh, 1.1rem);
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   display: flex;
   flex-wrap: wrap;
@@ -723,6 +748,42 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
 .footer-legal a { color: var(--on-navy-soft); }
 
 /* ---------- Breakpoints ---------- */
+
+/* Phones stack the quick-start bar, so the hero's vertical rhythm needs to
+   tighten further to keep everything above the fold. The smaller offset
+   accounts for the wordmark wrapping to two lines at this width.
+   Declared here, after the base .hero rule, so it actually wins on source order. */
+@media (max-width: 560px) {
+  .hero {
+    --hero-gap: clamp(0.5rem, 3vh, 2.5rem);
+    --hero-gap-offset: 15px;
+  }
+}
+
+/* Short phones (iPhone SE and similar): even fully compressed, the headline,
+   subhead, review chip and stacked quick-start bar can't all clear the fold.
+   The rotating review chip is the only piece here that isn't essential to the
+   primary action, so it steps aside — the full Reviews section still carries
+   that proof further down the page. */
+@media (max-width: 560px) and (max-height: 720px) {
+  .review-chip { display: none; }
+  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
+}
+
+/* Very short viewports at any width — chiefly a phone held in landscape.
+   520px is well below any real laptop window, so this never fires on desktop.
+   Everything tightens and the review chip steps aside, as above. */
+@media (max-height: 520px) {
+  .hero {
+    --hero-gap: clamp(0.35rem, 2vh, 1.5rem);
+    --hero-gap-offset: 8px;
+    padding-bottom: 0.75rem;
+  }
+  .review-chip { display: none; }
+  .hero-sub { font-size: 1.05rem; }
+  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
+}
+
 @media (min-width: 640px) {
   .trust-band ul { grid-template-columns: repeat(2, 1fr); }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: repeat(2, 1fr); }
