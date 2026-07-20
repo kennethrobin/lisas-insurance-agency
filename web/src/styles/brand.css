@@ -143,12 +143,19 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   padding-inline: clamp(20px, 4vw, 32px);
 }
 
-.section { padding-block: clamp(64px, 9vw, 104px); }
+.section { padding-block: clamp(80px, 11vw, 140px); }
 .section--mist { background: var(--mist); }
 .section--navy { background: var(--navy); color: var(--on-navy-body); }
 .section--navy h2 { color: #fff; }
 
-.section-intro { margin-bottom: clamp(32px, 5vw, 48px); }
+/* Centered, constrained section headers — editorial reference look. */
+.section-intro {
+  margin-bottom: clamp(36px, 5vw, 56px);
+  max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
+}
+.section-intro .lead { margin-inline: auto; }
 .lead { font-size: var(--fs-lead); margin-top: 0.9rem; }
 
 .skip-link {
@@ -226,11 +233,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   transition: background-color 0.25s, box-shadow 0.25s;
 }
 
+/* Logo left, nav centered (takes the width it needs), actions right. Centering
+   via auto margins instead of space-between keeps the nav from being squeezed
+   and wrapping. */
 .site-header .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  gap: 1rem 1.25rem;
 }
 
 .wordmark {
@@ -273,16 +282,16 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .header-phone:hover { color: #fff; border-color: #fff; }
 
 /* Primary nav — always visible, no hamburger. Driven by site.ts `mainNav`. */
-.site-nav { display: flex; min-width: 0; }
+.site-nav { display: flex; min-width: 0; margin-inline: auto; }
 .site-nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;      /* single tidy row on desktop; stacks below at <=960px */
   align-items: center;
   justify-content: center;
-  gap: 0.15rem 0.35rem;
+  gap: 0.1rem 0.35rem;
 }
 .nav-item { position: relative; }
 
@@ -375,10 +384,10 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    phone, shrinking slightly instead of hiding behind a toggle. The header's real
    height is measured into --header-actual (JS), which the hero's top offset uses,
    so the first view never crops however many rows the nav wraps to. */
-@media (max-width: 720px) {
-  .site-header .container { flex-wrap: wrap; row-gap: 0.35rem; }
-  .site-nav { flex: 1 0 100%; order: 3; }
-  .site-nav-list { justify-content: flex-start; }
+@media (max-width: 960px) {
+  .site-header .container { flex-wrap: wrap; row-gap: 0.4rem; }
+  .site-nav { flex: 1 0 100%; order: 3; margin-inline: 0; }
+  .site-nav-list { flex-wrap: wrap; justify-content: flex-start; }
   .nav-top { padding: 0.35rem 0.55rem; font-size: 0.95rem; }
   .nav-dropdown { min-width: 220px; }
 }
@@ -544,13 +553,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .cards {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
 }
 .card {
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: clamp(1.5rem, 3vw, 2rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem);
   box-shadow: var(--shadow-card);
 }
 .section:not(.section--mist) .card { background: var(--mist); box-shadow: none; }
@@ -564,15 +573,27 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   color: var(--steel);
   margin-bottom: 0.5rem;
 }
+/* Gold circular arrow button on card links (editorial reference detail). */
 .card-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.55rem;
   min-height: 44px;
-  margin-top: 0.9rem;
+  margin-top: 1.1rem;
   font-weight: 700;
-  color: var(--steel);
+  color: var(--navy);
 }
+.card-link span {
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-size: 0.95rem;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.card-link:hover span { background: var(--gold-hover); transform: translateY(-1px); }
 
 /* Green check marks — reassurance only */
 /* Dark rounded icon tile (editorial reference look): navy tile, gold glyph. */
@@ -660,6 +681,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   margin-top: 2rem;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.9rem;
 }
 .reviews-footnote { margin-top: 1.2rem; font-size: 0.95rem; }
@@ -699,7 +721,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .faq-list details p { padding: 0 1.3rem 1.2rem; }
 
 /* ---------- CTA band + contact form ---------- */
-.cta-band { position: relative; overflow: hidden; }
+/* CTA contact section = a rounded dark panel floating on the cream page. */
+.cta-band {
+  position: relative;
+  overflow: hidden;
+  margin-inline: clamp(16px, 4vw, 48px);
+  border-radius: clamp(20px, 3vw, 36px);
+}
 .cta-band::before {
   content: "";
   position: absolute;
@@ -778,10 +806,25 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .footer-brand .wordmark {
   color: #fff;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
   font-weight: 600;
   line-height: 1.05;
   padding: 0;
+}
+
+/* Oversized, faded wordmark spanning the foot of the page (reference cue). */
+.footer-wordmark-xl {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3rem, 16vw, 13rem);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.07);
+  text-align: center;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  padding-inline: clamp(20px, 4vw, 32px);
+  overflow: hidden;
+  white-space: nowrap;
 }
 .footer-brand .mission { margin-top: 0.8rem; max-width: 34ch; }
 .footer-contact { margin-top: 1.2rem; display: grid; gap: 0.35rem; }
