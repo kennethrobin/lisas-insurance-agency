@@ -125,17 +125,14 @@ const faqSchema = {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /* 1 · Header: transparent over hero -> solid white after ~40px of scroll */
-  const header = document.querySelector('.site-header');
-  const menuBtn = document.querySelector<HTMLButtonElement>('.menu-btn');
-  const menuPanel = document.querySelector('.menu-panel');
-  let menuOpen = false;
+  const header = document.querySelector<HTMLElement>('.site-header');
 
-  /* Publish the header's real height so the menu panel can cap itself to the
-     remaining viewport. The --header-h token is a fixed 76px, but the header
-     grows past that once the wordmark wraps on narrow screens, which would let
-     a long menu run off the bottom of the page. */
+  /* Publish the header's real height so the hero's top offset (and the in-body
+     scroll anchors) always clear it. The --header-h token is a fixed 76px, but
+     the header grows past that once the inline nav wraps to a second row on
+     narrow screens, which would otherwise let the hero content slip under it. */
   const syncHeaderHeight = () => {
-    if (!(header instanceof HTMLElement)) return;
+    if (!header) return;
     document.documentElement.style.setProperty(
       '--header-actual',
       `${header.offsetHeight}px`
@@ -143,28 +140,59 @@ const faqSchema = {
   };
   syncHeaderHeight();
   window.addEventListener('resize', syncHeaderHeight, { passive: true });
+  window.addEventListener('load', syncHeaderHeight);
   if (document.fonts?.ready) document.fonts.ready.then(syncHeaderHeight);
 
   const syncHeader = () => {
     if (!header) return;
-    header.classList.toggle('is-solid', window.scrollY > 40 || menuOpen);
+    header.classList.toggle('is-solid', window.scrollY > 40);
   };
   window.addEventListener('scroll', syncHeader, { passive: true });
   syncHeader();
 
-  /* 2 · Hamburger menu */
-  const setMenu = (open: boolean) => {
-    menuOpen = open;
-    menuBtn?.setAttribute('aria-expanded', String(open));
-    menuPanel?.classList.toggle('is-open', open);
-    syncHeader();
+  /* 2 · Primary nav: lightweight dropdowns for the items that have sub-links.
+         No hamburger — the links stay visible at every width. */
+  const navMenus = document.querySelectorAll<HTMLElement>('[data-nav-dd]');
+
+  const closeMenu = (menu: HTMLElement) => {
+    menu.querySelector('button')?.setAttribute('aria-expanded', 'false');
+    const dd = menu.querySelector('.nav-dropdown');
+    dd?.removeAttribute('data-open');
+    dd?.classList.remove('align-right');
   };
-  menuBtn?.addEventListener('click', () => setMenu(!menuOpen));
-  menuPanel?.querySelectorAll('a').forEach((a) =>
-    a.addEventListener('click', () => setMenu(false))
-  );
+
+  const openMenu = (menu: HTMLElement) => {
+    navMenus.forEach((other) => other !== menu && closeMenu(other));
+    menu.querySelector('button')?.setAttribute('aria-expanded', 'true');
+    const dd = menu.querySelector<HTMLElement>('.nav-dropdown');
+    if (!dd) return;
+    dd.setAttribute('data-open', 'true');
+    // Flip alignment if the panel would spill off the right edge.
+    dd.classList.remove('align-right');
+    if (dd.getBoundingClientRect().right > window.innerWidth - 8) {
+      dd.classList.add('align-right');
+    }
+  };
+
+  navMenus.forEach((menu) => {
+    const button = menu.querySelector('button');
+    if (!button) return;
+    const isOpen = () => button.getAttribute('aria-expanded') === 'true';
+    button.addEventListener('click', () => (isOpen() ? closeMenu(menu) : openMenu(menu)));
+    menu.addEventListener('mouseenter', () => openMenu(menu));
+    menu.addEventListener('mouseleave', () => closeMenu(menu));
+    menu.addEventListener('focusout', (event) => {
+      if (!menu.contains(event.relatedTarget as Node)) closeMenu(menu);
+    });
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuOpen) setMenu(false);
+    if (e.key === 'Escape') navMenus.forEach(closeMenu);
+  });
+  document.addEventListener('click', (event) => {
+    navMenus.forEach((menu) => {
+      if (!menu.contains(event.target as Node)) closeMenu(menu);
+    });
   });
 
   /* 3 · Hero review chip: rotate every 6s (skipped under reduced motion) */

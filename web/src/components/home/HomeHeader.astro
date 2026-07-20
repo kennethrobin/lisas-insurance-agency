@@ -3,15 +3,60 @@
 // (behavior wired in the homepage's inline script). Phone becomes a gold
 // tap-to-call pill on the white state.
 //
-// The menu is driven entirely by site.ts, so it stays in sync as real pages land.
-// Same panel on every viewport — this header is hamburger-only by design, with no
-// separate desktop nav bar, so there's one menu to maintain rather than two.
-import { site, mainNav, utilityNav } from '../../data/site';
+// The menu is driven by `mainNav` in src/data/site.ts (the IA source of truth),
+// so it links to real canonical routes and stays in sync as pages ship. Links
+// are always visible at every width — no hamburger — and the items that have
+// sub-pages use a lightweight dropdown disclosure rather than a full drawer.
+import { site, mainNav } from '../../data/site';
 ---
 
 <header class="site-header">
   <div class="container">
     <a class="wordmark" href="/">{site.name}</a>
+
+    <nav class="site-nav" aria-label="Main menu">
+      <ul class="site-nav-list">
+        {
+          mainNav.map((item, i) =>
+            item.groups ? (
+              <li class="nav-item" data-nav-dd>
+                <button
+                  class="nav-top"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={`home-dd-${i}`}
+                >
+                  {item.label}
+                  <svg class="nav-caret" viewBox="0 0 10 6" aria-hidden="true">
+                    <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" />
+                  </svg>
+                </button>
+                <div class="nav-dropdown" id={`home-dd-${i}`}>
+                  {item.groups.map((group) => (
+                    <div class="nav-dd-group">
+                      <p class="nav-dd-heading">{group.heading}</p>
+                      <ul>
+                        {group.links.map((link) => (
+                          <li>
+                            <a href={link.href}>{link.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </li>
+            ) : (
+              <li class="nav-item">
+                <a class="nav-top" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            )
+          )
+        }
+      </ul>
+    </nav>
 
     <div class="header-right">
       <a
@@ -24,70 +69,6 @@ import { site, mainNav, utilityNav } from '../../data/site';
         </svg>
         {site.phone}
       </a>
-
-      <button
-        class="menu-btn"
-        type="button"
-        aria-expanded="false"
-        aria-controls="site-menu"
-        aria-label="Open menu"
-      >
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
     </div>
   </div>
-
-  <nav class="menu-panel" id="site-menu" aria-label="Main menu">
-    <div class="menu-inner container">
-      <ul class="menu-grid">
-        {
-          mainNav.map((item) =>
-            item.groups ? (
-              <li class="menu-col">
-                <p class="menu-col-title">{item.label}</p>
-                {item.groups.map((group) => (
-                  <div class="menu-group">
-                    <p class="menu-group-heading">{group.heading}</p>
-                    <ul>
-                      {group.links.map((link) => (
-                        <li>
-                          <a href={link.href}>{link.label}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </li>
-            ) : (
-              /* Top-level item with no sub-pages (e.g. Reviews): render the
-                 label once, as the link itself — a section title above an
-                 identically-named link would just read as a duplicate. */
-              <li class="menu-col">
-                <ul>
-                  <li>
-                    <a class="menu-col-solo" href={item.href}>{item.label}</a>
-                  </li>
-                </ul>
-              </li>
-            )
-          )
-        }
-      </ul>
-
-      <div class="menu-foot">
-        <ul class="menu-utility">
-          {utilityNav.map((link) => (
-            <li>
-              <a href={link.href}>{link.label}</a>
-            </li>
-          ))}
-        </ul>
-        <p class="menu-microline">
-          Calling connects you with Lisa, a licensed insurance agent.
-        </p>
-      </div>
-    </div>
-  </nav>
 </header>
