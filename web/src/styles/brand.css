@@ -65,7 +65,7 @@
   --radius: 20px;
   --radius-sm: 12px;
   --header-h: 76px;
-  --container: 1120px;
+  --container: 1200px;
   --shadow-card: 0 2px 6px rgba(19, 34, 54, 0.06), 0 14px 34px rgba(19, 34, 54, 0.08);
 }
 
@@ -186,7 +186,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
     gap: 0 clamp(2rem, 5vw, 4.5rem);
     align-items: start;
   }
-  .section-intro--split .eyebrow { grid-column: 1 / -1; }
+  .section-intro--split .eyebrow { grid-column: 1 / -1; justify-self: start; }
   /* Small offset so the lead's first line optically tops out with the H2 cap. */
   .section-intro--split .lead { margin-top: 0.45rem; }
 }
@@ -273,21 +273,21 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .site-header .container {
   display: flex;
   align-items: center;
-  gap: 1rem 1.25rem;
+  gap: 0.75rem 1rem;
 }
 
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  font-size: clamp(1rem, 0.9vw + 0.7rem, 1.3rem);
   color: #fff;
   text-decoration: none;
-  line-height: 1.25;
+  line-height: 1.2;
   padding-block: 0.4rem;
-  text-wrap: balance;
+  white-space: nowrap;   /* logo always one line */
 }
 
-/* Keep the wordmark to two tidy lines next to the phone pill on small screens */
+/* Compact pills + logo on small screens (logo stays one line) */
 @media (max-width: 560px) {
   .wordmark { font-size: 0.95rem; }
   .header-phone { font-size: 0.95rem; padding: 0.35rem 0.85rem; }
@@ -295,7 +295,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 }
 .wordmark:hover { color: #fff; }
 
-.header-right { display: flex; align-items: center; gap: 0.6rem; }
+.header-right { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
 
 /* Phone: white outline pill over hero -> gold tap-to-call pill on white header */
 .header-phone {
@@ -335,13 +335,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   gap: 0.3rem;
   min-height: 44px;
-  padding: 0.4rem 0.7rem;
+  padding: 0.4rem 0.6rem;
   border: 0;
   border-radius: 10px;
   background: transparent;
   color: #fff;
   font-family: var(--font-body);
-  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.05rem);
+  font-size: clamp(0.9rem, 0.3vw + 0.82rem, 1rem);
   font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
@@ -365,8 +365,9 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .site-header.is-solid .nav-top { color: var(--on-navy-body); }
 .site-header.is-solid .nav-top:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
 
-/* Phone stays a light outline pill in both states; the gold pill is the CTA. */
-.header-cta.btn { min-height: 44px; padding: 0.4rem 1.15rem; font-size: 1rem; }
+/* Phone stays a light outline pill in both states; the gold pill is the CTA.
+   Both pills share the same height, and the CTA never wraps to two lines. */
+.header-cta.btn { min-height: 44px; padding: 0.4rem 1.15rem; font-size: 1rem; white-space: nowrap; }
 
 /* Sub-item dropdown — lightweight disclosure (hover/click/focus). The panel is
    always white with navy text, independent of the header's transparent/solid
@@ -443,6 +444,8 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   /* Full-bleed hero photo with a deep-navy overlay so the white serif headline
      stays readable. Falls back to solid navy if /hero.png is missing. */
   background:
@@ -451,8 +454,8 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   color: var(--on-navy-body);
 
   /* Fills the viewport, capped so a tall monitor doesn't leave a large empty
-     band under the quick-start bar. Deliberately NOT flex-centred: centring
-     adds slack above the headline, which would break the gap match below. */
+     band under the quick-start bar. Slack space is distributed by .hero-copy's
+     auto margins so the copy breathes instead of pinning to the header. */
   min-height: 100vh;                 /* fallback for browsers without svh */
   min-height: min(100svh, 860px);    /* svh = viewport minus mobile browser UI */
 
@@ -482,7 +485,19 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 66%);
 }
 
-.hero .container { position: relative; z-index: 1; }
+.hero .container {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The copy block floats in the hero's slack space — equal breathing room above
+   and below — so the headline isn't pinned to the header and the quick-start
+   isn't stranded mid-page. Auto margins collapse to zero on short viewports. */
+.hero-copy { margin-block: auto; }
 
 /* Wider cap lets the headline flow further right and balance into 3 lines
    instead of 4 (text-wrap: balance evens the line lengths). The 9vh ceiling
@@ -534,20 +549,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 0.9rem 1.25rem;
+  align-items: center;
+  gap: 0.9rem 1rem;
   width: 100%;
-}
-.quickstart .field { flex: 1 1 260px; }
-.quickstart label {
-  display: block;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--navy);
-  margin-bottom: 0.45rem;
 }
 .quickstart select {
-  width: 100%;
+  flex: 1 1 240px;
+  min-width: 0;
   min-height: 52px;
   font-family: var(--font-body);
   font-size: 1.05rem;
@@ -566,16 +574,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   font-size: 1.3rem;
   line-height: 1.2;
   color: var(--navy);
-  margin-bottom: 0.15rem;
 }
 @media (min-width: 900px) {
   .quickstart { flex-wrap: nowrap; }
   .quickstart-title {
-    flex: 0 1 auto;
-    align-self: center;
-    margin-bottom: 0;
+    flex: 0 0 auto;
     white-space: nowrap;
-    padding-right: 0.5rem;
+    padding-right: 0.75rem;
   }
 }
 
@@ -851,11 +856,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .faq-list details p { padding: 0 1.3rem 1.2rem; }
 
 /* ---------- CTA band + contact form ---------- */
-/* CTA contact section = a rounded dark panel floating on the cream page. */
+/* CTA contact section = a rounded dark panel floating on the cream page,
+   with clear cream space below before the footer begins. */
 .cta-band {
   position: relative;
   overflow: hidden;
   margin-inline: clamp(16px, 4vw, 48px);
+  margin-block-end: clamp(56px, 8vw, 112px);
   border-radius: clamp(20px, 3vw, 36px);
 }
 .cta-band::before {

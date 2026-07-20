@@ -1,52 +1,53 @@
 ---
-// Hero: full-bleed photo + deep-navy overlay. Kept deliberately calm: headline,
-// subhead, rotating review chip, then the quick-start box stretching the full
-// container width (same edges as the header's logo/CTA). Everything above the
-// fold at every viewport — the --hero-gap mechanism handles compression.
+// Hero: full-bleed photo + deep-navy overlay. The copy block floats in the
+// hero's slack space (equal breathing room above and below), and the
+// quick-start bar sits at the bottom stretching the full container width.
+// Everything stays above the fold — the --hero-gap mechanism still compresses
+// the stack on short viewports.
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
   <div class="container">
-    <h1 id="hero-heading">Medicare made <span class="accent">simple</span> — with a real person in your corner.</h1>
+    <div class="hero-copy">
+      <h1 id="hero-heading">Medicare made <span class="accent">simple</span> — with a real person in your corner.</h1>
 
-    <p class="hero-sub">
-      I’m Lisa. I help people across the country with Medicare, dental, and vision
-      coverage — free — and I stay with you long after you enroll.
-    </p>
+      <p class="hero-sub">
+        I’m Lisa. I help people across the country with Medicare, dental, and vision
+        coverage — free — and I stay with you long after you enroll.
+      </p>
 
-    <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
-    <div class="review-chip">
-      <!-- REPLACE: real review -->
-      <blockquote class="is-active">
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“Lisa made Medicare finally make sense to me.”</span>
-        <span class="who">— Margaret, TX</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“She found the right plan and still checks in every year.”</span>
-        <span class="who">— James, OK</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
-        <span class="who">— Diane, MO</span>
-      </blockquote>
+      <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
+      <div class="review-chip">
+        <!-- REPLACE: real review -->
+        <blockquote class="is-active">
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“Lisa made Medicare finally make sense to me.”</span>
+          <span class="who">— Margaret, TX</span>
+        </blockquote>
+        <!-- REPLACE: real review -->
+        <blockquote>
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“She found the right plan and still checks in every year.”</span>
+          <span class="who">— James, OK</span>
+        </blockquote>
+        <!-- REPLACE: real review -->
+        <blockquote>
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
+          <span class="who">— Diane, MO</span>
+        </blockquote>
+      </div>
     </div>
 
-    <!-- Quick-start bar: full container width, one select + one button, no data collected -->
+    <!-- Quick-start bar: the visible title IS the select's label (one clear
+         line), then the dropdown and the button. No data collected. -->
     <form class="quickstart">
-      <p class="quickstart-title">Let’s find your starting point</p>
-      <div class="field">
-        <label for="quickstart-topic">What do you need help with?</label>
-        <select id="quickstart-topic" name="topic">
-          <option value="medicare">Medicare</option>
-          <option value="dental">Dental &amp; Vision</option>
-          <option value="other">Something else</option>
-        </select>
-      </div>
+      <label class="quickstart-title" for="quickstart-topic">Let’s find your starting point</label>
+      <select id="quickstart-topic" name="topic">
+        <option value="medicare">Medicare</option>
+        <option value="dental">Dental &amp; Vision</option>
+        <option value="other">Something else</option>
+      </select>
       <button class="btn btn--gold" type="submit">Get free help</button>
     </form>
   </div>
