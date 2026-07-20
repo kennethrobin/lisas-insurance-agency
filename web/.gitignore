@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # vercel
 .vercel
+
+# stray build output from Windows/Dropbox file locks
+dist_old_*/
