@@ -2,12 +2,13 @@
 /**
  * Homepage — the first route designed for real (replaces the nav scaffold stub).
  *
- * Uses Base in `bare` mode: this page ships its own designed chrome
- * (HomeHeader/HomeFooter) and full-bleed sections, so it opts out of the
- * scaffold Header/Footer and the `.wrap` constraint. Every other route still
- * renders through the default Base chrome via [...slug].astro.
+ * Uses Shell (not Base) so the scaffold's global.css never loads here: both
+ * stylesheets define `.btn`, and whichever loads last wins, which previously
+ * turned the gold capsule CTAs into the scaffold's blue rectangles. This page
+ * ships its own chrome and imports only brand.css. Every other route still
+ * renders through Base via [...slug].astro.
  */
-import Base from '../layouts/Base.astro';
+import Shell from '../layouts/Shell.astro';
 import { site } from '../data/site';
 import '../styles/brand.css';
 
@@ -80,7 +81,7 @@ const faqSchema = {
 };
 ---
 
-<Base title={title} description={description} bare rawTitle>
+<Shell title={title} description={description} rawTitle>
   <Fragment slot="head">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -105,17 +106,19 @@ const faqSchema = {
   </Fragment>
 
   <HomeHeader />
-  <Hero />
-  <TrustBand />
-  <MedicareSimple />
-  <WhyMe />
-  <CoveragePaths />
-  <DentalVision />
-  <HowItWorks />
-  <Reviews />
-  <FaqContact />
+  <main id="main">
+    <Hero />
+    <TrustBand />
+    <MedicareSimple />
+    <WhyMe />
+    <CoveragePaths />
+    <DentalVision />
+    <HowItWorks />
+    <Reviews />
+    <FaqContact />
+  </main>
   <HomeFooter />
-</Base>
+</Shell>
 
 <script>
   // Homepage behavior. Small on purpose — no frameworks.
