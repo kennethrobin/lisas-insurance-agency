@@ -1,6 +1,9 @@
 ---
-// How it works with Lisa — 3 steps, presented as the reference's dark rounded
-// feature panel: media block left, numbered rows with gold arrows right.
+// How it works with Lisa — the reference's dark feature panel: media block on
+// the left with a small white badge and a white overlay card (title + required
+// phone microline + call button); numbered rows with gold circle arrows right.
+import { site } from '../../data/site';
+
 const steps = [
   {
     title: 'Call or text me',
@@ -20,7 +23,15 @@ const steps = [
 <section class="section" id="how-it-works" aria-labelledby="how-heading">
   <div class="container">
     <div class="how-panel">
-      <div class="how-media" aria-hidden="true"></div>
+      <div class="how-media">
+        <span class="how-badge">Free help</span>
+
+        <div class="how-card">
+          <h3>You call me — not a call center</h3>
+          <p>Calling connects you with Lisa, a licensed insurance agent.</p>
+          <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa</a>
+        </div>
+      </div>
 
       <div class="how-content">
         <p class="eyebrow">How it works</p>
@@ -33,7 +44,7 @@ const steps = [
                 <h3>{s.title}</h3>
                 <p>{s.copy}</p>
               </div>
-              <span class="step-arrow" aria-hidden="true">→</span>
+              <span class="step-arrow" aria-hidden="true">↗</span>
             </li>
           ))}
         </ol>
