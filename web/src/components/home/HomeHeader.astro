@@ -3,11 +3,10 @@
 // (behavior wired in the homepage's inline script). Phone becomes a gold
 // tap-to-call pill on the white state.
 //
-// NOTE: this is the designed homepage chrome from the build plan (wordmark +
-// phone + hamburger with on-page jump links). It does NOT use the site.ts
-// dropdown IA that components/Header.astro renders — see the branch notes;
-// reconciling the two is an open decision.
-import { site } from '../../data/site';
+// The menu is driven entirely by site.ts, so it stays in sync as real pages land.
+// Same panel on every viewport — this header is hamburger-only by design, with no
+// separate desktop nav bar, so there's one menu to maintain rather than two.
+import { site, mainNav, utilityNav } from '../../data/site';
 ---
 
 <header class="site-header">
@@ -41,15 +40,54 @@ import { site } from '../../data/site';
   </div>
 
   <nav class="menu-panel" id="site-menu" aria-label="Main menu">
-    <ul>
-      <li><a href="#medicare">Medicare</a></li>
-      <li><a href="#dental">Dental &amp; Vision</a></li>
-      <li><a href="#why-me">Why me</a></li>
-      <li><a href="#reviews">Reviews</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <p class="menu-microline container" style="max-width: var(--container);">
-      Calling connects you with Lisa, a licensed insurance agent.
-    </p>
+    <div class="menu-inner container">
+      <ul class="menu-grid">
+        {
+          mainNav.map((item) =>
+            item.groups ? (
+              <li class="menu-col">
+                <p class="menu-col-title">{item.label}</p>
+                {item.groups.map((group) => (
+                  <div class="menu-group">
+                    <p class="menu-group-heading">{group.heading}</p>
+                    <ul>
+                      {group.links.map((link) => (
+                        <li>
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </li>
+            ) : (
+              /* Top-level item with no sub-pages (e.g. Reviews): render the
+                 label once, as the link itself — a section title above an
+                 identically-named link would just read as a duplicate. */
+              <li class="menu-col">
+                <ul>
+                  <li>
+                    <a class="menu-col-solo" href={item.href}>{item.label}</a>
+                  </li>
+                </ul>
+              </li>
+            )
+          )
+        }
+      </ul>
+
+      <div class="menu-foot">
+        <ul class="menu-utility">
+          {utilityNav.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+        <p class="menu-microline">
+          Calling connects you with Lisa, a licensed insurance agent.
+        </p>
+      </div>
+    </div>
   </nav>
 </header>

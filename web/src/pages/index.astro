@@ -130,6 +130,21 @@ const faqSchema = {
   const menuPanel = document.querySelector('.menu-panel');
   let menuOpen = false;
 
+  /* Publish the header's real height so the menu panel can cap itself to the
+     remaining viewport. The --header-h token is a fixed 76px, but the header
+     grows past that once the wordmark wraps on narrow screens, which would let
+     a long menu run off the bottom of the page. */
+  const syncHeaderHeight = () => {
+    if (!(header instanceof HTMLElement)) return;
+    document.documentElement.style.setProperty(
+      '--header-actual',
+      `${header.offsetHeight}px`
+    );
+  };
+  syncHeaderHeight();
+  window.addEventListener('resize', syncHeaderHeight, { passive: true });
+  if (document.fonts?.ready) document.fonts.ready.then(syncHeaderHeight);
+
   const syncHeader = () => {
     if (!header) return;
     header.classList.toggle('is-solid', window.scrollY > 40 || menuOpen);

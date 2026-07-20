@@ -282,6 +282,9 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
 .menu-btn[aria-expanded="true"] .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
 /* Dropdown menu panel */
+/* Dropdown menu panel. Renders the full site.ts nav (grouped), so it can get
+   long — it scrolls internally rather than running past the bottom of the
+   screen. Same panel at every width; this header has no separate desktop nav. */
 .menu-panel {
   position: absolute;
   top: 100%;
@@ -290,28 +293,90 @@ section, [id] { scroll-margin-top: calc(var(--header-h) + 20px); }
   border-bottom: 1px solid var(--hairline);
   box-shadow: 0 24px 40px rgba(32, 52, 79, 0.14);
   display: none;
+  /* --header-actual is measured at runtime; the --header-h token is only a
+     fallback, and is too small once the wordmark wraps on narrow screens. */
+  max-height: calc(100svh - var(--header-actual, var(--header-h)));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .menu-panel.is-open { display: block; }
 
-.menu-panel ul {
+.menu-inner { padding-block: 1.1rem 1rem; }
+
+.menu-grid {
   list-style: none;
   margin: 0;
-  padding: 0.75rem 0 0.5rem;
-  max-width: var(--container);
-  margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 32px);
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem 2rem;
 }
+
+.menu-col { min-width: 0; }
+
+/* Top-level section label ("Insurance", "Medicare", …) */
+.menu-col-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--steel);
+  padding-inline: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+/* Group heading inside a section ("Health & Medical", "Plans", …) */
+.menu-group + .menu-group { margin-top: 0.6rem; }
+.menu-group-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  padding-inline: 0.5rem;
+  margin-bottom: 0.1rem;
+}
+
+.menu-panel ul ul,
+.menu-utility {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .menu-panel a {
-  display: block;
-  padding: 0.85rem 0.5rem;
-  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  min-height: 44px;          /* tap target */
+  padding: 0.4rem 0.5rem;
+  font-size: 1.02rem;
   font-weight: 600;
   color: var(--navy);
   text-decoration: none;
   border-radius: 8px;
 }
 .menu-panel a:hover { background: var(--mist); }
-.menu-panel .menu-microline { padding: 0.25rem 0.5rem 1rem; font-size: 0.9rem; }
+
+/* A top-level item with no sub-pages sits where the other columns' section
+   titles do, so nudge it down to keep the first row of links aligned. */
+@media (min-width: 760px) {
+  .menu-col-solo { margin-top: 1.45rem; }
+}
+
+.menu-foot {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+}
+.menu-utility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1.25rem;
+}
+.menu-utility a { font-size: 0.96rem; color: var(--steel); }
+.menu-panel .menu-microline { padding: 0.4rem 0.5rem 0; font-size: 0.9rem; }
+
+@media (min-width: 760px) {
+  .menu-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 /* ---------- Hero ---------- */
 /* The hero is a self-contained section: it fills the viewport and its contents
