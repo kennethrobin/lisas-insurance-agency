@@ -25,30 +25,48 @@
 
 /* ---------- Design tokens ---------- */
 :root {
-  --navy:   #20344F;  /* headers, header bar, footer, trust anchor */
-  --navy-deep: #16273D; /* gradient partner for hero */
-  --navy-soft: #2C4666; /* gradient partner for hero (lighter end) */
-  --steel:  #4A6D8C;  /* links, secondary accents */
-  --gold:   #C68A3C;  /* PRIMARY ACTION ONLY — buttons */
-  --gold-hover: #B0762C;
-  --gold-ink: #3A2708; /* dark text on gold buttons */
-  --green:  #34704F;  /* reassurance accents: checkmarks, badges. Never a button */
-  --green-on-navy: #8FD0A8; /* readable green tint for marks on navy */
-  --ink:    #22303D;  /* ALL body text */
-  --mist:   #F4F7FA;  /* alternating section backgrounds */
-  --paper:  #FFFFFF;
-  --hairline: #D9E2EA;      /* the only allowed gray — borders */
-  --on-navy-body: #E4ECF4;  /* body text on navy backgrounds */
-  --on-navy-soft: #C9D6E2;  /* small print on navy backgrounds */
+  /* Editorial navy / cream / gold palette. A deep, slightly warm navy replaces
+     the old brighter blue; pure white becomes a warm ivory. Gold accent kept. */
+  --navy:      #1B2E4A;  /* dark sections, hero overlay, dark nav bar, footer */
+  --navy-deep: #132236;  /* gradient / overlay partner (darker) */
+  --navy-soft: #294162;  /* gradient partner (lighter end) */
+  --steel:     #3F5C7A;  /* links, secondary accents */
 
-  --font-display: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --gold:      #C68A3C;  /* PRIMARY ACTION + emphasized words + small highlights */
+  --gold-hover:#B0762C;
+  --gold-ink:  #3A2708;  /* dark text on gold */
+  --gold-soft: #E3B978;  /* light gold for marks/eyebrows on navy */
+
+  --ink:   #26313C;      /* ALL body text (on cream) */
+  --cream: #F3EADA;      /* warm page background (was pure white) */
+  --paper: #FBF6EC;      /* warm near-white card / raised surface (was #FFF) */
+  --mist:  #EDE3D1;      /* alternating warm section background */
+  --hairline: #E2D7C4;   /* the only allowed neutral — warm borders */
+  --on-navy-body: #EAE3D5;  /* body text on navy backgrounds */
+  --on-navy-soft: #C7BEAC;  /* small print on navy backgrounds */
+
+  /* Reassurance marks are gold in this palette (no green anywhere). Defined as
+     tokens so every existing green reference recolors consistently. */
+  --green:         var(--gold);
+  --green-on-navy: var(--gold-soft);
+
+  /* Type: editorial high-contrast serif for display, clean sans for body. */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  --radius: 16px;
+  /* Type-scale tokens */
+  --fs-eyebrow: 0.8rem;
+  --fs-body: 1.125rem;   /* 18px base — non-negotiable */
+  --fs-lead: 1.2rem;
+  --fs-h3: 1.4rem;
+  --fs-h2: clamp(1.9rem, 2.4vw + 1rem, 2.7rem);
+  --fs-h1: clamp(2.3rem, 4.4vw + 1rem, 3.7rem);
+
+  --radius: 20px;
   --radius-sm: 12px;
   --header-h: 76px;
   --container: 1120px;
-  --shadow-card: 0 2px 6px rgba(32, 52, 79, 0.06), 0 12px 32px rgba(32, 52, 79, 0.07);
+  --shadow-card: 0 2px 6px rgba(19, 34, 54, 0.06), 0 14px 34px rgba(19, 34, 54, 0.08);
 }
 
 /* ---------- Reset / base ---------- */
@@ -62,10 +80,10 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-size: 1.125rem;            /* 18px base — non-negotiable */
+  font-size: var(--fs-body);      /* 18px base — non-negotiable */
   line-height: 1.65;
   color: var(--ink);
-  background: var(--paper);
+  background: var(--cream);       /* warm editorial page background */
   overflow-x: clip;               /* guard against any accidental horizontal scroll */
 }
 
@@ -73,22 +91,35 @@ img, svg, video { max-width: 100%; display: block; }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.18;
+  font-weight: 600;
+  line-height: 1.15;
   color: var(--navy);
   text-wrap: balance;
 }
 
-/* Large sans headlines: heavier weight + slight negative tracking reads
-   more polished and holds together at display sizes. */
+/* Editorial serif headlines (Fraunces): the high-contrast letterforms carry the
+   display weight, so we drop the old heavy sans weight + negative tracking. */
 h1 {
-  font-size: clamp(2.15rem, 4.2vw + 1rem, 3.4rem);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.012em;
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
 }
-h2 { font-size: clamp(1.8rem, 2.2vw + 1rem, 2.4rem); letter-spacing: -0.008em; }
-h3 { font-size: 1.3rem; }
+h2 { font-size: var(--fs-h2); letter-spacing: -0.005em; }
+h3 { font-size: var(--fs-h3); }
+
+/* Small uppercase eyebrow label above section titles + emphasized accent word. */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.section--navy .eyebrow, .hero .eyebrow, .trust-band .eyebrow { color: var(--gold-soft); }
+.accent { color: var(--gold); }
 
 p { max-width: 65ch; }
 
@@ -118,7 +149,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .section--navy h2 { color: #fff; }
 
 .section-intro { margin-bottom: clamp(32px, 5vw, 48px); }
-.lead { font-size: 1.2rem; margin-top: 0.9rem; }
+.lead { font-size: var(--fs-lead); margin-top: 0.9rem; }
 
 .skip-link {
   position: absolute;
@@ -217,6 +248,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 @media (max-width: 560px) {
   .wordmark { font-size: 0.95rem; }
   .header-phone { font-size: 0.95rem; padding: 0.35rem 0.85rem; }
+  .header-cta.btn { font-size: 0.9rem; padding: 0.35rem 0.85rem; min-height: 40px; }
 }
 .wordmark:hover { color: #fff; }
 
@@ -280,20 +312,18 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .nav-caret { width: 10px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
 [data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
 
-/* Solid (scrolled) state */
+/* Solid (scrolled) state = dark navy bar. The nav rides transparent over the
+   dark hero at the top, then becomes a solid navy bar once you scroll. */
 .site-header.is-solid {
-  background: var(--paper);
-  box-shadow: 0 1px 0 var(--hairline), 0 8px 24px rgba(32, 52, 79, 0.08);
+  background: var(--navy);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 10px 30px rgba(19, 34, 54, 0.28);
 }
-.site-header.is-solid .wordmark { color: var(--navy); }
-.site-header.is-solid .nav-top { color: var(--navy); }
-.site-header.is-solid .nav-top:hover { background: var(--mist); color: var(--navy); }
-.site-header.is-solid .header-phone {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--gold-ink);
-}
-.site-header.is-solid .header-phone:hover { background: var(--gold-hover); border-color: var(--gold-hover); }
+.site-header.is-solid .wordmark { color: #fff; }
+.site-header.is-solid .nav-top { color: var(--on-navy-body); }
+.site-header.is-solid .nav-top:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
+
+/* Phone stays a light outline pill in both states; the gold pill is the CTA. */
+.header-cta.btn { min-height: 44px; padding: 0.4rem 1.15rem; font-size: 1rem; }
 
 /* Sub-item dropdown — lightweight disclosure (hover/click/focus). The panel is
    always white with navy text, independent of the header's transparent/solid
@@ -370,7 +400,11 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 
   position: relative;
   overflow: hidden;
-  background: linear-gradient(158deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
+  /* Full-bleed hero photo with a deep-navy overlay so the white serif headline
+     stays readable. Falls back to solid navy if /hero.png is missing. */
+  background:
+    linear-gradient(180deg, rgba(19, 34, 54, 0.60) 0%, rgba(19, 34, 54, 0.72) 55%, rgba(19, 34, 54, 0.88) 100%),
+    var(--navy) url('/hero.png') center / cover no-repeat;
   color: var(--on-navy-body);
 
   /* Fills the viewport, capped so a tall monitor doesn't leave a large empty
@@ -541,25 +575,28 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 }
 
 /* Green check marks — reassurance only */
+/* Dark rounded icon tile (editorial reference look): navy tile, gold glyph. */
 .check-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: rgba(52, 112, 79, 0.12);
-  color: var(--green);
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: var(--gold-soft);
   display: grid;
   place-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
 }
 
 /* ---------- Medicare section ---------- */
 .medicare-cta { margin-top: clamp(32px, 5vw, 44px); }
 .medicare-cta .btn { margin-top: 1.2rem; }
 
+/* Intentional solid navy media block (stands in for the explainer video). */
 .video-placeholder {
   margin-top: clamp(36px, 5vw, 52px);
-  border: 2px dashed var(--hairline);
+  border: 0;
   border-radius: var(--radius);
-  background: var(--mist);
+  background: var(--navy);
+  color: var(--on-navy-body);
   aspect-ratio: 16 / 7;
   display: grid;
   place-content: center;
@@ -571,12 +608,12 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .video-placeholder .play-ring {
   width: 64px; height: 64px;
   border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
+  background: var(--gold);
+  color: var(--gold-ink);
   display: grid;
   place-items: center;
 }
-.video-placeholder p { font-weight: 600; color: var(--navy); }
+.video-placeholder p { font-weight: 600; color: #fff; }
 
 /* ---------- How it works ---------- */
 .steps {
@@ -738,7 +775,14 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   grid-template-columns: 1fr;
   gap: 2.5rem;
 }
-.footer-brand .wordmark { color: #fff; font-size: 1.35rem; padding: 0; }
+.footer-brand .wordmark {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+  padding: 0;
+}
 .footer-brand .mission { margin-top: 0.8rem; max-width: 34ch; }
 .footer-contact { margin-top: 1.2rem; display: grid; gap: 0.35rem; }
 .footer-contact a { text-decoration: none; font-weight: 600; }
@@ -817,7 +861,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    primary action, so it steps aside — the full Reviews section still carries
    that proof further down the page. */
 @media (max-width: 560px) and (max-height: 720px) {
-  .review-chip { display: none; }
+  .review-chip, .hero-eyebrow { display: none; }
   .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
 
@@ -830,7 +874,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
     --hero-gap-offset: 8px;
     padding-bottom: 0.75rem;
   }
-  .review-chip { display: none; }
+  .review-chip, .hero-eyebrow { display: none; }
   .hero-sub { font-size: 1.05rem; }
   .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
