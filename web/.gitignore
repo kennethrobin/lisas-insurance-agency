@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# vercel
+.vercel
+
+# stray build output from Windows/Dropbox file locks
+dist_old_*/

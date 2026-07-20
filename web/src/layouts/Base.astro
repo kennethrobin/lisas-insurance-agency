@@ -1,44 +1,31 @@
 ---
+/**
+ * Scaffold layout: the document Shell plus the site chrome and the placeholder
+ * routes' styling. Used by [...slug].astro and 404.astro.
+ *
+ * Designed pages use Shell directly instead, so global.css doesn't reach them
+ * and override the brand styles.
+ */
+import Shell from './Shell.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { site } from '../data/site';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
-  /**
-   * Designed pages that ship their own chrome and full-bleed sections.
-   * Skips the site Header/Footer and the `.wrap` constraint on <main>.
-   * Scaffold routes leave this off and are unaffected.
-   */
-  bare?: boolean;
-  /** Suppress the "| site.name" suffix when the page sets its own full title. */
-  rawTitle?: boolean;
 }
 
-const { title, description, noindex = false, bare = false, rawTitle = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const { title, description, noindex = false } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{rawTitle ? title : `${title} | ${site.name}`}</title>
-    {description && <meta name="description" content={description} />}
-    <link rel="canonical" href={canonical.href} />
-    {noindex && <meta name="robots" content="noindex" />}
-    <slot name="head" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    {!bare && <Header />}
-    <main id="main" class={bare ? 'bare' : undefined}>
-      {bare ? <slot /> : <div class="wrap"><slot /></div>}
-    </main>
-    {!bare && <Footer />}
-  </body>
-</html>
+<Shell title={title} description={description} noindex={noindex}>
+  <Header />
+  <main id="main">
+    <div class="wrap">
+      <slot />
+    </div>
+  </main>
+  <Footer />
+</Shell>

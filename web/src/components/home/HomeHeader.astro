@@ -3,16 +3,60 @@
 // (behavior wired in the homepage's inline script). Phone becomes a gold
 // tap-to-call pill on the white state.
 //
-// NOTE: this is the designed homepage chrome from the build plan (wordmark +
-// phone + hamburger with on-page jump links). It does NOT use the site.ts
-// dropdown IA that components/Header.astro renders — see the branch notes;
-// reconciling the two is an open decision.
-import { site } from '../../data/site';
+// The menu is driven by `mainNav` in src/data/site.ts (the IA source of truth),
+// so it links to real canonical routes and stays in sync as pages ship. Links
+// are always visible at every width — no hamburger — and the items that have
+// sub-pages use a lightweight dropdown disclosure rather than a full drawer.
+import { site, mainNav } from '../../data/site';
 ---
 
 <header class="site-header">
   <div class="container">
     <a class="wordmark" href="/">{site.name}</a>
+
+    <nav class="site-nav" aria-label="Main menu">
+      <ul class="site-nav-list">
+        {
+          mainNav.map((item, i) =>
+            item.groups ? (
+              <li class="nav-item" data-nav-dd>
+                <button
+                  class="nav-top"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={`home-dd-${i}`}
+                >
+                  {item.label}
+                  <svg class="nav-caret" viewBox="0 0 10 6" aria-hidden="true">
+                    <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" />
+                  </svg>
+                </button>
+                <div class="nav-dropdown" id={`home-dd-${i}`}>
+                  {item.groups.map((group) => (
+                    <div class="nav-dd-group">
+                      <p class="nav-dd-heading">{group.heading}</p>
+                      <ul>
+                        {group.links.map((link) => (
+                          <li>
+                            <a href={link.href}>{link.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </li>
+            ) : (
+              <li class="nav-item">
+                <a class="nav-top" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            )
+          )
+        }
+      </ul>
+    </nav>
 
     <div class="header-right">
       <a
@@ -25,31 +69,6 @@ import { site } from '../../data/site';
         </svg>
         {site.phone}
       </a>
-
-      <button
-        class="menu-btn"
-        type="button"
-        aria-expanded="false"
-        aria-controls="site-menu"
-        aria-label="Open menu"
-      >
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
     </div>
   </div>
-
-  <nav class="menu-panel" id="site-menu" aria-label="Main menu">
-    <ul>
-      <li><a href="#medicare">Medicare</a></li>
-      <li><a href="#dental">Dental &amp; Vision</a></li>
-      <li><a href="#why-me">Why me</a></li>
-      <li><a href="#reviews">Reviews</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <p class="menu-microline container" style="max-width: var(--container);">
-      Calling connects you with Lisa, a licensed insurance agent.
-    </p>
-  </nav>
 </header>

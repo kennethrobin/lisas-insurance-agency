@@ -1,7 +1,39 @@
 ---
 // Homepage footer — required Medicare disclaimers ship verbatim, 14px minimum,
 // readable on navy. Contact details come from site.ts (single source of truth).
-import { site, legalNav } from '../../data/site';
+import { site, legalNav, mainNav, footerNav, utilityNav } from '../../data/site';
+
+/**
+ * Quick links: a short curated shortlist for the homepage footer (the full
+ * HTML-sitemap footer lives on the scaffold pages). Routes are the stable IDs
+ * in this IA — the 301 map is keyed on URLs — so we select by href and pull the
+ * label from site.ts, which keeps wording in sync as the IA evolves.
+ * mainNav is applied last so its more specific labels win (e.g. "Meet Lisa").
+ */
+const labelByHref = new Map<string, string>();
+for (const group of footerNav) {
+  for (const link of group.links) labelByHref.set(link.href, link.label);
+}
+for (const item of mainNav) {
+  if (item.groups) {
+    for (const group of item.groups) {
+      for (const link of group.links) labelByHref.set(link.href, link.label);
+    }
+  } else {
+    labelByHref.set(item.href, item.label);
+  }
+}
+
+const quickLinks = [
+  '/medicare',
+  '/dental-insurance',
+  '/vision-insurance',
+  '/about',
+  '/reviews',
+  '/contact',
+]
+  .filter((href) => labelByHref.has(href))
+  .map((href) => ({ href, label: labelByHref.get(href)! }));
 ---
 
 <footer class="site-footer">
@@ -42,21 +74,21 @@ import { site, legalNav } from '../../data/site';
       <nav class="footer-col" aria-label="Quick links">
         <h3>Quick links</h3>
         <ul>
-          <li><a href="#medicare">Medicare</a></li>
-          <li><a href="#dental">Dental &amp; Vision</a></li>
-          <li><a href="#why-me">Why me</a></li>
-          <li><a href="#reviews">Reviews</a></li>
-          <li><a href="#contact">Contact</a></li>
+          {quickLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
         </ul>
       </nav>
 
-      <div class="footer-col">
+      <nav class="footer-col" aria-label="Existing clients">
         <h3>Already my client?</h3>
         <ul>
-          <!-- PLACEHOLDER LINK: /policyholders page not built yet -->
-          <li><a href="/policyholders">Policyholder resources</a></li>
+          {/* Canonical routes; their pages are still IA placeholders. */}
+          {utilityNav.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
         </ul>
-      </div>
+      </nav>
     </div>
 
     <p class="footer-review-row">
