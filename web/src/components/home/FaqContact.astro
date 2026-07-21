@@ -1,6 +1,6 @@
 ---
-// FAQ (native <details>, mirrored by FAQPage schema in Layout) + navy CTA band
-// with the contact form. Form posts nowhere yet — WIRE LATER.
+// FAQ (native <details>, mirrored by FAQPage schema in Layout) + the closing CTA
+// band, which repeats the hero's warm field. Form posts nowhere yet — WIRE LATER.
 const faqs = [
   {
     q: 'Does it cost extra to use an agent?',
@@ -25,6 +25,8 @@ import { site } from '../../data/site';
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
   <div class="container">
+    <p class="eyebrow">Questions</p>
+
     <div class="section-intro">
       <h2 id="faq-heading">Questions I hear every week.</h2>
     </div>
@@ -40,12 +42,14 @@ import { site } from '../../data/site';
   </div>
 </section>
 
-<section class="section section--navy cta-band" id="contact" aria-labelledby="contact-heading">
+<section class="section cta-band" id="contact" aria-labelledby="contact-heading">
   <div class="container">
+    <p class="eyebrow">Get in touch</p>
+
     <div class="cta-grid">
       <div class="cta-copy">
         <h2 id="contact-heading">Let’s talk. No pressure, no cost — just answers.</h2>
-        <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
       </div>
 
@@ -70,7 +74,7 @@ import { site } from '../../data/site';
               <option value="other">Something else</option>
             </select>
           </div>
-          <button class="btn btn--gold" type="submit">Send</button>
+          <button class="btn btn--accent" type="submit">Send</button>
         </form>
 
         <div class="form-success" tabindex="-1" role="status">
