@@ -68,7 +68,9 @@
   --radius: 16px;
   --radius-sm: 12px;
   --header-h: 72px; /* pre-JS fallback only — JS measures the real height into --header-actual */
-  --container: 1120px;
+  --container: 1200px; /* matches editorial — wide enough that the longest hero
+                          review keeps to one line, so the fixed-size chip never
+                          stretches the quick-start bar's padding uneven */
   --shadow-card: 0 2px 6px rgba(32, 52, 79, 0.06), 0 12px 32px rgba(32, 52, 79, 0.07);
 }
 
