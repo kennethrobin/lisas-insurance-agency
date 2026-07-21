@@ -1,11 +1,14 @@
 ---
 // Medicare made simple: Supplement vs Advantage, no prices, no superlatives.
+// The two explainers read as tall tinted tiles (.cards--tiles).
 import { site } from '../../data/site';
 
 ---
 
 <section class="section" id="medicare" aria-labelledby="medicare-heading">
   <div class="container">
+    <p class="eyebrow">Medicare</p>
+
     <div class="section-intro">
       <h2 id="medicare-heading">
         Confused by Medicare? That’s normal — and it’s exactly what I’m here for.
@@ -16,7 +19,7 @@ import { site } from '../../data/site';
       </p>
     </div>
 
-    <div class="cards cards--2">
+    <div class="cards cards--2 cards--tiles">
       <article class="card">
         <h3>Medicare Supplement (Medigap)</h3>
         <p>
@@ -41,7 +44,7 @@ import { site } from '../../data/site';
         prescriptions, and your budget. That’s the conversation I have with every
         client, free of charge.
       </p>
-      <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
     </div>
 
