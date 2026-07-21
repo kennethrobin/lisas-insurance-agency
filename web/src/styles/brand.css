@@ -2,18 +2,30 @@
    Lisa's Insurance Agency — brand design system
    "Airy panel" direction (branch: feat/homepage-style-clean)
    ---------------------------------------------------------------------------
-   A modern, minimal LAYOUT in the site's own brand colours, navy-dominant:
-   - deep navy page; every section a rounded navy-gradient panel floating on it
-   - HUGE light-weight display type with tight tracking, set in white
+   A modern, minimal LAYOUT in the site's own brand colours:
+   - light cream page; every section a rounded panel floating on it
+   - panels alternate WHITE and NAVY down the page, so the blue arrives in
+     bands: hero + trust band, alternating middle, closing CTA and footer
+   - HUGE light-weight display type with tight tracking
    - gold reserved for primary pill actions, exactly as elsewhere on the site
-   - the quick-start bar and contact card stay light — form fields read better
-     dark-on-light, and they become the two bright focal points of the page
+
+   HOW THE TWO SURFACES WORK — read this before changing a colour.
+   Colour is not written per section. A small set of --surface-* variables holds
+   "the right colour for whatever panel I am on"; :root defines the LIGHT set,
+   and one block re-points them for the dark panels. Because custom properties
+   inherit, every rule below is written once, against the variables, and each
+   instance recolours itself from its context. The quick-start bar and contact
+   card flip the same variables back to light, which is the whole reason they
+   can sit on a navy panel and still be dark-on-light inside.
+   To add a dark section: add its selector to the dark-surface block. That is all.
 
    The palette is the site's own; only the structure and typography are new.
-   The brand rules hold, in their on-navy form —
+   The brand rules hold on both surfaces —
    - gold ONLY on primary action buttons, never as decoration
-   - green ONLY on reassurance marks (checks, stars), in the --green-on-navy cut
-   - white headings, --on-navy-body copy, --on-navy-soft small print. No grey
+   - green ONLY on reassurance marks (checks, stars); --green on light panels,
+     --green-on-navy on dark ones
+   - navy headings / ink body on light; white headings / --on-navy-body on dark.
+     Labels are steel on light, --on-navy-soft on dark. No grey text anywhere
    - body text 18px / line-height 1.6
    - tap targets >= 44px, visible focus states, reduced motion respected
    ========================================================================== */
@@ -59,28 +71,38 @@
   --paper:     #FBF6EC;  /* the light form cards — the only light surfaces left */
   --hairline:  #E2D7C4;  /* borders inside those light cards */
 
-  /* --- Role aliases -----------------------------------------------------
-     Navy is the dominant surface: every panel is a navy gradient and text on
-     it is white or a light blue-grey. Only two objects stay light — the
-     quick-start bar and the contact card — because form fields read far better
-     dark-on-light; both get explicit overrides further down. --- */
-  --bg:        var(--navy-black);   /* page behind the panels */
-  --panel:     var(--navy);         /* default panel */
-  --panel-alt: var(--navy-deep);    /* alternating panel */
-  --line:      rgba(255, 255, 255, 0.16);  /* hairlines on navy */
-  --body-on-panel: var(--on-navy-body);
-  --label:     var(--on-navy-soft); /* small uppercase labels on navy */
-  --accent:       var(--gold);      /* primary pill actions — unchanged */
+  /* --- The page ---------------------------------------------------------
+     Light page, panels alternating light and navy down its length. */
+  --bg:    var(--cream);   /* behind the panels — light, so white panels float */
+  --panel: #FFFFFF;        /* the light panels */
+  --accent:       var(--gold);      /* primary pill actions */
   --accent-hover: var(--gold-hover);
   --accent-ink:   var(--gold-ink);
 
-  /* Panel gradients. Every one is navy-on-navy: the panels read as lit from one
-     corner rather than flat, and all of them sit lighter than --bg so they
-     still float on the page. */
-  --grad-panel:  linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%);
-  --grad-panel-alt: linear-gradient(165deg, var(--navy-deep) 0%, #1A2E49 100%);
+  /* --- SURFACE VARIABLES ------------------------------------------------
+     The one mechanism that lets any panel be light or dark. These are the
+     LIGHT defaults; the dark-surface block further down re-points the same
+     names, and because custom properties inherit, every rule written against
+     them recolours itself for whichever panel it happens to sit in. Nothing
+     in the layout needs to know which surface it is on. */
+  --surface-heading: var(--navy);      /* headings, links, display type */
+  --surface-body:    var(--ink);       /* body copy */
+  --surface-label:   var(--steel);     /* small uppercase labels, small print */
+  --surface-line:    var(--hairline);  /* hairlines and card borders */
+  --surface-card:    #F7F3EA;          /* cards sitting on this surface */
+  --surface-mark:    var(--green);     /* reassurance marks */
+  --surface-mark-bg: rgba(52, 112, 79, 0.10);
+  --surface-mark-line: rgba(52, 112, 79, 0.28);
+  --surface-outline: var(--navy);      /* the secondary button's edge */
+  --surface-invert:  #FFFFFF;          /* text on that button once filled */
+  --surface-hover:   rgba(32, 52, 79, 0.09);  /* subtle hover wash */
+
+  /* Navy gradients, for the panels that go dark. Lit from one corner rather
+     than flat, so a dark panel has some depth to it. */
+  --grad-panel-navy: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%);
   --grad-hero:   linear-gradient(168deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
   --grad-cta:    linear-gradient(200deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-soft) 100%);
+  --grad-footer: linear-gradient(165deg, var(--navy-deep) 0%, #1A2E49 100%);
 
   /* --- Shape --- */
   --gutter:     12px;   /* space between the panels and the window edge */
@@ -100,9 +122,53 @@
   --display-weight: 300;      /* the light cut used by h1 / h2 */
   --display-track: -0.035em;  /* tight letter-spacing for display sizes */
 
-  /* On a dark page, separation comes from real shadow rather than a tint. */
-  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.28), 0 10px 26px rgba(0, 0, 0, 0.18);
-  --shadow-float: 0 18px 44px rgba(0, 0, 0, 0.45);
+  /* Navy-tinted rather than neutral black: on the light page a black shadow
+     greys the cream down, and the navy panels carry their own weight anyway. */
+  --shadow-panel: 0 1px 2px rgba(32, 52, 79, 0.06), 0 10px 26px rgba(32, 52, 79, 0.07);
+  --shadow-float: 0 18px 44px rgba(22, 39, 61, 0.28);
+}
+
+/* ==========================================================================
+   DARK SURFACES
+   Every panel that goes navy re-points the surface variables once, here. Each
+   one also sets its own background. Nothing else in the file needs a dark
+   variant — the rules below all read the variables and follow along.
+   ========================================================================== */
+.hero,
+.trust-band,
+.section--navy,
+.cta-band,
+.video-placeholder,
+.site-header,
+.site-footer {
+  --surface-heading: #FFFFFF;
+  --surface-body:    var(--on-navy-body);
+  --surface-label:   var(--on-navy-soft);
+  --surface-line:    rgba(255, 255, 255, 0.16);
+  --surface-card:    rgba(255, 255, 255, 0.06);
+  --surface-mark:    var(--green-on-navy);
+  --surface-mark-bg: rgba(143, 208, 168, 0.14);
+  --surface-mark-line: rgba(143, 208, 168, 0.32);
+  --surface-outline: rgba(255, 255, 255, 0.55);
+  --surface-invert:  var(--navy);
+  --surface-hover:   rgba(255, 255, 255, 0.13);
+  color: var(--surface-body);
+}
+
+/* ...and the two light cards flip the same variables back, so their contents
+   are dark-on-light again wherever they land. */
+.quickstart,
+.contact-card {
+  --surface-heading: var(--navy);
+  --surface-body:    var(--ink);
+  --surface-label:   var(--steel);
+  --surface-line:    var(--hairline);
+  --surface-mark:    var(--green);
+  --surface-mark-bg: rgba(52, 112, 79, 0.10);
+  --surface-mark-line: rgba(52, 112, 79, 0.28);
+  --surface-outline: var(--navy);
+  --surface-invert:  #FFFFFF;
+  color: var(--surface-body);
 }
 
 /* ---------- Reset / base ---------- */
@@ -119,7 +185,7 @@ body {
   font-family: var(--font-body);
   font-size: 1.125rem;            /* 18px base — non-negotiable */
   line-height: 1.6;
-  color: var(--body-on-panel);
+  color: var(--surface-body);
   background: var(--bg);
   overflow-x: clip;
   /* Panels sit on the dark page with an even gutter all the way round. */
@@ -133,7 +199,7 @@ img, svg, video { max-width: 100%; display: block; }
    and only small UI text goes semibold. */
 h1, h2, h3 {
   font-family: var(--font-display);
-  color: #fff;
+  color: var(--surface-heading);
   text-wrap: balance;
 }
 
@@ -160,11 +226,11 @@ h3 {
 
 p { max-width: 68ch; }
 
-a { color: #fff; text-underline-offset: 3px; }
-a:hover { color: var(--label); }
+a { color: var(--surface-heading); text-underline-offset: 3px; }
+a:hover { color: var(--surface-label); }
 
 :focus-visible {
-  outline: 3px solid #fff;
+  outline: 3px solid var(--surface-heading);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -189,21 +255,22 @@ main {
 }
 
 .section {
-  background: var(--grad-panel);
+  background: var(--panel);
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-panel);
   padding-block: clamp(56px, 7vw, 112px);
 }
-/* The alternating panel flips to the deeper navy — the rhythm still reads, but
-   the whole page stays in one blue family. */
-.section--mist { background: var(--grad-panel-alt); }
+/* Every other panel goes navy. The page reads light overall, with the blue
+   arriving in bands: hero + trust band, then alternating down the page, then
+   the closing CTA and footer. */
+.section--navy { background: var(--grad-panel-navy); }
 
 /* Section head: micro-label + display heading, left aligned. */
 .section-intro { margin-bottom: clamp(36px, 4.5vw, 64px); max-width: 34ch; }
 .section-intro h2 { max-width: 20ch; }
 .lead {
   font-size: 1.15rem;
-  color: var(--body-on-panel);
+  color: var(--surface-body);
   margin-top: 1.1rem;
   max-width: 52ch;
 }
@@ -222,13 +289,13 @@ main {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--label);
+  color: var(--surface-label);
 }
 .eyebrow::before {
   content: "";
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--label);   /* never gold — gold is reserved for actions */
+  background: var(--surface-label);   /* never gold — gold is reserved for actions */
   flex: 0 0 auto;
 }
 /* Hairline running out to the right edge of the panel. */
@@ -236,7 +303,7 @@ main {
   content: "";
   flex: 1 1 auto;
   height: 1px;
-  background: var(--line);
+  background: var(--surface-line);
 }
 
 .skip-link {
@@ -301,17 +368,17 @@ main {
 /* Light outline capsule = secondary action, on the navy panels. Deliberately
    not a second solid fill — gold stays the only filled action. */
 .btn--ghost {
-  border-color: rgba(255, 255, 255, 0.55);
-  color: #fff;
+  border-color: var(--surface-outline);
+  color: var(--surface-heading);
   background: transparent;
 }
-.btn--ghost:hover { background: #fff; color: var(--navy); border-color: #fff; }
+.btn--ghost:hover { background: var(--surface-heading); color: var(--surface-invert); border-color: var(--surface-heading); }
 
 /* "Calling connects you with Lisa…" — rides along with every phone display */
 .microline {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--label);
+  color: var(--surface-label);
   margin-top: 0.7rem;
   max-width: 44ch;
 }
@@ -355,7 +422,7 @@ main {
   font-weight: 600;
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   letter-spacing: 0.02em;
-  color: #fff;
+  color: var(--surface-heading);
   text-decoration: none;
   line-height: 1.25;
   padding-block: 0.72rem;   /* 44px tap target without changing header height */
@@ -363,7 +430,7 @@ main {
      next to the phone pill — see the narrow-screen block further down. */
   white-space: nowrap;
 }
-.wordmark:hover { color: #fff; }
+.wordmark:hover { color: var(--surface-heading); }
 
 .header-right { display: flex; align-items: center; gap: 0.6rem; }
 
@@ -408,7 +475,7 @@ main {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #fff;
+  color: var(--surface-heading);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
@@ -422,7 +489,7 @@ main {
   -webkit-appearance: none;
   transition: background-color 0.2s, color 0.2s;
 }
-.nav-top:hover { color: #fff; background: rgba(255, 255, 255, 0.13); }
+.nav-top:hover { color: var(--surface-heading); background: var(--surface-hover); }
 .nav-caret { width: 9px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
 [data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
 
@@ -445,8 +512,8 @@ main {
   min-width: 268px;
   max-width: min(92vw, 360px);
   padding: 0.6rem 0.45rem;
-  background: var(--panel);
-  border: 1px solid var(--line);
+  background: var(--navy);
+  border: 1px solid var(--surface-line);
   border-radius: var(--radius);
   box-shadow: var(--shadow-float);
 }
@@ -456,7 +523,7 @@ main {
 .nav-dd-group + .nav-dd-group {
   margin-top: 0.4rem;
   padding-top: 0.4rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--surface-line);
 }
 .nav-dd-heading {
   padding: 0.3rem 0.8rem;
@@ -464,20 +531,20 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--label);
+  color: var(--surface-label);
 }
 .nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
 .nav-dropdown a {
   display: block;
   padding: 0.75rem 0.85rem;   /* 44px row height */
   border-radius: 10px;
-  color: #fff;
+  color: var(--surface-heading);
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.3;
   text-decoration: none;
 }
-.nav-dropdown a:hover { background: rgba(255, 255, 255, 0.10); }
+.nav-dropdown a:hover { background: var(--surface-hover); }
 
 /* Narrow screens: the nav drops to its own full-width row under the wordmark
    and phone rather than hiding behind a toggle. */
@@ -513,7 +580,7 @@ main {
     radial-gradient(80% 60% at 78% 8%, rgba(122, 158, 190, 0.30), transparent 62%),
     radial-gradient(70% 55% at 8% 92%, rgba(255, 255, 255, 0.07), transparent 64%),
     var(--grad-hero);
-  color: var(--body-on-panel);
+  color: var(--surface-body);
 
   display: flex;
   flex-direction: column;
@@ -587,7 +654,7 @@ main {
   font-weight: 400;
   line-height: 1.18;
   letter-spacing: -0.015em;
-  color: #fff;
+  color: var(--surface-heading);
 }
 
 /* Everything below the headline sits on the hero's baseline. */
@@ -603,7 +670,7 @@ main {
 .hero-sub {
   font-size: 1.05rem;
   max-width: 42ch;
-  color: var(--body-on-panel);
+  color: var(--surface-body);
   text-wrap: pretty;
 }
 
@@ -621,16 +688,19 @@ main {
   max-width: 100%;
   padding: 0.7rem 1.4rem;   /* capsule side padding clears the curve */
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  /* A DARK frosted pill, not a light one: a white wash lifts the navy behind it
+     far enough that the green stars fall to 3.8:1. Tinting with the deep navy
+     keeps the chip legible and the reassurance mark at ~7:1. */
+  background: rgba(22, 39, 61, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   font-size: 0.92rem;
   line-height: 1.45;
-  color: #fff;
+  color: var(--surface-heading);
   white-space: nowrap;
 }
 .review-chip blockquote.is-active { display: flex; }
-.review-chip .stars { letter-spacing: 0.08em; color: var(--green-on-navy); }
-.review-chip .who { color: var(--label); }
+.review-chip .stars { letter-spacing: 0.08em; color: var(--surface-mark); }
+.review-chip .who { color: var(--surface-label); }
 
 /* Below this width the quote can't hold one line: wrap it and square off the
    radius so the text keeps an even inset on every line. */
@@ -665,7 +735,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--steel);
+  color: var(--surface-label);
   margin-bottom: 0.45rem;
 }
 .quickstart select {
@@ -673,7 +743,7 @@ main {
   min-height: 54px;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  color: var(--ink);
+  color: var(--surface-body);
   background: #fff;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
@@ -684,7 +754,7 @@ main {
 /* ---------- Trust band ----------
    A thin strip of small uppercase credentials under the hero. */
 .trust-band {
-  background: var(--grad-panel);
+  background: var(--grad-panel-navy);
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-panel);
   padding-block: clamp(20px, 2.5vw, 30px);
@@ -705,11 +775,11 @@ main {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--surface-heading);
 }
 /* Reassurance marks — green, the one place green belongs. The lighter tint is
    the readable version of it on navy. */
-.trust-band .mark { color: var(--green-on-navy); flex: 0 0 auto; }
+.trust-band .mark { color: var(--surface-mark); flex: 0 0 auto; }
 
 /* ---------- Cards ---------- */
 .cards {
@@ -717,24 +787,23 @@ main {
   grid-template-columns: 1fr;
   gap: clamp(0.75rem, 1.2vw, 1rem);
 }
-/* Cards lift off their panel with a translucent white wash rather than a second
-   colour, so they stay in the blue family whichever panel they sit on. */
+/* Cards read as a lift off whichever panel they sit on: a warm off-white on the
+   light panels, a translucent white wash on the navy ones. */
 .card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-line);
   border-radius: var(--radius);
   padding: clamp(1.5rem, 2.4vw, 2.1rem);
 }
-.section--mist .card { background: rgba(255, 255, 255, 0.08); }
 .card h3 { margin-bottom: 0.7rem; }
-.card p { color: var(--body-on-panel); font-size: 1.02rem; }
+.card p { color: var(--surface-body); font-size: 1.02rem; }
 .card .card-kicker {
   display: block;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--label);
+  color: var(--surface-label);
   margin-bottom: 0.6rem;
 }
 /* The 44px minimum tap target is padding, not box height: an underline drawn on
@@ -748,13 +817,13 @@ main {
   margin-top: 0.9rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--surface-heading);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 5px;
   align-self: flex-start;
 }
-.card-link:hover { color: var(--label); text-decoration-color: var(--label); }
+.card-link:hover { color: var(--surface-label); text-decoration-color: var(--surface-label); }
 
 /* The Medicare explainer + coverage cards read as tall tinted tiles. */
 .cards--tiles .card {
@@ -764,11 +833,20 @@ main {
   padding: clamp(1.6rem, 2.6vw, 2.4rem);
   border: 0;
 }
-/* Each tile is lit slightly differently — a lighter navy, a steel-blue wash, a
-   plain white wash — so the row has depth without leaving the blue family. */
-.cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--navy-soft), rgba(255, 255, 255, 0.04)); }
-.cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, rgba(122, 158, 190, 0.30), rgba(255, 255, 255, 0.04)); }
-.cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)); }
+/* Tiles carry a little more colour than a plain card. On the light panels they
+   are brand tints over white — navy, green, then a paler blue; on a navy panel
+   they become white washes at three strengths. No gold: a tinted surface would
+   be decoration, and gold belongs to the actions. */
+.cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, #DDE2E8, #F2F4F6); }
+.cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, #E2EDE6, #F3F7F4); }
+.cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, #E8EDF2, #F5F7F9); }
+
+.section--navy .cards--tiles .card:nth-child(1),
+.cta-band .cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--navy-soft), rgba(255, 255, 255, 0.04)); }
+.section--navy .cards--tiles .card:nth-child(2),
+.cta-band .cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, rgba(122, 158, 190, 0.30), rgba(255, 255, 255, 0.04)); }
+.section--navy .cards--tiles .card:nth-child(3),
+.cta-band .cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)); }
 .cards--tiles .card h3 {
   font-size: clamp(1.35rem, 1.9vw, 1.8rem);
   font-weight: 400;
@@ -777,7 +855,7 @@ main {
 }
 /* Copy sits under its title; only the action is pushed to the tile's floor.
    (Pushing the paragraph down instead left a ~100px hole under the title.) */
-.cards--tiles .card p { color: var(--body-on-panel); }
+.cards--tiles .card p { color: var(--surface-body); }
 .cards--tiles .card .card-link { margin-top: auto; padding-top: 0.9rem; }
 
 /* A tile with no bottom-anchored link has nothing holding its floor, so the
@@ -790,9 +868,9 @@ main {
 .check-icon {
   width: 42px; height: 42px;
   border-radius: 12px;
-  border: 1px solid rgba(143, 208, 168, 0.32);
-  background: rgba(143, 208, 168, 0.14);
-  color: var(--green-on-navy);
+  border: 1px solid var(--surface-mark-line);
+  background: var(--surface-mark-bg);
+  color: var(--surface-mark);
   display: grid;
   place-items: center;
   margin-bottom: 1.4rem;
@@ -808,9 +886,9 @@ main {
   justify-items: start;
   max-width: 62ch;
 }
-.medicare-cta p { color: var(--body-on-panel); }
+.medicare-cta p { color: var(--surface-body); }
 .medicare-cta .btn { margin-top: 1.6rem; }
-.medicare-cta .microline { color: var(--label); }
+.medicare-cta .microline { color: var(--surface-label); }
 
 .video-placeholder {
   margin-top: clamp(36px, 4.5vw, 64px);
@@ -839,7 +917,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--surface-heading);
 }
 
 /* ---------- How it works ----------
@@ -855,7 +933,7 @@ main {
 }
 .steps li {
   counter-increment: step;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--surface-line);
   padding: clamp(1.4rem, 2.4vw, 2rem) 0;
 }
 .steps li::before {
@@ -866,19 +944,19 @@ main {
   font-weight: var(--display-weight);
   letter-spacing: -0.04em;
   line-height: 1;
-  color: #fff;
+  color: var(--surface-heading);
   opacity: 0.28;
   margin-bottom: clamp(1.2rem, 2.5vw, 2.4rem);
 }
 .steps h3 { margin-bottom: 0.6rem; }
-.steps p { color: var(--body-on-panel); font-size: 1.02rem; }
+.steps p { color: var(--surface-body); font-size: 1.02rem; }
 
 /* ---------- Reviews ---------- */
 .review-card { display: flex; flex-direction: column; }
 .review-card .stars {
   letter-spacing: 0.14em;
   font-size: 0.95rem;
-  color: var(--green-on-navy);   /* reassurance mark */
+  color: var(--surface-mark);   /* reassurance mark */
   margin-bottom: 1.2rem;
 }
 .review-card blockquote {
@@ -894,7 +972,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--label);
+  color: var(--surface-label);
 }
 .reviews-actions {
   margin-top: 2.2rem;
@@ -902,11 +980,11 @@ main {
   flex-wrap: wrap;
   gap: 0.75rem;
 }
-.reviews-footnote { margin-top: 1.4rem; font-size: 0.9rem; color: var(--label); }
+.reviews-footnote { margin-top: 1.4rem; font-size: 0.9rem; color: var(--surface-label); }
 
 /* ---------- FAQ ---------- */
-.faq-list { display: grid; max-width: 900px; border-top: 1px solid var(--line); }
-.faq-list details { border-bottom: 1px solid var(--line); }
+.faq-list { display: grid; max-width: 900px; border-top: 1px solid var(--surface-line); }
+.faq-list details { border-bottom: 1px solid var(--surface-line); }
 .faq-list summary {
   list-style: none;
   cursor: pointer;
@@ -915,7 +993,7 @@ main {
   font-size: clamp(1.1rem, 1.6vw, 1.4rem);
   font-weight: 400;
   letter-spacing: -0.015em;
-  color: #fff;
+  color: var(--surface-heading);
   min-height: 44px;
 }
 .faq-list summary::-webkit-details-marker { display: none; }
@@ -927,11 +1005,11 @@ main {
   transform: translateY(-50%);
   font-size: 1.6rem;
   font-weight: 300;
-  color: var(--label);
+  color: var(--surface-label);
   line-height: 1;
 }
 .faq-list details[open] summary::after { content: "–"; }
-.faq-list details p { padding: 0 3.2rem 1.6rem 0; color: var(--body-on-panel); }
+.faq-list details p { padding: 0 3.2rem 1.6rem 0; color: var(--surface-body); }
 
 /* ---------- CTA band + contact form ----------
    The closing panel mirrors the hero's warm field, so the page opens and shuts
@@ -973,7 +1051,7 @@ main {
   border-radius: var(--radius);
   padding: clamp(1.5rem, 2.6vw, 2.25rem);
   box-shadow: var(--shadow-float);
-  color: var(--ink);
+  color: var(--surface-body);
 }
 .contact-card h3 {
   margin-bottom: 1.4rem;
@@ -981,7 +1059,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--steel);
+  color: var(--surface-label);
 }
 .contact-form { display: grid; gap: 1rem; }
 .contact-form label {
@@ -990,7 +1068,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--steel);
+  color: var(--surface-label);
   margin-bottom: 0.4rem;
 }
 .contact-form input,
@@ -999,7 +1077,7 @@ main {
   min-height: 54px;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  color: var(--ink);
+  color: var(--surface-body);
   background: #fff;
   border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
@@ -1015,7 +1093,7 @@ main {
 }
 .form-success.is-visible { display: flex; }
 .form-success .check-icon { margin-bottom: 0; flex: 0 0 auto; }
-.form-success p { color: var(--ink); }
+.form-success p { color: var(--surface-body); }
 
 /* ---------- Footer ----------
    Light like everything else, closing on the oversized wordmark clipped by the
@@ -1023,17 +1101,17 @@ main {
 .site-footer {
   position: relative;
   overflow: hidden;
-  background: var(--grad-panel-alt);
+  background: var(--grad-footer);
   border-radius: var(--radius-panel);
   margin-top: var(--panel-gap);
   padding-block: clamp(56px, 6vw, 88px) 0;
   font-size: 1rem;
-  color: var(--body-on-panel);
+  color: var(--surface-body);
   /* Sizing reference for the oversized closing wordmark below. */
   container-type: inline-size;
 }
-.site-footer a { color: #fff; }
-.site-footer a:hover { color: var(--label); }
+.site-footer a { color: var(--surface-heading); }
+.site-footer a:hover { color: var(--surface-label); }
 
 .footer-grid {
   display: grid;
@@ -1041,12 +1119,12 @@ main {
   gap: 2.5rem;
 }
 .footer-brand .wordmark {
-  color: #fff;
+  color: var(--surface-heading);
   font-size: 1.05rem;
   max-width: none;
   padding: 0;
 }
-.footer-brand .mission { margin-top: 1rem; max-width: 32ch; color: var(--body-on-panel); }
+.footer-brand .mission { margin-top: 1rem; max-width: 32ch; color: var(--surface-body); }
 /* Footer links carry their tap target in padding, not in row gaps: at 26–37px
    tall they were under the 44px minimum this audience needs. */
 .footer-contact { margin-top: 1.1rem; display: grid; gap: 0; justify-items: start; }
@@ -1056,7 +1134,7 @@ main {
   padding-block: 0.6rem;
 }
 .footer-contact a:hover { text-decoration: underline; }
-.footer-contact span { color: var(--label); padding-block: 0.6rem; }
+.footer-contact span { color: var(--surface-label); padding-block: 0.6rem; }
 .footer-contact .microline { margin-top: 0.5rem; }
 
 .footer-col h3 {
@@ -1065,7 +1143,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--label);
+  color: var(--surface-label);
   margin-bottom: 1.2rem;
 }
 .footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -1073,7 +1151,7 @@ main {
   display: inline-block;
   padding-block: 0.6rem;   /* carries the 44px tap target */
   text-decoration: none;
-  color: #fff;
+  color: var(--surface-heading);
 }
 .footer-col a:hover { text-decoration: underline; }
 
@@ -1083,9 +1161,9 @@ main {
   place-items: center;
   width: 44px; height: 44px;
   border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 1px solid var(--surface-line);
 }
-.footer-social a:hover { background: rgba(255, 255, 255, 0.10); }
+.footer-social a:hover { background: var(--surface-hover); }
 
 .footer-review-row { margin-top: 2.5rem; font-size: 0.95rem; }
 /* Inline links inside a sentence: block padding doesn't move the line but does
@@ -1095,13 +1173,13 @@ main {
 .footer-disclaimers {
   margin-top: 2.5rem;
   padding-top: 2.5rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--surface-line);
   display: grid;
   gap: 0.9rem;
 }
 .footer-disclaimers p {
   font-size: 0.875rem; /* 14px — small but readable */
-  color: var(--label);
+  color: var(--surface-label);
   max-width: 90ch;
 }
 
@@ -1112,9 +1190,9 @@ main {
   gap: 0 1.5rem;
   align-items: center;
   font-size: 0.875rem;
-  color: var(--label);
+  color: var(--surface-label);
 }
-.footer-legal a { color: var(--label); padding-block: 0.7rem; }
+.footer-legal a { color: var(--surface-label); padding-block: 0.7rem; }
 
 /* The signature closing mark: the agency name at display scale, clipped by the
    panel's bottom edge. Decorative only — aria-hidden in the markup. */
@@ -1133,34 +1211,10 @@ main {
   letter-spacing: -0.05em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: #fff;
+  color: var(--surface-heading);
   opacity: 0.09;
   user-select: none;
   margin-bottom: -0.16em;   /* clips the baseline against the panel edge */
-}
-
-/* ==========================================================================
-   LIGHT CARDS ON THE DARK PAGE
-   The quick-start bar and the contact card are the only light surfaces left.
-   Everything global above assumes navy underneath, so anything inside them has
-   to be pulled back to dark-on-light here — text, headings, the focus ring and
-   the green reassurance mark, which needs its darker cut on a light background.
-   ========================================================================== */
-.quickstart,
-.contact-card { color: var(--ink); }
-
-.quickstart :focus-visible,
-.contact-card :focus-visible { outline-color: var(--navy); }
-
-.contact-card h3,
-.quickstart label,
-.contact-form label { color: var(--steel); }
-
-.form-success p { color: var(--ink); }
-.form-success .check-icon {
-  border-color: rgba(52, 112, 79, 0.28);
-  background: rgba(52, 112, 79, 0.10);
-  color: var(--green);
 }
 
 /* ==========================================================================
