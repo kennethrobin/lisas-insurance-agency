@@ -875,12 +875,23 @@ main {
 /* Copy sits under its title; only the action is pushed to the tile's floor.
    (Pushing the paragraph down instead left a ~100px hole under the title.) */
 .cards--tiles .card p { color: var(--surface-body); }
+/* Only the tiles that end in a button need the guaranteed gap — adding it to
+   every tile pushed the button-less ones off centre by exactly this much. */
+.cards--tiles .card:has(.btn) p { margin-bottom: 1.4rem; }
 .cards--tiles .card .card-link { margin-top: auto; padding-top: 0.9rem; }
+/* Button CTAs sit on the same floor line. `align-self` keeps each at its own
+   width — a flex column would otherwise stretch them across the whole tile.
+   The paragraph's margin-bottom guarantees a gap even when the tile is full and
+   `margin-top: auto` has no slack left to give. */
+.cards--tiles .card .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
 
-/* A tile with no bottom-anchored link has nothing holding its floor, so the
+/* A tile with no bottom-anchored action has nothing holding its floor, so the
    min-height's slack would all pile up under the last line. Centring shares it
    evenly top and bottom. Browsers without :has() just top-align, as before. */
-.cards--tiles .card:not(:has(.card-link)) { justify-content: center; }
+.cards--tiles .card:not(:has(.card-link, .btn)) { justify-content: center; }
 
 /* Small icon tile on the "why me" cards. Green, per the brand rule: check marks
    are reassurance marks, and reassurance is the only thing green is used for. */
