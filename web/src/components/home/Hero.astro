@@ -1,9 +1,8 @@
 ---
-// Hero: full-bleed photo + deep-navy overlay. The copy block floats in the
-// hero's slack space (equal breathing room above and below), and the
-// quick-start bar sits at the bottom stretching the full container width.
-// Everything stays above the fold — the --hero-gap mechanism still compresses
-// the stack on short viewports.
+// Hero: navy gradient. The headline + subhead sit midway between the header
+// and the hero's bottom row; that bottom row divides the hero's base in half —
+// quick-start bar on the left, rotating review chip on the right (stacked on
+// smaller screens). Everything stays above the fold at every viewport.
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -15,6 +14,19 @@
         I’m Lisa. I help people across the country with Medicare, dental, and vision
         coverage — free — and I stay with you long after you enroll.
       </p>
+    </div>
+
+    <div class="hero-bottom">
+      <!-- Quick-start bar: the visible title IS the select's label. No data collected. -->
+      <form class="quickstart">
+        <label class="quickstart-title" for="quickstart-topic">Let’s find your starting point</label>
+        <select id="quickstart-topic" name="topic">
+          <option value="medicare">Medicare</option>
+          <option value="dental">Dental &amp; Vision</option>
+          <option value="other">Something else</option>
+        </select>
+        <button class="btn btn--gold" type="submit">Get free help</button>
+      </form>
 
       <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
       <div class="review-chip">
@@ -38,17 +50,5 @@
         </blockquote>
       </div>
     </div>
-
-    <!-- Quick-start bar: the visible title IS the select's label (one clear
-         line), then the dropdown and the button. No data collected. -->
-    <form class="quickstart">
-      <label class="quickstart-title" for="quickstart-topic">Let’s find your starting point</label>
-      <select id="quickstart-topic" name="topic">
-        <option value="medicare">Medicare</option>
-        <option value="dental">Dental &amp; Vision</option>
-        <option value="other">Something else</option>
-      </select>
-      <button class="btn btn--gold" type="submit">Get free help</button>
-    </form>
   </div>
 </section>
