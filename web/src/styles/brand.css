@@ -115,6 +115,9 @@
   --container: 1280px;
   --container-pad: clamp(20px, 3.5vw, 56px); /* inner padding of every container */
   --header-h:  72px;    /* pre-JS fallback; JS measures --header-actual */
+  /* Equal top and bottom, so the row sits midway in the tab. Raise this to give
+     the tab more air; the hero's offset follows automatically. */
+  --header-pad: calc(var(--gutter) + 0.6rem);
 
   /* --- Type --- */
   --font-display: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -397,7 +400,9 @@ main {
   left: var(--gutter);
   right: var(--gutter);
   z-index: 60;
-  padding-block: calc(var(--gutter) + 0.5rem) 0.7rem;
+  /* Symmetric: the tab used to carry 20px above the row and 11px below, which
+     sat the wordmark and pills low in the shape. */
+  padding-block: var(--header-pad);
   border-radius: 0 0 var(--radius-panel) var(--radius-panel);
   /* Solid deep navy at rest, not transparent: the tab is darker than the top of
      the hero gradient behind it, so the shape reads at first paint. */
@@ -676,14 +681,30 @@ main {
    A pill only reads as a pill on ONE line: at two-plus lines the 999px radius
    becomes a huge curve that eats the first and last lines. So the chip is a
    single nowrap line here, and drops to a rounded rectangle at the width where
-   it can no longer fit (see the narrow-screen rule below). */
-.review-chip { position: relative; margin-top: 1.1rem; }
+   it can no longer fit (see the narrow-screen rule below).
+
+   All three quotes are STACKED in one grid cell rather than swapped in and out
+   of the flow. They are different lengths, and the hero's floor is a `1fr auto`
+   grid: a chip that changes width changes what the first column asks for, which
+   resized the quick-start card next to it every six seconds. Stacked, the cell
+   is always as wide and tall as the longest quote, so nothing moves. */
+.review-chip {
+  position: relative;
+  display: grid;
+  margin-top: 1.1rem;
+}
 .review-chip blockquote {
-  display: none;
+  grid-area: 1 / 1;          /* every quote occupies the same cell */
+  display: flex;
   align-items: baseline;
   gap: 0.55rem;
   width: max-content;
   max-width: 100%;
+  /* Hidden rather than removed, so the cell keeps the widest quote's size.
+     `visibility` (not just opacity) also keeps them out of the a11y tree. */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.4s ease;
   padding: 0.7rem 1.4rem;   /* capsule side padding clears the curve */
   border-radius: 999px;
   /* A DARK frosted pill, not a light one: a white wash lifts the navy behind it
@@ -696,7 +717,7 @@ main {
   color: var(--surface-heading);
   white-space: nowrap;
 }
-.review-chip blockquote.is-active { display: flex; }
+.review-chip blockquote.is-active { visibility: visible; opacity: 1; }
 .review-chip .stars { letter-spacing: 0.08em; color: var(--surface-mark); }
 .review-chip .who { color: var(--surface-label); }
 
