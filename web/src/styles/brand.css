@@ -2,18 +2,18 @@
    Lisa's Insurance Agency — brand design system
    "Airy panel" direction (branch: feat/homepage-style-mindora)
    ---------------------------------------------------------------------------
-   A modern, minimal, wellness-adjacent look:
-   - warm off-white page, each section a rounded panel floating on it
-   - HUGE light-weight display type with tight tracking
-   - one accent colour (lime) reserved for primary pill actions
-   - near-black ink for everything else, hairlines instead of boxes
+   A modern, minimal, wellness-adjacent LAYOUT in the site's OWN brand colours:
+   - warm cream page, each section a rounded panel floating on it
+   - HUGE light-weight display type with tight tracking, set in navy
+   - gold reserved for primary pill actions, exactly as elsewhere on the site
 
-   NOTE ON THE BRAND RULE: the previous system used navy + gold-on-primary.
-   This branch replaces that palette wholesale — lime is now the single action
-   colour. Everything is token-driven, so re-hueing is a one-block edit.
-
-   Senior-UX rules still baked in:
-   - body text 18px / line-height 1.6, always --ink on light backgrounds
+   What this direction changes is structure and typography, not the palette:
+   navy/gold/green/ink and the warm cream surfaces all come straight from the
+   other branches, and the brand rules hold —
+   - gold ONLY on primary action buttons, never as decoration
+   - green ONLY on reassurance marks (check marks, review stars), never a button
+   - ink for ALL body text; small uppercase labels use steel. No grey text
+   - body text 18px / line-height 1.6
    - tap targets >= 44px, visible focus states, reduced motion respected
    ========================================================================== */
 
@@ -32,23 +32,48 @@
    TWEAKABLE PARAMS — the whole look is driven from this block
    ========================================================================== */
 :root {
-  /* --- Colour --- */
-  --bg:        #E9E6DF;  /* page behind the panels — warm light grey */
-  --panel:     #FCFBF8;  /* default section panel */
-  --panel-alt: #F5F3EC;  /* alternating (was .section--mist) panel */
-  --ink:       #14171A;  /* headings + body. Near-black, never pure black */
-  --ink-soft:  #5A5F66;  /* captions, meta, disclaimers (5.6:1 on panels) */
-  --line:      #E0DCD2;  /* hairlines — the only border colour */
+  /* --- Brand colour (the site's real palette, shared with the other branches) --
+     Semantic values are the canonical ones from CLAUDE.md / main; the warm
+     neutral surfaces are the editorial branch's cream family, which is what
+     this airy layout needs underneath it. Nothing here is invented. */
+  --navy:      #20344F;  /* headings, display type, dark fills */
+  --navy-deep: #16273D;
+  --navy-soft: #2C4666;
+  /* The editorial branch's deeper steel, not main's #4A6D8C: at label size
+     (11.5px) the lighter one only reaches 4.3:1 on the mist panels and 3.6:1 on
+     the CTA band. This one clears 4.5:1 on every surface here. */
+  --steel:     #3F5C7A;  /* small uppercase labels, link hovers */
+  --gold:      #C68A3C;  /* PRIMARY ACTION ONLY — never decoration */
+  --gold-hover:#B0762C;
+  --gold-ink:  #3A2708;  /* text on gold */
+  --gold-soft: #E3B978;
+  --green:     #34704F;  /* reassurance marks only — checks, stars. Never a button */
+  --ink:       #22303D;  /* ALL body text. No grey body text anywhere */
 
-  --accent:       #C8F04B;  /* LIME — primary pill actions only */
-  --accent-hover: #B6E32F;
-  --accent-ink:   #16200A;  /* text on lime (contrast ~14:1) */
+  --cream:     #F3EADA;  /* warm page background, behind the panels */
+  --paper:     #FBF6EC;  /* raised surface — the default panel */
+  --mist:      #EDE3D1;  /* alternating panel background */
+  --hairline:  #E2D7C4;  /* the only neutral — warm borders */
 
-  /* Warm field tones used for the hero + CTA gradients and the tile cards */
-  --sand:  #E7D9BC;
-  --wheat: #DFC9A0;
-  --sage:  #D6DDCB;
-  --clay:  #E4D2C6;
+  /* --- Role aliases: the layout below references these, so re-hueing the
+     whole site is an edit to the block above and nothing else. --- */
+  --bg:        var(--cream);
+  --panel:     var(--paper);
+  --panel-alt: var(--mist);
+  --line:      var(--hairline);
+  --accent:       var(--gold);       /* primary pill actions */
+  --accent-hover: var(--gold-hover);
+  --accent-ink:   var(--gold-ink);
+
+  /* Warm fields for the hero, CTA band and tinted tiles. Each is a brand colour
+     laid over --paper at low strength, pre-mixed to a hex so there is no
+     dependency on color-mix() support:
+       tint-navy  = navy 12%   tint-gold = gold 22%
+       tint-green = green 14%  tint-gold-deep = gold 35%  */
+  --tint-navy:      #E1DFD9;
+  --tint-gold:      #EFDEC5;
+  --tint-gold-deep: #E9D0AE;
+  --tint-green:     #DFE3D6;
 
   /* --- Shape --- */
   --gutter:     12px;   /* space between the panels and the window edge */
@@ -68,8 +93,10 @@
   --display-weight: 300;      /* the light cut used by h1 / h2 */
   --display-track: -0.035em;  /* tight letter-spacing for display sizes */
 
-  --shadow-panel: 0 1px 2px rgba(20, 23, 26, 0.03);
-  --shadow-float: 0 18px 44px rgba(20, 23, 26, 0.10);
+  /* Shadows are tinted with the navy rather than neutral black, so panel edges
+     sit in the palette instead of greying the cream down. */
+  --shadow-panel: 0 1px 2px rgba(32, 52, 79, 0.05), 0 6px 18px rgba(32, 52, 79, 0.04);
+  --shadow-float: 0 18px 44px rgba(32, 52, 79, 0.13);
 }
 
 /* ---------- Reset / base ---------- */
@@ -100,7 +127,7 @@ img, svg, video { max-width: 100%; display: block; }
    and only small UI text goes semibold. */
 h1, h2, h3 {
   font-family: var(--font-display);
-  color: var(--ink);
+  color: var(--navy);
   text-wrap: balance;
 }
 
@@ -127,11 +154,11 @@ h3 {
 
 p { max-width: 68ch; }
 
-a { color: var(--ink); text-underline-offset: 3px; }
-a:hover { color: var(--ink-soft); }
+a { color: var(--navy); text-underline-offset: 3px; }
+a:hover { color: var(--steel); }
 
 :focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 3px solid var(--navy);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -168,7 +195,7 @@ main {
 .section-intro h2 { max-width: 20ch; }
 .lead {
   font-size: 1.15rem;
-  color: var(--ink-soft);
+  color: var(--ink);
   margin-top: 1.1rem;
   max-width: 52ch;
 }
@@ -187,13 +214,13 @@ main {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
 }
 .eyebrow::before {
   content: "";
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--navy);   /* never gold — gold is reserved for actions */
   flex: 0 0 auto;
 }
 /* Hairline running out to the right edge of the panel. */
@@ -208,8 +235,8 @@ main {
   position: absolute;
   left: 1rem; top: -100px;
   z-index: 100;
-  background: var(--ink);
-  color: var(--panel);
+  background: var(--navy);
+  color: var(--paper);
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
   font-weight: 600;
@@ -263,19 +290,19 @@ main {
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* Hairline capsule = secondary action, on any light surface. */
+/* Navy outline capsule = secondary action, on any light surface. */
 .btn--ghost {
-  border-color: var(--ink);
-  color: var(--ink);
+  border-color: var(--navy);
+  color: var(--navy);
   background: transparent;
 }
-.btn--ghost:hover { background: var(--ink); color: var(--panel); }
+.btn--ghost:hover { background: var(--navy); color: var(--paper); }
 
 /* "Calling connects you with Lisa…" — rides along with every phone display */
 .microline {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--ink-soft);
+  color: var(--ink);
   margin-top: 0.7rem;
   max-width: 44ch;
 }
@@ -317,7 +344,7 @@ main {
   font-weight: 600;
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   letter-spacing: 0.02em;
-  color: var(--ink);
+  color: var(--navy);
   text-decoration: none;
   line-height: 1.25;
   padding-block: 0.72rem;   /* 44px tap target without changing header height */
@@ -325,7 +352,7 @@ main {
      next to the phone pill — see the narrow-screen block further down. */
   white-space: nowrap;
 }
-.wordmark:hover { color: var(--ink); }
+.wordmark:hover { color: var(--navy); }
 
 .header-right { display: flex; align-items: center; gap: 0.6rem; }
 
@@ -370,7 +397,7 @@ main {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: var(--ink);
+  color: var(--navy);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
@@ -384,13 +411,13 @@ main {
   -webkit-appearance: none;
   transition: background-color 0.2s, color 0.2s;
 }
-.nav-top:hover { color: var(--ink); background: rgba(20, 23, 26, 0.07); }
+.nav-top:hover { color: var(--navy); background: rgba(32, 52, 79, 0.09); }
 .nav-caret { width: 9px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
 [data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
 
 /* Solid (scrolled) state — frosted, so it reads over any panel. */
 .site-header.is-solid {
-  background: rgba(252, 251, 248, 0.88);
+  background: rgba(251, 246, 236, 0.9);   /* --paper, translucent */
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   box-shadow: var(--shadow-float);
@@ -426,14 +453,14 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
 }
 .nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
 .nav-dropdown a {
   display: block;
   padding: 0.75rem 0.85rem;   /* 44px row height */
   border-radius: 10px;
-  color: var(--ink);
+  color: var(--navy);
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.3;
@@ -472,9 +499,9 @@ main {
   overflow: hidden;
   border-radius: var(--radius-panel);
   background:
-    radial-gradient(80% 60% at 78% 8%, rgba(255, 255, 255, 0.55), transparent 60%),
-    radial-gradient(70% 55% at 8% 92%, rgba(214, 221, 203, 0.85), transparent 62%),
-    linear-gradient(168deg, var(--sage) 0%, var(--sand) 48%, var(--wheat) 100%);
+    radial-gradient(80% 60% at 78% 8%, rgba(251, 246, 236, 0.6), transparent 60%),
+    radial-gradient(70% 55% at 8% 92%, rgba(223, 227, 214, 0.85), transparent 62%),
+    linear-gradient(168deg, var(--tint-navy) 0%, var(--tint-gold) 48%, var(--tint-gold-deep) 100%);
   color: var(--ink);
 
   display: flex;
@@ -549,7 +576,7 @@ main {
   font-weight: 400;
   line-height: 1.18;
   letter-spacing: -0.015em;
-  color: var(--ink);
+  color: var(--navy);
 }
 
 /* Everything below the headline sits on the hero's baseline. */
@@ -583,15 +610,15 @@ main {
   max-width: 100%;
   padding: 0.7rem 1.4rem;   /* capsule side padding clears the curve */
   border-radius: 999px;
-  background: rgba(252, 251, 248, 0.72);
+  background: rgba(251, 246, 236, 0.78);   /* --paper, translucent */
   font-size: 0.92rem;
   line-height: 1.45;
   color: var(--ink);
   white-space: nowrap;
 }
 .review-chip blockquote.is-active { display: flex; }
-.review-chip .stars { letter-spacing: 0.08em; }
-.review-chip .who { color: var(--ink-soft); }
+.review-chip .stars { letter-spacing: 0.08em; color: var(--green); }
+.review-chip .who { color: var(--ink); }
 
 /* Below this width the quote can't hold one line: wrap it and square off the
    radius so the text keeps an even inset on every line. */
@@ -624,7 +651,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
   margin-bottom: 0.45rem;
 }
 .quickstart select {
@@ -664,9 +691,10 @@ main {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--navy);
 }
-.trust-band .mark { color: var(--ink); flex: 0 0 auto; opacity: 0.5; }
+/* Reassurance marks — green, the one place green belongs. */
+.trust-band .mark { color: var(--green); flex: 0 0 auto; }
 
 /* ---------- Cards ---------- */
 .cards {
@@ -682,14 +710,14 @@ main {
 }
 .section--mist .card { background: var(--panel); }
 .card h3 { margin-bottom: 0.7rem; }
-.card p { color: var(--ink-soft); font-size: 1.02rem; }
+.card p { color: var(--ink); font-size: 1.02rem; }
 .card .card-kicker {
   display: block;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
   margin-bottom: 0.6rem;
 }
 /* The 44px minimum tap target is padding, not box height: an underline drawn on
@@ -703,13 +731,13 @@ main {
   margin-top: 0.9rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--navy);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 5px;
   align-self: flex-start;
 }
-.card-link:hover { color: var(--ink-soft); text-decoration-color: var(--ink-soft); }
+.card-link:hover { color: var(--steel); text-decoration-color: var(--steel); }
 
 /* The Medicare explainer + coverage cards read as tall tinted tiles. */
 .cards--tiles .card {
@@ -719,9 +747,9 @@ main {
   padding: clamp(1.6rem, 2.6vw, 2.4rem);
   border: 0;
 }
-.cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--sage), #E9ECE3); }
-.cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, var(--clay), #F2E9E2); }
-.cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, var(--sand), #F4ECDD); }
+.cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--tint-navy), var(--paper)); }
+.cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, var(--tint-gold), var(--paper)); }
+.cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, var(--tint-green), var(--paper)); }
 .cards--tiles .card h3 {
   font-size: clamp(1.35rem, 1.9vw, 1.8rem);
   font-weight: 400;
@@ -738,18 +766,18 @@ main {
    evenly top and bottom. Browsers without :has() just top-align, as before. */
 .cards--tiles .card:not(:has(.card-link)) { justify-content: center; }
 
-/* Small square icon tile on the "why me" feature cards. */
+/* Small icon tile on the "why me" cards. Green, per the brand rule: check marks
+   are reassurance marks, and reassurance is the only thing green is used for. */
 .check-icon {
   width: 42px; height: 42px;
   border-radius: 12px;
-  border: 1px solid var(--line);
-  background: var(--panel-alt);
-  color: var(--ink);
+  border: 1px solid rgba(52, 112, 79, 0.22);
+  background: rgba(52, 112, 79, 0.09);
+  color: var(--green);
   display: grid;
   place-items: center;
   margin-bottom: 1.4rem;
 }
-.section--mist .check-icon { background: var(--panel); }
 
 /* ---------- Medicare section ---------- */
 /* Explicit margins rather than a grid gap: the microline is a caption bound to
@@ -761,16 +789,16 @@ main {
   justify-items: start;
   max-width: 62ch;
 }
-.medicare-cta p { color: var(--ink-soft); }
+.medicare-cta p { color: var(--ink); }
 .medicare-cta .btn { margin-top: 1.6rem; }
-.medicare-cta .microline { color: var(--ink-soft); }
+.medicare-cta .microline { color: var(--ink); }
 
 .video-placeholder {
   margin-top: clamp(36px, 4.5vw, 64px);
   border-radius: var(--radius);
   background:
-    radial-gradient(60% 80% at 70% 20%, rgba(255, 255, 255, 0.6), transparent 65%),
-    linear-gradient(150deg, var(--sand), var(--sage));
+    radial-gradient(60% 80% at 70% 20%, rgba(251, 246, 236, 0.65), transparent 65%),
+    linear-gradient(150deg, var(--tint-gold), var(--tint-navy));
   aspect-ratio: 16 / 7;
   display: grid;
   place-content: center;
@@ -783,7 +811,7 @@ main {
   width: 64px; height: 64px;
   border-radius: 50%;
   background: var(--panel);
-  color: var(--ink);
+  color: var(--navy);
   display: grid;
   place-items: center;
 }
@@ -792,7 +820,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--navy);
 }
 
 /* ---------- How it works ----------
@@ -819,19 +847,19 @@ main {
   font-weight: var(--display-weight);
   letter-spacing: -0.04em;
   line-height: 1;
-  color: var(--ink);
+  color: var(--navy);
   opacity: 0.28;
   margin-bottom: clamp(1.2rem, 2.5vw, 2.4rem);
 }
 .steps h3 { margin-bottom: 0.6rem; }
-.steps p { color: var(--ink-soft); font-size: 1.02rem; }
+.steps p { color: var(--ink); font-size: 1.02rem; }
 
 /* ---------- Reviews ---------- */
 .review-card { display: flex; flex-direction: column; }
 .review-card .stars {
   letter-spacing: 0.14em;
   font-size: 0.95rem;
-  color: var(--ink);
+  color: var(--green);   /* reassurance mark */
   margin-bottom: 1.2rem;
 }
 .review-card blockquote {
@@ -847,7 +875,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
 }
 .reviews-actions {
   margin-top: 2.2rem;
@@ -855,7 +883,7 @@ main {
   flex-wrap: wrap;
   gap: 0.75rem;
 }
-.reviews-footnote { margin-top: 1.4rem; font-size: 0.9rem; color: var(--ink-soft); }
+.reviews-footnote { margin-top: 1.4rem; font-size: 0.9rem; color: var(--ink); }
 
 /* ---------- FAQ ---------- */
 .faq-list { display: grid; max-width: 900px; border-top: 1px solid var(--line); }
@@ -868,7 +896,7 @@ main {
   font-size: clamp(1.1rem, 1.6vw, 1.4rem);
   font-weight: 400;
   letter-spacing: -0.015em;
-  color: var(--ink);
+  color: var(--navy);
   min-height: 44px;
 }
 .faq-list summary::-webkit-details-marker { display: none; }
@@ -880,11 +908,11 @@ main {
   transform: translateY(-50%);
   font-size: 1.6rem;
   font-weight: 300;
-  color: var(--ink-soft);
+  color: var(--steel);
   line-height: 1;
 }
 .faq-list details[open] summary::after { content: "–"; }
-.faq-list details p { padding: 0 3.2rem 1.6rem 0; color: var(--ink-soft); }
+.faq-list details p { padding: 0 3.2rem 1.6rem 0; color: var(--ink); }
 
 /* ---------- CTA band + contact form ----------
    The closing panel mirrors the hero's warm field, so the page opens and shuts
@@ -893,8 +921,8 @@ main {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(70% 60% at 82% 10%, rgba(255, 255, 255, 0.5), transparent 62%),
-    linear-gradient(200deg, var(--wheat) 0%, var(--sand) 45%, var(--sage) 100%);
+    radial-gradient(70% 60% at 82% 10%, rgba(251, 246, 236, 0.55), transparent 62%),
+    linear-gradient(200deg, var(--tint-gold-deep) 0%, var(--tint-gold) 45%, var(--tint-navy) 100%);
 }
 .cta-band::after {
   content: "";
@@ -934,7 +962,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
 }
 .contact-form { display: grid; gap: 1rem; }
 .contact-form label {
@@ -943,7 +971,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
   margin-bottom: 0.4rem;
 }
 .contact-form input,
@@ -985,8 +1013,8 @@ main {
   /* Sizing reference for the oversized closing wordmark below. */
   container-type: inline-size;
 }
-.site-footer a { color: var(--ink); }
-.site-footer a:hover { color: var(--ink-soft); }
+.site-footer a { color: var(--navy); }
+.site-footer a:hover { color: var(--steel); }
 
 .footer-grid {
   display: grid;
@@ -999,7 +1027,7 @@ main {
   max-width: none;
   padding: 0;
 }
-.footer-brand .mission { margin-top: 1rem; max-width: 32ch; color: var(--ink-soft); }
+.footer-brand .mission { margin-top: 1rem; max-width: 32ch; color: var(--ink); }
 /* Footer links carry their tap target in padding, not in row gaps: at 26–37px
    tall they were under the 44px minimum this audience needs. */
 .footer-contact { margin-top: 1.1rem; display: grid; gap: 0; justify-items: start; }
@@ -1009,7 +1037,7 @@ main {
   padding-block: 0.6rem;
 }
 .footer-contact a:hover { text-decoration: underline; }
-.footer-contact span { color: var(--ink-soft); padding-block: 0.6rem; }
+.footer-contact span { color: var(--ink); padding-block: 0.6rem; }
 .footer-contact .microline { margin-top: 0.5rem; }
 
 .footer-col h3 {
@@ -1018,7 +1046,7 @@ main {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--steel);
   margin-bottom: 1.2rem;
 }
 .footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -1026,7 +1054,7 @@ main {
   display: inline-block;
   padding-block: 0.6rem;   /* carries the 44px tap target */
   text-decoration: none;
-  color: var(--ink);
+  color: var(--navy);
 }
 .footer-col a:hover { text-decoration: underline; }
 
@@ -1054,7 +1082,7 @@ main {
 }
 .footer-disclaimers p {
   font-size: 0.875rem; /* 14px — small but readable */
-  color: var(--ink-soft);
+  color: var(--ink);
   max-width: 90ch;
 }
 
@@ -1065,9 +1093,9 @@ main {
   gap: 0 1.5rem;
   align-items: center;
   font-size: 0.875rem;
-  color: var(--ink-soft);
+  color: var(--steel);
 }
-.footer-legal a { color: var(--ink-soft); padding-block: 0.7rem; }
+.footer-legal a { color: var(--steel); padding-block: 0.7rem; }
 
 /* The signature closing mark: the agency name at display scale, clipped by the
    panel's bottom edge. Decorative only — aria-hidden in the markup. */
@@ -1086,7 +1114,7 @@ main {
   letter-spacing: -0.05em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--ink);
+  color: var(--navy);
   opacity: 0.09;
   user-select: none;
   margin-bottom: -0.16em;   /* clips the baseline against the panel edge */
