@@ -297,7 +297,6 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 @media (max-width: 560px) {
   .wordmark { font-size: 0.9rem; }
   .header-phone { font-size: 0.9rem; padding: 0.35rem 0.8rem; }
-  .header-cta.btn { font-size: 0.85rem; padding: 0.35rem 0.8rem; min-height: 40px; }
 }
 .wordmark:hover { color: #fff; }
 
@@ -370,10 +369,6 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .site-header.is-solid .wordmark { color: #fff; }
 .site-header.is-solid .nav-top { color: var(--on-navy-body); }
 .site-header.is-solid .nav-top:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
-
-/* Phone stays a light outline pill in both states; the gold pill is the CTA.
-   Both pills share the same height, and the CTA never wraps to two lines. */
-.header-cta.btn { min-height: 44px; padding: 0.4rem 1.05rem; font-size: 0.95rem; white-space: nowrap; }
 
 /* Sub-item dropdown — lightweight disclosure (hover/click/focus). The panel is
    always white with navy text, independent of the header's transparent/solid
