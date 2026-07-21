@@ -1,5 +1,8 @@
 ---
-// Coverage paths — three tall tinted tiles. No prices anywhere.
+// Coverage paths — three tall tinted tiles, each with its own CTA button.
+// The buttons are outline capsules, not gold: gold stays reserved for the
+// primary actions (call Lisa, get help, compare plans), and three gold pills in
+// one row would flatten that hierarchy. No prices anywhere.
 ---
 
 <section class="section" id="coverage" aria-labelledby="coverage-heading">
@@ -14,17 +17,18 @@
       <article class="card">
         <h3>Medicare</h3>
         <p>Supplement, Advantage, and Part D — explained simply, chosen carefully.</p>
-        <a class="card-link" href="#medicare">See the short version <span aria-hidden="true">↑</span></a>
+        <!-- Arrows point the way the page scrolls; decorative, so aria-hidden -->
+        <a class="btn btn--ghost" href="#medicare">See the short version <span aria-hidden="true">↑</span></a>
       </article>
       <article class="card">
         <h3>Dental &amp; Vision</h3>
         <p>Compare top carriers and enroll online today, in 43 states.</p>
-        <a class="card-link" href="#dental">Start today <span aria-hidden="true">↓</span></a>
+        <a class="btn btn--ghost" href="#dental">Start today <span aria-hidden="true">↓</span></a>
       </article>
       <article class="card">
         <h3>Protecting the rest</h3>
         <p>Life insurance and cancer, heart attack &amp; stroke plans, when you’re ready.</p>
-        <a class="card-link" href="#contact">Ask me <span aria-hidden="true">↓</span></a>
+        <a class="btn btn--ghost" href="#contact">Ask me <span aria-hidden="true">↓</span></a>
       </article>
     </div>
   </div>
