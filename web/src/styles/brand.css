@@ -512,9 +512,9 @@ main {
   left: 0;
   z-index: 70;
   display: none;
-  min-width: 268px;
+  min-width: 276px;
   max-width: min(92vw, 360px);
-  padding: 0.6rem 0.45rem;
+  padding: 0.65rem 0.55rem;
   background: var(--navy);
   border: 1px solid var(--surface-line);
   border-radius: var(--radius);
@@ -529,7 +529,7 @@ main {
   border-top: 1px solid var(--surface-line);
 }
 .nav-dd-heading {
-  padding: 0.3rem 0.8rem;
+  padding: 0.35rem 0.9rem;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -539,7 +539,7 @@ main {
 .nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
 .nav-dropdown a {
   display: block;
-  padding: 0.75rem 0.85rem;   /* 44px row height */
+  padding: 0.75rem 0.9rem;   /* 44px row height */
   border-radius: 10px;
   color: var(--surface-heading);
   font-weight: 500;
@@ -1115,6 +1115,23 @@ main {
 }
 .contact-form .btn { justify-self: start; margin-top: 0.5rem; }
 
+/* Both dropdowns draw their own chevron. The native control paints its arrow
+   hard against the right border and ignores padding-right, so the label sat
+   16px inside the field while the arrow hugged the edge. This puts the chevron
+   on the same 16px inset as the text, and the extra padding-right keeps a long
+   option from running underneath it. Declared after the fields' `background`
+   shorthand so it isn't reset by it. */
+.quickstart select,
+.contact-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.9rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.6 6 6.4l5-4.8' fill='none' stroke='%2320344F' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+}
+
 .form-success {
   display: none;
   align-items: flex-start;
@@ -1134,11 +1151,11 @@ main {
   background: var(--grad-footer);
   border-radius: var(--radius-panel);
   margin-top: var(--panel-gap);
-  padding-block: clamp(56px, 6vw, 88px) 0;
+  /* Even top and bottom now that the oversized closing wordmark is gone — it
+     used to fill the bottom, so this was `... 0`. */
+  padding-block: clamp(56px, 6vw, 88px);
   font-size: 1rem;
   color: var(--surface-body);
-  /* Sizing reference for the oversized closing wordmark below. */
-  container-type: inline-size;
 }
 .site-footer a { color: var(--surface-heading); }
 .site-footer a:hover { color: var(--surface-label); }
@@ -1223,29 +1240,6 @@ main {
   color: var(--surface-label);
 }
 .footer-legal a { color: var(--surface-label); padding-block: 0.7rem; }
-
-/* The signature closing mark: the agency name at display scale, clipped by the
-   panel's bottom edge. Decorative only — aria-hidden in the markup. */
-.footer-mark {
-  margin-top: clamp(2rem, 4vw, 3.5rem);
-  padding-inline: clamp(20px, 3.5vw, 56px);
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  /* Same fit-to-panel maths as the hero's giant line: this string renders
-     11.09x its font size uppercase at weight 300, and it has to fit the footer
-     minus its own padding — hence 100/11.09 ≈ 9.0, less the padding share.
-     Re-check the ratio if the agency name ever changes. */
-  font-size: min(8.6vw, 12rem);
-  font-size: min(8.3cqw, 12rem);
-  line-height: 0.78;
-  letter-spacing: -0.05em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--surface-heading);
-  opacity: 0.09;
-  user-select: none;
-  margin-bottom: -0.16em;   /* clips the baseline against the panel edge */
-}
 
 /* ==========================================================================
    Breakpoints
