@@ -474,7 +474,8 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: var(--text-ui);
+  font-size: 0.95rem; /* compact, off-scale (like the header) — keeps stars +
+                         quote together on one line in the half-width chip */
   color: #fff;
 }
 .review-chip blockquote.is-active { display: flex; flex-wrap: wrap; }
