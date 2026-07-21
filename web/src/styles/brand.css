@@ -211,7 +211,10 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 60;
-  padding-block: 0.65rem;
+  /* 14px × 2 + 44px content = 72px, matching --header-h exactly.
+     Whole-pixel value prevents subpixel rounding from creating
+     an optical gap difference above vs below the call pill. */
+  padding-block: 0.875rem;
   background: transparent;
   transition: background-color 0.25s, box-shadow 0.25s;
 }
@@ -258,6 +261,10 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   color: #fff;
   font-weight: 700;
   font-size: 0.95rem;
+  /* Explicit line-height matches .nav-top (1.2). Without it the pill inherits
+     body's 1.65, making the line box taller than the icon and creating an
+     optical vertical imbalance inside the pill. */
+  line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 0.25s, color 0.25s, border-color 0.25s;
@@ -622,7 +629,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 
 /* ---------- Medicare section ---------- */
 .medicare-cta { margin-top: clamp(28px, 4.5vw, 40px); }
-.medicare-cta .btn { margin-top: 1.2rem; }
+.medicare-cta .btn { margin-top: 1.35rem; }
 
 .video-placeholder {
   margin-top: clamp(32px, 4.5vw, 46px);
@@ -728,7 +735,9 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   transition: transform 0.2s;
 }
 .faq-list details[open] summary::after { content: "–"; }
-.faq-list details p { padding: 0 1.3rem 1.2rem; }
+/* Top padding creates a clear visual gap between the summary (question) and
+   the answer when the accordion is open. */
+.faq-list details p { padding: 0.6rem 1.3rem 1.2rem; }
 
 /* ---------- CTA band + contact form ---------- */
 .cta-band { position: relative; overflow: hidden; }
@@ -750,7 +759,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: start;
 }
 .cta-copy h2 { max-width: 18ch; }
-.cta-copy .btn { margin-top: 1.4rem; }
+.cta-copy .btn { margin-top: 1.35rem; }
 
 .contact-card {
   background: var(--paper);
