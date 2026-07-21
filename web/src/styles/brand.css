@@ -211,37 +211,40 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 60;
-  padding-block: 0.6rem;
+  padding-block: 0.65rem;
   background: transparent;
   transition: background-color 0.25s, box-shadow 0.25s;
 }
 
+/* Logo left, nav centered (takes the width it needs), actions right. Centering
+   via auto margins instead of space-between keeps the nav from being squeezed
+   and wrapping. Header sizes are bespoke compact values (mirrored from the
+   editorial layout), not type-scale steps. */
 .site-header .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.9rem; /* freed by the smaller scale — lets wordmark / nav / phone breathe */
+  gap: 0.75rem 1rem;
 }
 
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-size: clamp(0.95rem, 0.8vw + 0.65rem, 1.15rem);
   color: #fff;
   text-decoration: none;
-  line-height: 1.25;
+  line-height: 1.2;
   padding-block: 0.4rem;
-  text-wrap: balance;
+  white-space: nowrap;   /* logo always one line */
 }
 
-/* Keep the wordmark to two tidy lines next to the phone pill on small screens */
+/* Compact pills + logo on small screens (logo stays one line) */
 @media (max-width: 560px) {
   .wordmark { font-size: 0.9rem; }
-  .header-phone { font-size: 0.9rem; padding: 0.35rem 0.85rem; }
+  .header-phone { font-size: 0.9rem; padding: 0.35rem 0.8rem; }
 }
 .wordmark:hover { color: #fff; }
 
-.header-right { display: flex; align-items: center; gap: 0.6rem; }
+.header-right { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
 
 /* Phone: white outline pill over hero -> gold tap-to-call pill on white header */
 .header-phone {
@@ -249,12 +252,12 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   gap: 0.45rem;
   min-height: 44px;
-  padding: 0.4rem 1.1rem;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
   border: 2px solid rgba(255, 255, 255, 0.55);
   color: #fff;
   font-weight: 700;
-  font-size: var(--text-ui);
+  font-size: 0.95rem;
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 0.25s, color 0.25s, border-color 0.25s;
@@ -262,16 +265,16 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .header-phone:hover { color: #fff; border-color: #fff; }
 
 /* Primary nav — always visible, no hamburger. Driven by site.ts `mainNav`. */
-.site-nav { display: flex; min-width: 0; }
+.site-nav { display: flex; min-width: 0; margin-inline: auto; }
 .site-nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;      /* single tidy row on desktop; stacks below at <=960px */
   align-items: center;
   justify-content: center;
-  gap: 0.15rem 0.45rem;
+  gap: 0.1rem 0.35rem;
 }
 .nav-item { position: relative; }
 
@@ -281,13 +284,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   gap: 0.3rem;
   min-height: 44px;
-  padding: 0.4rem 0.7rem;
+  padding: 0.35rem 0.55rem;
   border: 0;
   border-radius: 10px;
   background: transparent;
   color: #fff;
   font-family: var(--font-body);
-  font-size: clamp(0.9rem, 0.35vw + 0.8rem, 1rem);
+  font-size: clamp(0.85rem, 0.25vw + 0.78rem, 0.95rem);
   font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
@@ -366,11 +369,11 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    phone, shrinking slightly instead of hiding behind a toggle. The header's real
    height is measured into --header-actual (JS), which the hero's top offset uses,
    so the first view never crops however many rows the nav wraps to. */
-@media (max-width: 720px) {
-  .site-header .container { flex-wrap: wrap; row-gap: 0.35rem; }
-  .site-nav { flex: 1 0 100%; order: 3; }
-  .site-nav-list { justify-content: flex-start; }
-  .nav-top { padding: 0.35rem 0.55rem; font-size: 0.9rem; }
+@media (max-width: 960px) {
+  .site-header .container { flex-wrap: wrap; row-gap: 0.4rem; }
+  .site-nav { flex: 1 0 100%; order: 3; margin-inline: 0; }
+  .site-nav-list { flex-wrap: wrap; justify-content: flex-start; }
+  .nav-top { padding: 0.35rem 0.55rem; font-size: 0.95rem; }
   .nav-dropdown { min-width: 220px; }
 }
 
@@ -464,7 +467,9 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .review-chip blockquote {
   display: none;
   align-items: baseline;
+  align-content: center;  /* wrapped lines centre in the stretched box */
   gap: 0.6rem;
+  height: 100%;           /* fill the chip, which stretches to the row height */
   padding: 0.7rem 1.2rem;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.1);
@@ -477,13 +482,14 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .review-chip .who { color: #BFD3E4; white-space: nowrap; }
 
 /* Bottom row: quick-start bar (left) and review chip (right) divide the hero's
-   base in half on desktop; stacked on smaller screens. */
+   base in half on desktop; stacked on smaller screens. Items stretch, so the
+   review chip renders the same height as the quick-start bar. */
 .hero-bottom {
   margin-top: clamp(0.75rem, 2.5vh, 2rem);
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem clamp(1.25rem, 2.5vw, 2rem);
-  align-items: center;
+  align-items: stretch;
 }
 @media (min-width: 900px) {
   .hero-bottom { grid-template-columns: 1fr 1fr; }
