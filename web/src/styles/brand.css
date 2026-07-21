@@ -458,27 +458,30 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   text-wrap: pretty;      /* avoids orphans / hanging single words */
 }
 
-/* Rotating review chip — the right half of the hero's bottom row on desktop. */
+/* Rotating review chip — the right half of the hero's bottom row on desktop.
+   The chip stretches to the quick-start bar's height (hero-bottom stretches),
+   and the active review fills that height with its content vertically centered. */
 .review-chip {
   position: relative;
   max-width: 560px;
   min-height: 3.4rem;
+  display: flex;
 }
 .review-chip blockquote {
   display: none;
   align-items: baseline;
-  align-content: center;  /* wrapped lines centre in the stretched box */
-  gap: 0.6rem;
-  height: 100%;           /* fill the chip, which stretches to the row height */
+  align-content: center;   /* centers the wrapped rows when the box is taller */
+  gap: 0.4rem 0.6rem;
   padding: 0.7rem 1.2rem;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 0.95rem; /* compact, off-scale (like the header) — keeps stars +
                          quote together on one line in the half-width chip */
+  line-height: 1.3;        /* tighter leading so the quote fits the shared height */
   color: #fff;
 }
-.review-chip blockquote.is-active { display: flex; flex-wrap: wrap; }
+.review-chip blockquote.is-active { display: flex; flex-wrap: wrap; flex: 1; }
 .review-chip .stars { color: var(--green-on-navy); letter-spacing: 0.1em; white-space: nowrap; }
 .review-chip .who { color: #BFD3E4; white-space: nowrap; }
 
