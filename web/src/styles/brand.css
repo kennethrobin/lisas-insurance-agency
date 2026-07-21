@@ -392,11 +392,11 @@ main {
 .site-header {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  /* Same width as every panel below it — inset by the page gutter on both
+     sides — while staying flush to the top of the window. */
+  left: var(--gutter);
+  right: var(--gutter);
   z-index: 60;
-  /* The gutter that the panels get on their outside edges is added INSIDE the
-     header instead, so its content still lines up with the panels' content. */
   padding-block: calc(var(--gutter) + 0.5rem) 0.7rem;
   border-radius: 0 0 var(--radius-panel) var(--radius-panel);
   /* Solid deep navy at rest, not transparent: the tab is darker than the top of
@@ -410,11 +410,9 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  /* The header is full-bleed while the panels are inset by the gutter, so its
-     container carries that gutter in its own padding and max-width. Without
-     this the wordmark sits a gutter's width left of the headline below it. */
-  max-width: calc(var(--container) + var(--gutter) * 2);
-  padding-inline: calc(var(--container-pad) + var(--gutter));
+  /* No width compensation needed: the header is now inset exactly like the
+     panels, so the plain .container rule already lines its content up with
+     theirs. */
 }
 
 .wordmark {
