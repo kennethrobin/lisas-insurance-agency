@@ -1,0 +1,233 @@
+---
+/**
+ * Part D — prescription drug coverage.
+ *
+ * Its own page, cross-linked from both the Medigap page (where Part D is a
+ * required companion) and the Advantage page (where it may already be built in).
+ * The late-enrollment penalty is the reason this page exists, so it gets the
+ * weight rather than a footnote.
+ */
+import Page from '../../layouts/Page.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Faq from '../../components/Faq.astro';
+import { site } from '../../data/site';
+import { links, isPending, externalAttrs } from '../../data/links';
+
+const title = 'Medicare Part D — Prescription Drug Coverage | Lisa’s Insurance Agency';
+const description =
+  'How Medicare Part D works, why the late-enrollment penalty is permanent, and how to match a drug plan to the medicines you actually take.';
+
+const enrollPending = isPending(links.sunfirePartD);
+
+const steps = [
+  {
+    title: 'Your details and your medicines',
+    copy: 'Enter your contact information, then the prescriptions you take — the actual names and doses, not approximations. This is the part that decides everything downstream.',
+  },
+  {
+    title: 'Your pharmacy',
+    copy: 'Add where you fill them. Plans price the same medicine differently depending on whether a pharmacy is in their preferred network, so this genuinely changes the answer.',
+  },
+  {
+    title: 'Your matched plans',
+    copy: 'You get the plans that cover what you take, at the pharmacy you use. Enroll there, or send me what you saw and we’ll go through it together.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What is the late-enrollment penalty?',
+    a: 'If you go without creditable prescription coverage for long enough after you’re first eligible for Part D, and later decide to enroll, an amount is added to your monthly premium. You keep paying it for as long as you have Part D. It grows with the length of the gap, so the longer the delay the larger it is.',
+  },
+  {
+    q: 'What counts as creditable coverage?',
+    a: 'Drug coverage that Medicare considers at least as good as a standard Part D plan — often coverage from an employer, a union, the VA, or TRICARE. If you have one of those, you can usually delay Part D with no penalty. Your plan is required to tell you each year whether it’s creditable; keep that notice.',
+  },
+  {
+    q: 'I don’t take any medications. Do I still need it?',
+    a: 'That’s the situation the penalty exists for. Signing up when you’re first eligible, even with nothing to fill, keeps the door open at no penalty later — and health changes without warning. It’s worth a conversation rather than a default assumption either way.',
+  },
+  {
+    q: 'Can I have Part D with a Medicare Advantage plan?',
+    a: 'Usually the Advantage plan already includes it, and if it does you generally can’t add a separate Part D plan. If your Advantage plan doesn’t include drug coverage, that’s a specific situation worth checking with me before you add anything.',
+  },
+  {
+    q: 'Can I change plans if my prescriptions change?',
+    a: 'Plans can change their drug lists each year, and so can your prescriptions — which is why it’s worth re-checking during the Annual Enrollment Period each autumn rather than letting a plan roll over unexamined. That review is part of what I do for clients, at no cost.',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Medicare · Part D"
+  heading="Prescription drug coverage."
+  intro="Part D is how Medicare covers the medicines you pick up at a pharmacy. It’s also the part with a penalty attached for waiting — so it’s worth understanding even if you take nothing today."
+>
+  <!-- ─── What Part D is ──────────────────────────────────────────────── -->
+  <section class="section" id="what-it-is" aria-labelledby="what-heading">
+    <div class="container">
+      <p class="crumbs"><a href="/medicare">Medicare</a> / Prescription Drugs</p>
+      <p class="eyebrow">What it is</p>
+
+      <div class="section-intro">
+        <h2 id="what-heading">Coverage for what you pick up at the pharmacy.</h2>
+        <p class="lead">
+          Original Medicare doesn’t cover most prescriptions you fill yourself.
+          Part D is the piece that does.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          It comes to you one of two ways: as a standalone plan you add alongside
+          Original Medicare — which is what you do if you have a Medicare Supplement
+          — or built into a Medicare Advantage plan. Either way the coverage is sold
+          by private carriers under Medicare’s rules.
+        </p>
+        <p>
+          <strong>Every plan has its own drug list.</strong> It decides whether a
+          given medicine is covered at all, and which tier it sits on, which is what
+          determines your share of the cost. Two plans that look alike on paper can
+          treat the same prescription completely differently. That’s why the only
+          way to compare Part D plans honestly is with your actual medication list
+          in hand.
+        </p>
+        <p>
+          Pharmacy matters too. Plans have preferred pharmacies, and the same
+          medicine on the same plan can cost a different amount depending on where
+          you fill it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── The penalty ─────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="penalty" aria-labelledby="penalty-heading">
+    <div class="container">
+      <p class="eyebrow">The penalty</p>
+
+      <div class="section-intro">
+        <h2 id="penalty-heading">What skipping Part D costs later.</h2>
+        <p class="lead">
+          This is the single most expensive misunderstanding in Medicare, and it’s
+          entirely avoidable.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          If you go without creditable prescription coverage for long enough after
+          you first become eligible, and then enroll in a Part D plan later, Medicare
+          adds a late-enrollment penalty to your premium.
+        </p>
+        <p>
+          <strong>The penalty is permanent.</strong> It isn’t a one-time fee to get
+          in the door — it’s added to your monthly premium for as long as you have
+          Part D coverage. And it scales with how long you went without, so a longer
+          gap means a larger amount, every month, indefinitely.
+        </p>
+        <p>
+          The way to avoid it is simple: either enroll when you’re first eligible, or
+          be certain the coverage you already have counts as creditable. If you’re
+          not sure which of those applies to you, that’s a five-minute phone call and
+          worth making before the window closes.
+        </p>
+      </div>
+
+      <div class="callout">
+        <h3>Already have drug coverage somewhere else?</h3>
+        <p>
+          Coverage through an employer, a union, the VA or TRICARE often counts as
+          creditable, which means no penalty for delaying. Your plan has to tell you
+          in writing each year whether it counts — that notice is worth keeping.
+          Call me and we’ll check what you’ve got.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Check my coverage · {site.phone}</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <!-- ─── Enroll ──────────────────────────────────────────────────────── -->
+  <section class="section" id="enroll" aria-labelledby="enroll-heading">
+    <div class="container">
+      <p class="eyebrow">Finding your plan</p>
+
+      <div class="section-intro">
+        <h2 id="enroll-heading">Match a plan to what you actually take.</h2>
+        <p class="lead">
+          Three steps, and the second one is the one people skip. Have your
+          prescription bottles nearby.
+        </p>
+      </div>
+
+      <ol class="steps">
+        {steps.map((step) => (
+          <li>
+            <h3>{step.title}</h3>
+            <p>{step.copy}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="medicare-cta">
+        <p>
+          You can run this yourself, or we can do it together on the phone — I do
+          this all day and I know where the traps are. Your premium is the same
+          either way.
+        </p>
+
+        <div class="actions actions--stack">
+          {enrollPending ? (
+            <>
+              {/* TODO: links.sunfirePartD — Sunfire "Simply Enroll" for Part D.
+                  Until it's live this is the call path, never a dead button. */}
+              <a class="btn btn--accent" href={site.phoneHref}>Simply Enroll</a>
+              <span class="chip">Online enrollment link coming soon — for now, call or text</span>
+            </>
+          ) : (
+            <a class="btn btn--accent" href={links.sunfirePartD} {...externalAttrs}>
+              Simply Enroll
+            </a>
+          )}
+          <a class="btn btn--ghost" href="/contact">Questions? Contact Lisa</a>
+        </div>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─────────────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <p class="eyebrow">Questions</p>
+
+      <div class="section-intro">
+        <h2 id="faq-heading">Questions about Part D.</h2>
+      </div>
+
+      <Faq items={faqs} schema />
+
+      <div class="callout" style="margin-top: clamp(40px, 5vw, 64px)">
+        <h3>Where Part D fits with your other coverage</h3>
+        <p>
+          With a <a href="/medicare/supplement">Medicare Supplement</a> you add a
+          standalone Part D plan. With a
+          <a href="/medicare/advantage">Medicare Advantage plan</a> it’s usually
+          already included — worth confirming rather than assuming.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Bring your list. I’ll do the comparing."
+    copy="Read me your prescriptions and tell me your pharmacy. That’s everything I need to find the plans that actually cover you."
+  />
+</Page>

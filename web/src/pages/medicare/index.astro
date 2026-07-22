@@ -1,0 +1,212 @@
+---
+/**
+ * Medicare — the overview page, and the hub the other five link back to.
+ *
+ * Its whole job is to get someone from "I don't understand any of this" to
+ * knowing which of the three plan pages is theirs. So: the four parts in plain
+ * words, then the two roads out of Original Medicare, then the cards.
+ */
+import Page from '../../layouts/Page.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Faq from '../../components/Faq.astro';
+import { site } from '../../data/site';
+import { links, externalAttrs } from '../../data/links';
+
+const title = 'Medicare Explained — Parts A, B, C & D | Lisa’s Insurance Agency';
+const description =
+  'Medicare in plain language: what Parts A, B, C and D each do, how Advantage and Supplement plans differ, and where to start. Free help from a licensed agent.';
+
+const parts = [
+  {
+    letter: 'Part A',
+    name: 'Hospital insurance',
+    copy: 'Inpatient hospital stays, skilled nursing facility care after a qualifying stay, hospice, and some home health care. Most people don’t pay a monthly premium for Part A, because they or their spouse paid Medicare taxes while working. It has its own deductible when you’re admitted.',
+  },
+  {
+    letter: 'Part B',
+    name: 'Medical insurance',
+    copy: 'Doctor visits, outpatient care, lab work, medical equipment, and preventive services. Part B has a monthly premium, an annual deductible, and after that you generally pay a share of the cost of each service — there is no cap on that share under Original Medicare alone.',
+  },
+  {
+    letter: 'Part C',
+    name: 'Medicare Advantage',
+    copy: 'An alternative way to get your Part A and Part B benefits, run by a private carrier instead of directly by Medicare. Plans work through a network, often include prescription coverage, and may add benefits Original Medicare doesn’t cover. Every plan has a yearly out-of-pocket maximum.',
+  },
+  {
+    letter: 'Part D',
+    name: 'Prescription drug coverage',
+    copy: 'Coverage for the medicines you pick up at a pharmacy. It comes either as a standalone plan alongside Original Medicare, or built into a Medicare Advantage plan. Going without it when you’re first eligible can cost you a permanent penalty later.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'When am I first eligible?',
+    a: 'Most people become eligible at 65. Your Initial Enrollment Period runs for seven months — the three months before the month you turn 65, that month itself, and the three months after. Some people qualify earlier through disability or specific conditions.',
+  },
+  {
+    q: 'Do I have to sign up if I’m still working?',
+    a: 'It depends on the coverage you have through that job and how large the employer is. Some people can delay Part B without any penalty; others can’t, and the penalty for getting it wrong is permanent. This is the single most worthwhile phone call to make before you turn 65.',
+  },
+  {
+    q: 'What does Original Medicare not cover?',
+    a: 'Routine dental, vision and hearing care are not covered, and neither is long-term custodial care. Prescriptions picked up at a pharmacy need Part D. There’s also no yearly limit on what you pay out of pocket under Original Medicare on its own — which is the gap that Supplement and Advantage plans each address in their own way.',
+  },
+  {
+    q: 'Does it cost extra to use an agent?',
+    a: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Medicare"
+  heading="Medicare, in plain language."
+  intro="Four letters, two roads, and one decision most people only make once. Here’s the whole picture in the order it actually makes sense — then we’ll narrow it down to the part that’s yours."
+>
+  <!-- ─── The four parts ──────────────────────────────────────────────── -->
+  <section class="section" id="parts" aria-labelledby="parts-heading">
+    <div class="container">
+      <p class="eyebrow">The four parts</p>
+
+      <div class="section-intro">
+        <h2 id="parts-heading">A, B, C and D — what each one actually does.</h2>
+        <p class="lead">
+          Parts A and B together are called Original Medicare, and they come from
+          the government. Parts C and D come from private carriers.
+        </p>
+      </div>
+
+      <dl class="def-list">
+        {parts.map((part) => (
+          <div class="def-row">
+            <dt>
+              <span class="def-tag">{part.letter}</span>
+              {part.name}
+            </dt>
+            <dd>{part.copy}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ─── The fork in the road ────────────────────────────────────────── -->
+  <section class="section section--navy" id="two-roads" aria-labelledby="roads-heading">
+    <div class="container">
+      <p class="eyebrow">The decision</p>
+
+      <div class="section-intro">
+        <h2 id="roads-heading">Once you have A and B, there are two roads.</h2>
+        <p class="lead">
+          Original Medicare leaves a share of every bill to you, with no yearly
+          ceiling. Both roads exist to deal with that — they just do it in
+          opposite ways.
+        </p>
+      </div>
+
+      <div class="cards cards--2 cards--tiles">
+        <article class="card">
+          <h3>Keep Original Medicare, add to it</h3>
+          <p>
+            You stay in Original Medicare and add a Medicare Supplement (Medigap)
+            policy to help pay the share it leaves behind, plus a separate Part D
+            plan for prescriptions. Any doctor in the country who takes Medicare
+            will take you. Generally a higher monthly premium, fewer costs at the
+            time you get care.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/supplement">About Supplement plans</a>
+        </article>
+
+        <article class="card">
+          <h3>Replace it with an all-in-one plan</h3>
+          <p>
+            You get your Part A and Part B benefits through a Medicare Advantage
+            plan from a private carrier instead. Care runs through the plan’s
+            network, prescriptions are often built in, and there’s a yearly cap on
+            what you pay out of pocket. Generally a lower monthly premium, more
+            costs as you use care.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/advantage">About Advantage plans</a>
+        </article>
+      </div>
+
+      <div class="medicare-cta">
+        <p>
+          You can’t have both a Medicare Advantage plan and a Medigap policy at the
+          same time — this is genuinely a fork. Which way suits you comes down to
+          your doctors, your prescriptions, how much you travel, and what you’d
+          rather pay monthly versus at the point of care.
+        </p>
+        <a class="btn btn--accent" href={site.phoneHref}>Talk it through · {site.phone}</a>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Where to next ───────────────────────────────────────────────── -->
+  <section class="section" id="plan-pages" aria-labelledby="plan-pages-heading">
+    <div class="container">
+      <p class="eyebrow">Read on</p>
+
+      <div class="section-intro">
+        <h2 id="plan-pages-heading">The three plan pages.</h2>
+      </div>
+
+      <div class="cards cards--3 cards--tiles">
+        <article class="card">
+          <h3>Medicare Advantage</h3>
+          <p>
+            How Part C plans work, the difference between HMO, PPO and PFFS, and
+            the three things to check before you pick one.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/advantage">Medicare Advantage</a>
+        </article>
+        <article class="card">
+          <h3>Medicare Supplement</h3>
+          <p>
+            What Medigap covers, how the standardized plans A through N compare,
+            and why the letter matters more than the company.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/supplement">Medicare Supplement</a>
+        </article>
+        <article class="card">
+          <h3>Prescription Drugs</h3>
+          <p>
+            How Part D works, why the late-enrollment penalty is permanent, and
+            how to match a plan to the medicines you actually take.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/prescription-drugs">Prescription Drugs</a>
+        </article>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
+        <a class="btn btn--ghost" href={links.medicareGov} {...externalAttrs}>
+          Official information at Medicare.gov
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─────────────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <p class="eyebrow">Questions</p>
+
+      <div class="section-intro">
+        <h2 id="faq-heading">The questions that come first.</h2>
+      </div>
+
+      <Faq items={faqs} schema />
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Start with a conversation, not a form."
+    copy="Tell me your doctors, your prescriptions, and roughly what you want to spend. That’s enough for me to point you at the right road."
+  />
+</Page>

@@ -1,0 +1,313 @@
+---
+/**
+ * Medicare Supplement (Medigap).
+ *
+ * The one page on the site with NO self-enrol button. Medigap underwriting,
+ * state rules and the timing of your open enrolment are exactly the things a
+ * form gets wrong, so the only action here is a conversation. That is a
+ * deliberate difference from the Advantage page, not an oversight.
+ *
+ * The testimonials block is a clearly-labelled TEMPLATE. The entries are
+ * obviously-fake samples, not attributed to anyone, and the banner above them
+ * says so — a placeholder quote with a real-sounding name attached is a
+ * fabricated endorsement, which is exactly what must not ship.
+ */
+import Page from '../../layouts/Page.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import CompareMaMedigap from '../../components/CompareMaMedigap.astro';
+import MedigapChart from '../../components/MedigapChart.astro';
+import Faq from '../../components/Faq.astro';
+import { site } from '../../data/site';
+
+const title = 'Medicare Supplement (Medigap) Plans Explained | Lisa’s Insurance Agency';
+const description =
+  'What a Medicare Supplement covers, how the standardized plans A through N compare, how Medigap differs from Medicare Advantage, and why you still need Part D.';
+
+/**
+ * TEMPLATE ONLY. Placeholder structure so Lisa can see the shape of the block.
+ * Not real people, not real quotes, not attributed. Replace wholesale with
+ * sourced, verbatim reviews — do not edit these into "realistic" ones.
+ */
+const testimonialTemplate = [
+  {
+    quote: '[Client’s own words about what the process felt like — sourced review goes here.]',
+    who: '[First name, state]',
+  },
+  {
+    quote: '[Client’s own words about the service after enrolling — sourced review goes here.]',
+    who: '[First name, state]',
+  },
+  {
+    quote: '[Client’s own words about how a question got handled — sourced review goes here.]',
+    who: '[First name, state]',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Is a Plan G from one company different from a Plan G from another?',
+    a: 'Not in what it covers. The benefits under each plan letter are set by federal law, so every Plan G covers the same things. What differs between companies is the price, how they raise prices over time, and what they’re like to deal with when you need something.',
+  },
+  {
+    q: 'When is the best time to buy one?',
+    a: 'Your Medigap open enrollment period starts the month you’re 65 or older and enrolled in Part B, and it runs six months. During it, you can buy any Medigap policy sold in your state regardless of your health. That protection is the reason timing matters so much here.',
+  },
+  {
+    q: 'What if I apply after that window?',
+    a: 'Outside of your open enrollment period — and outside certain guaranteed-issue situations — companies may ask health questions and can decline your application or charge more based on the answers. The rules vary by state. If you’re past your window, call me before you apply anywhere.',
+  },
+  {
+    q: 'Does a Medigap policy cover my spouse too?',
+    a: 'No. Medigap policies cover one person. If you and your spouse both want coverage, that’s two policies.',
+  },
+  {
+    q: 'Can I keep it if I move to another state?',
+    a: 'Generally yes — Medigap isn’t network-based, so it travels with you. Tell me when you move anyway, because pricing and available plans can differ, and it’s worth a look.',
+  },
+  {
+    q: 'Does it cost extra to buy through you?',
+    a: 'No. The premium for a given policy is the same whether you go direct or through me. What you get by going through me is someone who compares the companies with you and stays reachable afterwards.',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Medicare · Medigap"
+  heading="Medicare Supplement, explained properly."
+  intro="A Medigap policy sits alongside Original Medicare and picks up the share it leaves to you. Here’s what that means in practice, how the lettered plans differ, and why the letter matters more than the company."
+>
+  <!-- ─── What Medigap is ─────────────────────────────────────────────── -->
+  <section class="section" id="what-it-is" aria-labelledby="what-heading">
+    <div class="container">
+      <p class="crumbs"><a href="/medicare">Medicare</a> / Medicare Supplement</p>
+      <p class="eyebrow">What it is</p>
+
+      <div class="section-intro">
+        <h2 id="what-heading">It fills the gaps Original Medicare leaves.</h2>
+        <p class="lead">
+          Hence the nickname. Original Medicare pays most of a covered bill and
+          leaves you the rest — Medigap is what pays that rest.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          Under Original Medicare on its own you’re responsible for deductibles,
+          copayments and coinsurance, and there is no yearly limit on how much that
+          adds up to. A Medigap policy takes over some or all of that share,
+          depending on which plan letter you choose.
+        </p>
+        <p>
+          <strong>There’s no network.</strong> A Medigap policy works with any
+          doctor or hospital in the country that accepts Medicare, with no
+          referrals and nothing to check before you travel. For people who split
+          their year between two states, or who want to keep a specialist they’ve
+          seen for years, that’s usually the deciding factor.
+        </p>
+        <p>
+          It does one job and only that job. Prescriptions aren’t included — you
+          add a separate Part D plan — and neither are routine dental, vision or
+          hearing care.
+        </p>
+      </div>
+
+      <div class="chips">
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          Any doctor who accepts Medicare
+        </span>
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          No referrals, no network to check
+        </span>
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          Benefits set by law, identical across companies
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Compare ─────────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="compare" aria-labelledby="compare-heading">
+    <div class="container">
+      <p class="eyebrow">Compare</p>
+
+      <div class="section-intro">
+        <h2 id="compare-heading">
+          How does a Supplement compare to Medicare Advantage?
+        </h2>
+        <p class="lead">
+          The two side by side. You choose one road or the other — you can’t hold
+          both at once.
+        </p>
+      </div>
+
+      <CompareMaMedigap stay="supplement" id="compare-heading" />
+    </div>
+  </section>
+
+  <!-- ─── The lettered plans ──────────────────────────────────────────── -->
+  <section class="section" id="plans" aria-labelledby="plans-heading">
+    <div class="container">
+      <p class="eyebrow">The standardized plans</p>
+
+      <div class="section-intro">
+        <h2 id="plans-heading">A through N, and what each one covers.</h2>
+        <p class="lead">
+          Medigap plans are standardized by law. Once you know which letter you
+          want, the only remaining question is which company to buy it from.
+        </p>
+      </div>
+
+      <MedigapChart />
+    </div>
+  </section>
+
+  <!-- ─── Why Part D ──────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="part-d" aria-labelledby="part-d-heading">
+    <div class="container">
+      <p class="eyebrow">Don’t skip this</p>
+
+      <div class="section-intro">
+        <h2 id="part-d-heading">Why you still need Part D.</h2>
+        <p class="lead">
+          A Medigap policy does not cover prescriptions. That’s not a gap in your
+          plan — it’s a separate plan you need to add.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          People who take no regular medication often decide to skip Part D on the
+          reasonable-sounding grounds that they don’t need it. The problem is the
+          late-enrollment penalty.
+        </p>
+        <p>
+          <strong>If you go without creditable prescription coverage for long
+          enough after you’re first eligible, and then sign up later, a penalty is
+          added to your Part D premium — and you keep paying it for as long as you
+          have Part D.</strong> It isn’t a one-off charge. It grows with the length
+          of the gap, and it doesn’t go away when your health does.
+        </p>
+        <p>
+          If you have drug coverage from somewhere else — an employer, a union, the
+          VA — it may count as creditable, in which case there’s no penalty for
+          delaying. Whether yours counts is worth confirming rather than assuming.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href="/medicare/prescription-drugs">
+          Read about Part D
+        </a>
+        <a class="btn btn--ghost" href={site.phoneHref}>Ask if my coverage counts</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <!-- ─── Testimonials TEMPLATE ───────────────────────────────────────── -->
+  <section class="section" id="testimonials" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <p class="eyebrow">Client stories</p>
+
+      <div class="section-intro">
+        <h2 id="testimonials-heading">What working together is like.</h2>
+      </div>
+
+      <div class="callout callout--note">
+        <h3>Template — not real reviews</h3>
+        <p>
+          The three cards below are an empty layout showing where sourced client
+          reviews will sit. They are not quotes from real people and are not
+          attributed to anyone. They get replaced wholesale with verbatim reviews
+          once those are collected, with the client’s permission.
+        </p>
+      </div>
+
+      <div class="cards cards--3" style="margin-top: clamp(28px, 3.5vw, 44px)">
+        {testimonialTemplate.map((item) => (
+          <article class="card review-card">
+            <p class="stars" aria-hidden="true">★★★★★</p>
+            <blockquote>{item.quote}</blockquote>
+            <footer>{item.who}</footer>
+          </article>
+        ))}
+      </div>
+
+      <p class="reviews-footnote">
+        Reviews will be shown exactly as written, and only with permission.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── How Lisa works ──────────────────────────────────────────────── -->
+  <section class="section section--navy" id="how-i-help" aria-labelledby="help-heading">
+    <div class="container">
+      <p class="eyebrow">How I help</p>
+
+      <div class="section-intro">
+        <h2 id="help-heading">Medigap is a phone call, not a checkout.</h2>
+        <p class="lead">
+          There’s no enroll-online button on this page on purpose. Timing, state
+          rules and health questions all decide what you can actually get — and a
+          form can’t tell you that.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          I’m a broker. I represent a number of insurance companies — not every
+          company, and I’ll say plainly which ones I can and can’t quote you. Where
+          I do have appointments, I compare them with you and tell you what I see,
+          including when the difference between two of them is not worth the change.
+        </p>
+        <p>
+          The Medigap carriers I work with hold S&amp;P financial strength ratings
+          of A, A+ or A++. Those ratings speak to a company’s ability to pay claims
+          — they are not a statement about price or about service, and they aren’t
+          a promise about your policy.
+        </p>
+        <p>
+          After you enroll, I stay your agent. Billing questions, a rate change you
+          don’t understand, a move to another state — you call me, and you’re not
+          paying anything extra for that.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--ghost" href={site.smsHref}>Text me</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─────────────────────────────────────────────────────────── -->
+  <section class="section" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <p class="eyebrow">Questions</p>
+
+      <div class="section-intro">
+        <h2 id="faq-heading">Questions about Supplement plans.</h2>
+      </div>
+
+      <Faq items={faqs} schema />
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Which letter, and which company?"
+    copy="That’s a fifteen-minute conversation, and it’s the one that saves people the most. No cost, no obligation, and no pressure to decide on the call."
+  />
+</Page>
