@@ -213,13 +213,14 @@ h1 {
   letter-spacing: var(--display-track);
 }
 
-/* Section headlines are bold. The tracking eases off from the light cut's
-   -0.035em: bold letterforms are wider, and the tighter value crowded them. */
+/* Section headlines sit at medium — enough weight to lead the page without the
+   density of bold at this size. Tracking eases off from the light cut's
+   -0.035em, since the heavier letterforms are wider. */
 h2 {
-  font-weight: 700;
+  font-weight: 500;
   font-size: clamp(1.9rem, 3.4vw, 3.1rem);
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
 }
 
 h3 {
@@ -618,6 +619,9 @@ main {
      at the top of the hero panel, which already sits a gutter down — hence the
      subtraction, or the first line would clear the header by a gutter too much. */
   padding-top: calc(var(--header-actual, var(--header-h)) - var(--gutter) + var(--hero-gap));
+  /* Small screens keep the tight value: there the nav wraps to three rows, and
+     mirroring a ~200px tab at the bottom would push the controls off the fold.
+     The wide-screen rule below does the mirroring. */
   padding-bottom: clamp(1rem, 3.5vh, 3rem);
 }
 
@@ -654,16 +658,15 @@ main {
   max-width: none;
   margin-block: auto;
 }
-/* Still the largest thing in the hero and still one line, but nowhere near the
-   old panel-spanning scale — it reads as a headline now, not a banner. At its
-   cap it is about 2.3x the line beneath it. */
+/* Stacked over two lines (the break is in the markup) and back to the light
+   cut — the airy display weight this direction was built on. No `nowrap`: the
+   explicit break does the work, so nothing has to be kept on one line. */
 .hero .display-xl {
   display: block;
   font-size: clamp(2rem, 4vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  white-space: nowrap;
+  font-weight: var(--display-weight);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
 }
 /* The rest of the same sentence, set small and quiet under the giant line. */
 .hero .display-tail {
@@ -1285,10 +1288,11 @@ main {
   :root { --gutter: 8px; --radius-panel: 22px; }
   .hero .display-xl { letter-spacing: -0.035em; }
 
-  /* Phones give the nav its own rows, so the header eats ~190px of a ~810px
-     screen. The hero's own rhythm tightens to pay for it — otherwise its
-     bottom edge (and the gutter under it) is pushed past the fold. */
-  .hero { --hero-gap: clamp(0.6rem, 2.4vh, 1.75rem); }
+  /* Phones give the nav its own rows, so the header eats ~200px of a ~810px
+     screen, and the headline now takes two lines. The hero's own rhythm
+     tightens to pay for both — otherwise its bottom edge (and the gutter under
+     it) is pushed past the fold. */
+  .hero { --hero-gap: clamp(0.5rem, 1.5vh, 1.25rem); }
   .review-chip { margin-top: 0.85rem; }
   .review-chip blockquote { font-size: 0.86rem; padding: 0.7rem 1.05rem; }
   .hero-sub { font-size: 1rem; }
@@ -1300,6 +1304,12 @@ main {
 }
 
 @media (min-width: 900px) {
+  /* The band the header tab occupies at the top of the hero — from the panel's
+     top edge to the tab's bottom — repeated as empty space at the bottom, so
+     the hero is inset by the same amount top and bottom. Lifts the sub, the
+     review chip and the quick-start card off the panel's lower edge. */
+  .hero { padding-bottom: calc(var(--header-actual, var(--header-h)) - var(--gutter)); }
+
   .hero-floor { grid-template-columns: 1fr auto; }
   .steps { grid-template-columns: repeat(3, 1fr); column-gap: clamp(1rem, 2vw, 2.5rem); }
   /* Section heads go two-up: heading left, lead paragraph right. Only when
