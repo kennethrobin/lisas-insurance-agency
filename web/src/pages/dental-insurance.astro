@@ -1,0 +1,312 @@
+---
+/**
+ * Dental & Vision.
+ *
+ * The homepage's "Need dental or vision coverage?" box lands on #compare, so
+ * the comparison chart sits high on the page and carries that id.
+ *
+ * The chart compares the two ENROLMENT PATHS and the parts of a dental plan
+ * worth reading, not specific plans: annual maximums, waiting periods and
+ * coverage percentages are set per plan and per state, and inventing a grid of
+ * them would be exactly the kind of made-up benefit detail that must not ship.
+ * Where a real figure belongs, there's a marked slot.
+ */
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
+import CarrierStrip from '../components/CarrierStrip.astro';
+import Faq from '../components/Faq.astro';
+import { site } from '../data/site';
+
+const title = 'Dental & Vision Insurance Plans | Lisa’s Insurance Agency';
+const description =
+  'Compare dental and vision coverage — enroll online with a network check, or have a licensed agent walk you through it. Standalone plans work alongside Medicare.';
+
+/* PLACEHOLDER LOGOS: in-brand text chips until real carrier artwork is
+   licensed. Carrier marks are trademarked; a fake logo is worse than none. */
+const selfEnroll = [
+  { name: 'Ameritas', note: 'Large network' },
+  { name: 'Manhattan Life' },
+  { name: 'Allstate' },
+];
+
+const agentAssisted = [
+  { name: 'Healthspring' },
+  { name: 'Aetna' },
+  { name: 'Mutual of Omaha' },
+];
+
+const whatToCompare = [
+  {
+    tag: 'Tier 1',
+    name: 'Preventive care',
+    copy: 'Cleanings, exams, routine x-rays. Most dental plans cover these at the highest level, and often with no waiting period — this is the part that pays for itself if you go twice a year.',
+  },
+  {
+    tag: 'Tier 2',
+    name: 'Basic care',
+    copy: 'Fillings, extractions, and similar everyday work. Plans typically cover a share of the cost rather than all of it, and a waiting period may apply before you can use it.',
+  },
+  {
+    tag: 'Tier 3',
+    name: 'Major care',
+    copy: 'Crowns, bridges, dentures, root canals. Covered at a lower share than basic care, and this is where waiting periods are longest — which is why a plan bought the month before a big procedure often won’t help with it.',
+  },
+  {
+    tag: 'The ceiling',
+    name: 'Annual maximum',
+    copy: 'The most the plan will pay toward your care in a plan year. Once you reach it, further costs that year are yours. Comparing two plans without comparing their annual maximums tells you very little.',
+  },
+  {
+    tag: 'The wait',
+    name: 'Waiting periods',
+    copy: 'How long you have to hold the plan before a given tier of care is covered. They vary by plan and by tier, and they are the single most common surprise — worth reading before you enroll, not after.',
+  },
+  {
+    tag: 'The list',
+    name: 'Network',
+    copy: 'Whether your dentist participates. Staying in network costs less; some plans cover out-of-network care at a reduced level and some don’t cover it at all. Check your own dentist before anything else.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can I buy dental coverage any time of year?',
+    a: 'Dental and vision plans generally aren’t tied to an annual enrollment window the way medical coverage is, so you can usually start one when you decide to. That’s different from Medicare and from Marketplace medical plans.',
+  },
+  {
+    q: 'I have a procedure coming up. Will a new plan cover it?',
+    a: 'Often not, because of waiting periods — major work usually has the longest one. It’s the first thing to check, and I’d rather tell you the honest answer before you buy than have you find out afterwards.',
+  },
+  {
+    q: 'Is vision included, or separate?',
+    a: 'It depends on the plan. Some are dental-only, some bundle in a vision benefit, and some vision coverage is sold on its own. Tell me whether you want eyes, teeth, or both, and I’ll show you what fits.',
+  },
+  {
+    q: 'Can I keep my dentist?',
+    a: 'If they’re in the plan’s network, yes, and the online enrollment link checks that for you before you commit. If they’re not, we look at what the plan pays out of network — sometimes it still works, sometimes it doesn’t.',
+  },
+  {
+    q: 'Does it cost extra to enroll through you?',
+    a: 'No. The premium is the same either way. Enrolling online yourself is genuinely fine — I’m here for the plans that need a conversation, and for afterwards.',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Dental &amp; vision"
+  heading="Coverage for your teeth and your eyes."
+  intro="Two ways in: enroll online in a few minutes with a network check built in, or have me walk you through it. Same premium either way — the difference is only how much of it you'd rather do yourself."
+>
+  <!-- ─── The comparison chart (homepage links straight here) ─────────── -->
+  <section class="section" id="compare" aria-labelledby="compare-heading">
+    <div class="container">
+      <p class="eyebrow">Compare</p>
+
+      <div class="section-intro">
+        <h2 id="compare-heading">Two paths to the same coverage.</h2>
+        <p class="lead">
+          Which one you take depends on how straightforward your situation is —
+          not on how much you pay.
+        </p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="compare-table">
+          <caption>Enroll online, or with an agent</caption>
+          <thead>
+            <tr>
+              <th scope="col">&nbsp;</th>
+              <th scope="col">Enroll online</th>
+              <th scope="col">With Lisa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Carriers on this path</th>
+              <td class="cell-part">Ameritas, Manhattan Life, Allstate</td>
+              <td class="cell-part">Healthspring, Aetna, Mutual of Omaha</td>
+            </tr>
+            <tr>
+              <th scope="row">Checking your dentist is in network</th>
+              <td class="cell-part">Built into the enrollment link — you check before you commit</td>
+              <td class="cell-part">I check it with you on the call</td>
+            </tr>
+            <tr>
+              <th scope="row">How long it takes</th>
+              <td class="cell-part">Minutes, on your own schedule</td>
+              <td class="cell-part">One phone call</td>
+            </tr>
+            <tr>
+              <th scope="row">Good fit when</th>
+              <td class="cell-part">You know what you want and your dentist is in the network</td>
+              <td class="cell-part">You want the options weighed up, or your situation has a wrinkle in it</td>
+            </tr>
+            <tr>
+              <th scope="row">What it costs you</th>
+              <td class="cell-part">The plan’s premium</td>
+              <td class="cell-part">The plan’s premium — my help is free</td>
+            </tr>
+            <tr>
+              <th scope="row">Who you call afterwards</th>
+              <td class="cell-part">Me — I’m your agent either way</td>
+              <td class="cell-part">Me</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="source-note">
+        Availability, plan designs and pricing vary by state and by carrier. Online
+        dental enrollment is available in 43 states — not in CT, VT, UT, HI, WY, WV
+        or RI.
+      </p>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--ghost" href="/contact">Send me a note instead</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <!-- ─── Carrier partners ────────────────────────────────────────────── -->
+  <section class="section section--navy" id="carriers" aria-labelledby="carriers-heading">
+    <div class="container">
+      <p class="eyebrow">Carrier partners</p>
+
+      <div class="section-intro">
+        <h2 id="carriers-heading">Who the plans come from.</h2>
+        <p class="lead">
+          I don’t represent every company, and I’ll always tell you which ones I
+          can and can’t quote you.
+        </p>
+      </div>
+
+      {/* LOGO ASSETS PENDING — in-brand name chips stand in until real carrier
+          artwork is licensed. */}
+      <CarrierStrip label="Enroll online — network check included" carriers={selfEnroll} />
+      <CarrierStrip label="Agent-assisted — we do it together" carriers={agentAssisted} reverse />
+
+      <div class="split" style="margin-top: clamp(40px, 5vw, 64px)">
+        <div class="prose">
+          <h3>On the online path</h3>
+          <p>
+            <strong>Ameritas</strong> carries a large dental network, which is often
+            what decides it for people who want to keep the dentist they already
+            have. <strong>Manhattan Life</strong> and <strong>Allstate</strong> round
+            out the online options. On all three, the enrollment link checks whether
+            your dentist participates before you commit to anything.
+          </p>
+        </div>
+        <div class="prose">
+          <h3>On the agent-assisted path</h3>
+          <p>
+            <strong>Healthspring</strong> and <strong>Aetna</strong> draw on similar
+            networks, so if your dentist is in one there’s a reasonable chance
+            they’re in the other. <strong>Mutual of Omaha</strong> uses a different
+            network, which makes it worth checking separately — sometimes it’s the
+            one that has your dentist when the others don’t.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── What to compare ─────────────────────────────────────────────── -->
+  <section class="section" id="what-to-compare" aria-labelledby="what-heading">
+    <div class="container">
+      <p class="eyebrow">Reading a plan</p>
+
+      <div class="section-intro">
+        <h2 id="what-heading">Six things that actually decide the fit.</h2>
+        <p class="lead">
+          Premium is the easiest number to compare and the least informative one
+          on its own. These are the parts to read first.
+        </p>
+      </div>
+
+      <dl class="def-list">
+        {whatToCompare.map((item) => (
+          <div class="def-row">
+            <dt>
+              <span class="def-tag">{item.tag}</span>
+              {item.name}
+            </dt>
+            <dd>{item.copy}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="callout callout--note">
+        <h3>Plan-by-plan figures</h3>
+        <p>
+          [SLOT: annual maximums, coverage percentages and waiting periods for each
+          carrier go here once confirmed from current plan documents.] These are set
+          per plan and per state, so they’re quoted for your address rather than
+          published as a single grid.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── For Medicare members ────────────────────────────────────────── -->
+  <section class="section section--navy" id="with-medicare" aria-labelledby="medicare-heading">
+    <div class="container">
+      <p class="eyebrow">On Medicare?</p>
+
+      <div class="section-intro">
+        <h2 id="medicare-heading">Dental coverage that works with your Medicare plan.</h2>
+        <p class="lead">
+          Original Medicare doesn’t cover routine dental care. A standalone plan is
+          how most people on Medicare deal with that.
+        </p>
+      </div>
+
+      <div class="cards cards--2 cards--tiles">
+        <article class="card">
+          <h3>Alongside a Medicare Advantage plan</h3>
+          <p>
+            Many Advantage plans include some dental benefit, but what’s included
+            varies and it may not go as far as you need — particularly on major
+            work. A standalone dental plan can sit alongside your Advantage plan
+            and cover more than it does on its own. Worth comparing what your plan
+            already gives you before adding anything.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/advantage">About Advantage plans</a>
+        </article>
+
+        <article class="card">
+          <h3>Alongside Original Medicare or a Supplement</h3>
+          <p>
+            Neither Original Medicare nor a Medicare Supplement covers routine
+            dental care — a Medigap policy exists to cover Medicare’s own
+            cost-sharing, and dental sits outside that entirely. A standalone
+            dental plan is the straightforward way to add it.
+          </p>
+          <a class="btn btn--ghost" href="/medicare/supplement">About Supplement plans</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─────────────────────────────────────────────────────────── -->
+  <section class="section" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <p class="eyebrow">Questions</p>
+
+      <div class="section-intro">
+        <h2 id="faq-heading">Questions about dental &amp; vision.</h2>
+      </div>
+
+      <Faq items={faqs} schema />
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Tell me who your dentist is."
+    copy="That one answer narrows the whole thing down. Call or text and we'll have it sorted in a few minutes."
+  />
+</Page>
