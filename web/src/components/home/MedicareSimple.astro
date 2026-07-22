@@ -21,7 +21,10 @@ import { site } from '../../data/site';
 
     <div class="cards cards--2 cards--tiles">
       <article class="card">
-        <h3>Medicare Supplement (Medigap)</h3>
+        {/* Non-breaking space ties the parenthetical to the word before it, so
+            the heading can't wrap to a lone "(Medigap)" on a narrow tile. Same
+            words, just a break the line can't take. */}
+        <h3>Medicare Supplement&nbsp;(Medigap)</h3>
         <p>
           Works alongside Original Medicare to help pay what it leaves behind —
           deductibles, copays, coinsurance. See any doctor who accepts Medicare.
@@ -29,7 +32,9 @@ import { site } from '../../data/site';
         </p>
       </article>
       <article class="card">
-        <h3>Medicare Advantage (Part C)</h3>
+        {/* Both spaces non-breaking: binding only the first one still let the
+            line break inside the parenthetical, leaving "C)" stranded. */}
+        <h3>Medicare Advantage&nbsp;(Part&nbsp;C)</h3>
         <p>
           An all-in-one alternative from private carriers. Many plans include
           extras like prescription, dental, or vision. Usually a lower premium —
