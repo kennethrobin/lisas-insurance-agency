@@ -9,6 +9,24 @@
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
+  {/* Background footage under the navy wash. Decorative, so it is hidden from
+      assistive tech and carries no controls. The poster is a CSS background on
+      the wrapper rather than the video's `poster` attribute, so the still frame
+      is what shows whenever the video doesn't play at all — reduced motion,
+      Save-Data, autoplay blocked, or a browser that can't decode either file. */}
+  <div class="hero-media" aria-hidden="true">
+    <video
+      class="hero-video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      tabindex="-1"
+      disablepictureinpicture
+      disableremoteplayback
+    ></video>
+  </div>
+
   <div class="container">
     <h1 id="hero-heading">
       {/* Stacked deliberately — the break is part of the composition, not a
@@ -63,3 +81,48 @@
     </div>
   </div>
 </section>
+
+<script is:inline>
+  /* Hero background video loader.
+     The <video> ships with NO sources, so nothing downloads until this decides
+     it should. That is the whole point: on a phone with Save-Data, or for a
+     visitor who asked for reduced motion, the page costs one 27KB still instead
+     of a video file.
+
+     It also waits for `load`, so the footage never competes with the hero's own
+     paint — the poster and the navy wash are on screen first either way. */
+  (function () {
+    var video = document.querySelector('.hero-video');
+    if (!video) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var saveData = navigator.connection && navigator.connection.saveData;
+    if (reduceMotion || saveData) return; // poster only — nothing is fetched
+
+    function start() {
+      // Phones get the 854px encode: a third of the bytes, and indistinguishable
+      // under a ~90% navy wash at that size.
+      var small = window.matchMedia('(max-width: 899px)').matches;
+      var base = small ? '/media/hero-sm' : '/media/hero';
+
+      [['video/webm', base + '.webm'], ['video/mp4', base + '.mp4']].forEach(function (pair) {
+        var source = document.createElement('source');
+        source.type = pair[0];
+        source.src = pair[1];
+        video.appendChild(source);
+      });
+
+      video.addEventListener('playing', function () {
+        video.dataset.ready = 'true'; // fades it in over the poster
+      });
+
+      video.load();
+      // Autoplay can still be refused; the poster simply stays put if so.
+      var attempt = video.play();
+      if (attempt && attempt.catch) attempt.catch(function () {});
+    }
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+  })();
+</script>

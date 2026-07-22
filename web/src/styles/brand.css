@@ -625,6 +625,46 @@ main {
   padding-bottom: clamp(1rem, 3.5vh, 3rem);
 }
 
+/* ---------- Hero background footage ----------
+   The video sits under a navy wash rather than beside it: the gradient IS the
+   hero's colour, the footage just gives it movement. The wash is deliberately
+   heavy (86% to 95%) — at that strength even a pure-white frame composites to
+   ~#3B4C64, which holds white text at 8.6:1 and the light body tone at 5.8:1.
+   Contrast therefore never depends on what the footage is doing. */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;   /* stays inside the panel's rounded corners */
+  /* The still frame. Also the entire background whenever the video doesn't
+     play, which is why it lives here rather than on the video's poster attr. */
+  background: url('/media/hero-poster.jpg') center / cover no-repeat;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+/* Set by the loader on `playing`, so the cut from still to motion is a fade
+   rather than a flash. */
+.hero-video[data-ready] { opacity: 1; }
+
+/* The blue itself. Same angle and stops as --grad-hero, just translucent. */
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    168deg,
+    rgba(44, 70, 102, 0.86) 0%,
+    rgba(32, 52, 79, 0.90) 46%,
+    rgba(22, 39, 61, 0.95) 100%
+  );
+}
+
 /* Fine grain over the gradient — keeps the warm field from looking plasticky. */
 .hero::after {
   content: "";
