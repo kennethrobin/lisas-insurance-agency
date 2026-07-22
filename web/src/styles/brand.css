@@ -652,16 +652,24 @@ main {
    rather than a flash. */
 .hero-video[data-ready] { opacity: 1; }
 
-/* The blue itself. Same angle and stops as --grad-hero, just translucent. */
+/* The blue wash over the footage, on a single dial.
+   --hero-wash: 0 = raw footage, nothing over it (current)
+                0.4 = footage reads clearly, text still comfortable
+                0.9 = the original heavy navy
+   NOTE: at 0 the footage carries the contrast on its own, so light text can
+   fall below AA wherever a frame is bright. See the measurements in the commit. */
+.hero { --hero-wash: 0; }
+
 .hero-media::after {
   content: "";
   position: absolute;
   inset: 0;
+  opacity: var(--hero-wash);
   background: linear-gradient(
     168deg,
-    rgba(44, 70, 102, 0.86) 0%,
-    rgba(32, 52, 79, 0.90) 46%,
-    rgba(22, 39, 61, 0.95) 100%
+    rgb(44, 70, 102) 0%,
+    rgb(32, 52, 79) 46%,
+    rgb(22, 39, 61) 100%
   );
 }
 
