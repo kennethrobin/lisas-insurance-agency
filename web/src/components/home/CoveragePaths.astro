@@ -3,6 +3,9 @@
 // The buttons are outline capsules, not gold: gold stays reserved for the
 // primary actions (call Lisa, get help, compare plans), and three gold pills in
 // one row would flatten that hierarchy. No prices anywhere.
+//
+// No arrow glyphs in the labels: the self-hosted Open Sans is a latin subset
+// with no U+2191/U+2193, so they rendered as missing-glyph boxes.
 ---
 
 <section class="section" id="coverage" aria-labelledby="coverage-heading">
@@ -17,18 +20,17 @@
       <article class="card">
         <h3>Medicare</h3>
         <p>Supplement, Advantage, and Part D — explained simply, chosen carefully.</p>
-        <!-- Arrows point the way the page scrolls; decorative, so aria-hidden -->
-        <a class="btn btn--ghost" href="#medicare">See the short version <span aria-hidden="true">↑</span></a>
+        <a class="btn btn--ghost" href="#medicare">See the short version</a>
       </article>
       <article class="card">
         <h3>Dental &amp; Vision</h3>
         <p>Compare top carriers and enroll online today, in 43 states.</p>
-        <a class="btn btn--ghost" href="#dental">Start today <span aria-hidden="true">↓</span></a>
+        <a class="btn btn--ghost" href="#dental">Start today</a>
       </article>
       <article class="card">
         <h3>Protecting the rest</h3>
         <p>Life insurance and cancer, heart attack &amp; stroke plans, when you’re ready.</p>
-        <a class="btn btn--ghost" href="#contact">Ask me <span aria-hidden="true">↓</span></a>
+        <a class="btn btn--ghost" href="#contact">Ask me</a>
       </article>
     </div>
   </div>

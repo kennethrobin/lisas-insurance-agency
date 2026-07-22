@@ -213,21 +213,35 @@ h1 {
   letter-spacing: var(--display-track);
 }
 
+/* Section headlines are bold. The tracking eases off from the light cut's
+   -0.035em: bold letterforms are wider, and the tighter value crowded them. */
 h2 {
-  font-weight: var(--display-weight);
+  font-weight: 700;
   font-size: clamp(1.9rem, 3.4vw, 3.1rem);
-  line-height: 1.06;
-  letter-spacing: var(--display-track);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 h3 {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.2rem;
   line-height: 1.3;
   letter-spacing: -0.008em;
 }
 
+/* No hanging words anywhere.
+   `pretty` is the default because it is the one that actually prevents a lone
+   last word, and it works at any length. `balance` is reserved for blocks that
+   stay short: browsers stop balancing past ~6 lines and silently fall back to
+   normal wrapping, which is exactly how a 7-line card paragraph ended up with
+   an orphan on mobile. Both degrade to normal wrapping where unsupported. */
+p, li, blockquote, figcaption, summary { text-wrap: pretty; }
+h3 { text-wrap: pretty; }   /* short headings: avoiding the orphan beats balancing */
 p { max-width: 68ch; }
+.lead,
+.hero-sub,
+.microline,
+.reviews-footnote { text-wrap: balance; }
 
 a { color: var(--surface-heading); text-underline-offset: 3px; }
 a:hover { color: var(--surface-label); }
@@ -290,7 +304,7 @@ main {
   margin-bottom: clamp(20px, 2vw, 28px);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
 }
@@ -377,13 +391,20 @@ main {
 }
 .btn--ghost:hover { background: var(--surface-heading); color: var(--surface-invert); border-color: var(--surface-heading); }
 
-/* "Calling connects you with Lisa…" — rides along with every phone display */
+/* "Calling connects you with Lisa…" — rides along with every phone display.
+   One line: the 44ch cap used to break it after "licensed". Below 620px there
+   isn't room for the sentence at 14px, and 14px is the floor for this audience,
+   so there it wraps — balanced, so it never drops a lone word. */
 .microline {
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--surface-label);
   margin-top: 0.7rem;
-  max-width: 44ch;
+  max-width: none;
+  white-space: nowrap;
+}
+@media (max-width: 620px) {
+  .microline { white-space: normal; text-wrap: balance; }
 }
 
 /* ---------- Header ----------
@@ -482,7 +503,7 @@ main {
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.2;
   text-decoration: none;
@@ -532,7 +553,7 @@ main {
   padding: 0.35rem 0.9rem;
   font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
 }
@@ -626,26 +647,22 @@ main {
   width: 100%;
 }
 
-/* The giant line: one line that all but spans the panel, at every width.
-   ---------------------------------------------------------------------------
-   TUNING: the headline is set with `white-space: nowrap`, so its font size has
-   to be derived from the width available INSIDE the panel — not the viewport,
-   which is wider by the page gutter plus the container's padding.
-
-   `cqw` is 1% of the container's content box, so the size is a pure ratio:
-   this string renders 9.30x its font size at weight 300, so it fits at
-   100/9.30 = 10.75cqw. 10.4cqw leaves ~3% of breathing room at the right edge.
-   Change the headline text and this number needs re-checking.
-   The vh ceiling stops the line crowding out the controls on short windows;
-   the vw first declaration is the fallback where cqw is unsupported. */
-.hero h1 { max-width: none; }
+/* The headline block sits midway between the header and the hero's floor:
+   `margin-block: auto` splits the leftover space evenly above and below it,
+   the floor already being pinned to the bottom by its own auto margin. */
+.hero h1 {
+  max-width: none;
+  margin-block: auto;
+}
+/* Still the largest thing in the hero and still one line, but nowhere near the
+   old panel-spanning scale — it reads as a headline now, not a banner. At its
+   cap it is about 2.3x the line beneath it. */
 .hero .display-xl {
   display: block;
-  font-size: min(9.6vw, 21vh);
-  font-size: min(10.6cqw, 21vh);
-  font-weight: var(--display-weight);
-  line-height: 0.9;
-  letter-spacing: -0.045em;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
   white-space: nowrap;
 }
 /* The rest of the same sentence, set small and quiet under the giant line. */
@@ -660,9 +677,12 @@ main {
   color: var(--surface-heading);
 }
 
-/* Everything below the headline sits on the hero's baseline. */
+/* Everything below the headline sits on the hero's baseline. It needs no auto
+   margin of its own: the headline's auto margins already absorb all the free
+   space, half above it and half below, which lands the floor on the bottom
+   edge. With an auto margin here too, three autos shared the space and the
+   headline sat a third of the way down instead of centred. */
 .hero-floor {
-  margin-top: auto;
   padding-top: var(--hero-gap);
   display: grid;
   grid-template-columns: 1fr;
@@ -752,7 +772,7 @@ main {
   display: block;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
   margin-bottom: 0.45rem;
@@ -792,7 +812,7 @@ main {
   gap: 0.6rem;
   font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-heading);
 }
@@ -820,7 +840,7 @@ main {
   display: block;
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
   margin-bottom: 0.6rem;
@@ -868,7 +888,7 @@ main {
 .cta-band .cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)); }
 .cards--tiles .card h3 {
   font-size: clamp(1.35rem, 1.9vw, 1.8rem);
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 0.9rem;
 }
@@ -945,7 +965,7 @@ main {
 .video-placeholder p {
   font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-heading);
 }
@@ -1000,7 +1020,7 @@ main {
   padding-top: 1.6rem;
   font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
 }
@@ -1087,7 +1107,7 @@ main {
   margin-bottom: 1.4rem;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
 }
@@ -1096,7 +1116,7 @@ main {
   display: block;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
   margin-bottom: 0.4rem;
@@ -1167,7 +1187,8 @@ main {
 }
 .footer-brand .wordmark {
   color: var(--surface-heading);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
+  font-weight: 700;   /* heavier than the header's, it anchors the footer */
   max-width: none;
   padding: 0;
 }
@@ -1176,6 +1197,9 @@ main {
    tall they were under the 44px minimum this audience needs. */
 .footer-contact { margin-top: 1.1rem; display: grid; gap: 0; justify-items: start; }
 .footer-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
   font-weight: 600;
   padding-block: 0.6rem;
@@ -1188,7 +1212,7 @@ main {
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--surface-label);
   margin-bottom: 1.2rem;
