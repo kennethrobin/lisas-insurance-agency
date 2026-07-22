@@ -1308,11 +1308,11 @@ main {
 }
 
 @media (min-width: 900px) {
-  /* The band the header tab occupies at the top of the hero — from the panel's
-     top edge to the tab's bottom — repeated as empty space at the bottom, so
-     the hero is inset by the same amount top and bottom. Lifts the sub, the
-     review chip and the quick-start card off the panel's lower edge. */
-  .hero { padding-bottom: calc(var(--header-actual, var(--header-h)) - var(--gutter)); }
+  /* Bottom inset = the tab's own padding, top and bottom of it combined.
+     Mirroring the whole 77px band the tab occupies was the literal match but
+     read far heavier, because that band is filled by the tab while the bottom
+     one is empty. This is the tab's breathing room, repeated. */
+  .hero { padding-bottom: calc(var(--header-pad) * 2); }
 
   .hero-floor { grid-template-columns: 1fr auto; }
   .steps { grid-template-columns: repeat(3, 1fr); column-gap: clamp(1rem, 2vw, 2.5rem); }
