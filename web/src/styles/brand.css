@@ -138,10 +138,12 @@
    variant — the rules below all read the variables and follow along.
    ========================================================================== */
 .hero,
+.page-hero,
 .trust-band,
 .section--navy,
 .cta-band,
 .video-placeholder,
+.media-slot,
 .site-header,
 .site-footer {
   --surface-heading: #FFFFFF;
@@ -337,6 +339,20 @@ main {
 }
 .skip-link:focus-visible { top: 1rem; }
 
+/* Text for screen readers only. The comparison table leans on this: a dot in a
+   cell is readable at a glance but says nothing out loud, so each cell carries
+   its meaning and its column name in text no one sees. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
@@ -413,7 +429,8 @@ main {
    corners, rounded off at the bottom only — a capsule cut in half. It reads as
    hanging from the top edge rather than floating like the panels below.
    Transparent over the hero; on scroll it picks up a frosted background so it
-   keeps working over the white panels. No hamburger at any width. */
+   keeps working over the white panels. One slim row at every width — the links
+   live behind the hamburger, and the drawer hangs off the tab's bottom edge. */
 .site-header {
   position: fixed;
   top: 0;
@@ -451,8 +468,9 @@ main {
   text-decoration: none;
   line-height: 1.25;
   padding-block: 0.72rem;   /* 44px tap target without changing header height */
-  /* One line, so the tab stays slim. Below 900px it wraps to two tidy lines
-     next to the phone pill — see the narrow-screen block further down. */
+  /* One line at every width now that the nav is behind the hamburger: the tab
+     only ever carries wordmark + phone + menu, which fits on one row down to
+     the narrowest phone (the pill drops its digits below 400px). */
   white-space: nowrap;
 }
 .wordmark:hover { color: var(--surface-heading); }
@@ -477,28 +495,19 @@ main {
 }
 .header-phone:hover { background: var(--accent-hover); color: var(--accent-ink); }
 
-/* Primary nav — always visible, driven by site.ts `mainNav`. */
-.site-nav { display: flex; min-width: 0; }
-.site-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.1rem 0.2rem;
-}
-.nav-item { position: relative; }
-
-.nav-top {
+/* ---------- Hamburger toggle ----------
+   An outline capsule beside the phone pill, so the tab reads as two controls of
+   the same family rather than a pill next to a bare icon. Two bars, not three:
+   at this size the third reads as noise, and the word "Menu" is doing the
+   labelling anyway — which this audience needs more than a glyph. */
+.nav-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  padding: 0.45rem 1rem;   /* the hover state is a capsule — needs the width */
-  border: 0;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0.45rem 1.15rem;
   border-radius: 999px;
+  border: 1px solid var(--surface-outline);
   background: transparent;
   color: var(--surface-heading);
   font-family: var(--font-body);
@@ -507,81 +516,195 @@ main {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.2;
-  text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
-.nav-top:hover { color: var(--surface-heading); background: var(--surface-hover); }
-.nav-caret { width: 9px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
-[data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
+.nav-toggle:hover {
+  background: var(--surface-heading);
+  color: var(--surface-invert);
+  border-color: var(--surface-heading);
+}
+
+.nav-toggle-bars {
+  position: relative;
+  width: 17px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+.nav-toggle-bars span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.nav-toggle-bars span:first-child { top: 2px; }
+.nav-toggle-bars span:last-child { bottom: 2px; }
+/* Open state: the two bars cross. Rotating around the box's centre means both
+   have to travel to it first, hence the translate before the rotate. */
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
 
 /* Solid (scrolled) state — frosted, so it reads over any panel. */
-.site-header.is-solid {
+.site-header.is-solid,
+.site-header.nav-open {
   background: rgba(12, 24, 38, 0.92);   /* --navy-black, translucent */
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   box-shadow: var(--shadow-float);
 }
 
-/* Sub-item dropdown — lightweight disclosure (hover/click/focus).
-   `.align-right` is toggled in JS when a panel would spill off-screen. */
-.nav-dropdown {
+/* ---------- The drawer ----------
+   Hangs off the bottom of the header tab and shares its shape: same inset, same
+   bottom radius, so the two read as one object opening rather than a panel
+   arriving from somewhere else. It scrolls internally if the menu outgrows the
+   window, which is what keeps it usable on a landscape phone. */
+.nav-drawer {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;
   left: 0;
+  right: 0;
   z-index: 70;
-  display: none;
-  min-width: 276px;
-  max-width: min(92vw, 360px);
-  padding: 0.65rem 0.55rem;
-  background: var(--navy);
-  border: 1px solid var(--surface-line);
-  border-radius: var(--radius);
+  max-height: calc(100svh - var(--header-actual, var(--header-h)) - var(--gutter) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: clamp(0.75rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2rem);
+  background: var(--navy-deep);
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
   box-shadow: var(--shadow-float);
 }
-.nav-dropdown[data-open] { display: block; }
-.nav-dropdown.align-right { left: auto; right: 0; }
+/* [hidden] is set in the markup so the drawer starts closed and out of the tab
+   order with no JS. It needs the !important because .nav-drawer's own `display`
+   would otherwise win on specificity. */
+.nav-drawer[hidden] { display: none !important; }
 
-.nav-dd-group + .nav-dd-group {
-  margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid var(--surface-line);
+/* The header sits above its own drawer, so the tab's shadow doesn't land on it. */
+.site-header { isolation: isolate; }
+.site-header > .container { position: relative; z-index: 2; }
+
+body.has-nav-open { overflow: hidden; }
+
+.drawer-list { list-style: none; margin: 0; padding: 0; }
+
+.drawer-item + .drawer-item { border-top: 1px solid var(--surface-line); }
+
+/* The under-65 / ACA path is a different audience from everything else in the
+   menu, so it is set apart rather than ranked: a heavier rule above it and a
+   quieter type colour. Deliberately NOT a second accent — the tab has exactly
+   one filled action on it, the phone pill. */
+.drawer-item--apart {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 2px solid var(--surface-line) !important;
 }
-.nav-dd-heading {
-  padding: 0.35rem 0.9rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.drawer-item--apart .drawer-link { color: var(--surface-label); font-weight: 400; }
+.drawer-item--apart .drawer-link:hover { color: var(--surface-heading); }
+.drawer-apart-mark { width: 15px; height: 15px; flex: 0 0 auto; opacity: 0.8; }
+.drawer-note {
+  margin: -0.35rem 0 0.9rem;
+  font-size: 0.9rem;
   color: var(--surface-label);
+  max-width: 44ch;
 }
-.nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
-.nav-dropdown a {
-  display: block;
-  padding: 0.75rem 0.9rem;   /* 44px row height */
-  border-radius: 10px;
+
+/* Menu rows are big: this is the whole navigation for a senior audience on a
+   phone, so the targets are generous and the type is display-scale, not the old
+   11px uppercase. */
+.drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.85rem 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.2vw, 1.9rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   color: var(--surface-heading);
+  text-decoration: none;
+  cursor: pointer;
+}
+.drawer-link:hover { color: var(--surface-heading); opacity: 0.75; }
+
+/* Current page: a bullet in the left margin, matching the eyebrow's marker. */
+.drawer-link[aria-current="page"]::before,
+.is-current > .drawer-group > .drawer-summary::before {
+  content: "";
+  width: 7px; height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--surface-mark);
+}
+
+/* Medicare's sub-items: a native <details> disclosure inside the drawer. No
+   floating submenu — a panel that overlays a panel is a hard target. */
+.drawer-group { width: 100%; }
+.drawer-summary { list-style: none; justify-content: flex-start; }
+.drawer-summary::-webkit-details-marker { display: none; }
+.drawer-caret {
+  width: 12px; height: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+.drawer-group[open] .drawer-caret { transform: rotate(180deg); }
+
+.drawer-sublist {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0 0 0 1.1rem;
+  border-left: 1px solid var(--surface-line);
+  display: grid;
+}
+.drawer-sublink {
+  display: block;
+  min-height: 48px;
+  padding: 0.7rem 0;
+  font-size: 1.05rem;
   font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.3;
+  color: var(--surface-body);
   text-decoration: none;
 }
-.nav-dropdown a:hover { background: var(--surface-hover); }
+.drawer-sublink:hover { color: var(--surface-heading); }
+.drawer-sublink[aria-current="page"] { color: var(--surface-heading); font-weight: 700; }
 
-/* Narrow screens: the nav drops to its own full-width row under the wordmark
-   and phone rather than hiding behind a toggle. */
-@media (max-width: 900px) {
-  .site-header .container { flex-wrap: wrap; row-gap: 0.35rem; }
-  .site-nav { flex: 1 0 100%; order: 3; }
-  .site-nav-list { justify-content: flex-start; }
-  .nav-top { padding: 0.4rem 0.7rem; font-size: 0.75rem; }
-  .nav-dropdown { min-width: 220px; }
-  /* Two tidy lines beside the phone pill, rather than one long line that
-     would push the pill off the row. */
-  .wordmark { white-space: normal; max-width: 12ch; }
+.drawer-foot {
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+  padding-top: clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--surface-line);
+}
+
+/* Wide screens: the drawer doesn't need the full width, so it settles into a
+   panel on the right, under the control that opened it. */
+@media (min-width: 720px) {
+  .nav-drawer {
+    left: auto;
+    width: min(440px, calc(100% - var(--container-pad) * 2));
+    margin-right: var(--container-pad);
+    padding-inline: clamp(1.25rem, 2vw, 1.75rem);
+    border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+  }
+  .nav-drawer > .container { padding-inline: 0; }
+}
+
+/* Very narrow: the phone pill keeps the icon but drops the digits, so the
+   wordmark and the menu control both stay on one row. The number is the first
+   thing in the drawer either way. */
+@media (max-width: 400px) {
+  .header-phone { padding-inline: 0.9rem; }
+  .header-phone-number { display: none; }
+  .nav-toggle-label { display: none; }
+  .nav-toggle { padding-inline: 0.95rem; }
 }
 
 /* ==========================================================================
@@ -1321,6 +1444,540 @@ main {
 .footer-legal a { color: var(--surface-label); padding-block: 0.7rem; }
 
 /* ==========================================================================
+   INTERIOR PAGES
+   Everything below is shared by the pages behind the homepage. It is written
+   against the same surface variables and the same shapes — nothing here is a
+   new visual language, it is the homepage's parts used in more places.
+   ========================================================================== */
+
+/* ---------- Page hero ----------
+   The homepage hero sized to its content. Same field, same grain; no min-height,
+   because an interior page has no controls to pin to the fold and a full screen
+   of hero would only push the answer down. */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-panel);
+  background:
+    radial-gradient(80% 70% at 80% 6%, rgba(122, 158, 190, 0.30), transparent 62%),
+    radial-gradient(70% 60% at 6% 94%, rgba(255, 255, 255, 0.07), transparent 64%),
+    var(--grad-hero);
+  /* Clears the fixed header, which is measured from the top of the WINDOW while
+     this padding starts a gutter down — hence the subtraction. */
+  padding-top: calc(
+    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(2.5rem, 6vw, 5rem)
+  );
+  padding-bottom: clamp(2.75rem, 6vw, 5rem);
+}
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+.page-hero .container { position: relative; z-index: 1; }
+.page-hero h1 { max-width: 16ch; }
+.page-hero-intro {
+  margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
+  max-width: 54ch;
+  font-size: 1.15rem;
+  color: var(--surface-body);
+  text-wrap: pretty;
+}
+.page-hero .hero-actions { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+/* A row of actions. Used under a hero and at the foot of a section. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.actions--stack { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+/* ---------- Prose ----------
+   Long-form copy inside a panel. The body size is inherited (18px floor); this
+   only handles rhythm and the small type details the homepage never needed. */
+.prose { max-width: 68ch; }
+.prose > * + * { margin-top: 1.15rem; }
+.prose h3 { margin-top: 2.25rem; }
+.prose ul, .prose ol { padding-left: 1.3rem; display: grid; gap: 0.6rem; }
+.prose li { color: var(--surface-body); }
+.prose a { color: var(--surface-heading); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.prose strong { font-weight: 700; color: var(--surface-heading); }
+
+/* Two-column body: copy left, a card or media panel right. */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+/* ---------- Definition rows ----------
+   The numbered stepper's quieter sibling: a term and its explanation, ruled off
+   from each other. Used for Medicare's parts and the plan types. */
+.def-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--surface-line);
+}
+.def-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2.5rem;
+  padding: clamp(1.4rem, 2.4vw, 1.9rem) 0;
+  border-bottom: 1px solid var(--surface-line);
+}
+.def-row dt {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--surface-heading);
+}
+.def-row dd { margin: 0; color: var(--surface-body); }
+.def-row .def-tag {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.35rem;
+}
+
+/* ---------- Media slot ----------
+   A gradient panel standing in for a photo that doesn't exist yet. It is
+   deliberately a designed object rather than a grey box: these ship to a real
+   preview, and a grey box reads as broken. The caption says what belongs here. */
+.media-slot {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(60% 80% at 70% 20%, rgba(122, 158, 190, 0.35), transparent 65%),
+    linear-gradient(150deg, var(--navy-soft), var(--navy-deep));
+  aspect-ratio: var(--slot-ratio, 4 / 3);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 1.5rem;
+}
+.media-slot p {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  max-width: 26ch;
+}
+.media-slot .slot-mark {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--surface-line);
+  display: grid;
+  place-items: center;
+  color: var(--surface-heading);
+  opacity: 0.85;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+}
+
+/* ---------- Compare: Advantage vs Supplement ----------
+   Two columns that a single control can collapse to one, so the same component
+   works as a side-by-side on a desktop and as "show me one at a time" on a
+   phone — or for anyone who finds two columns of text hard to track. */
+.compare { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+.compare-switch {
+  display: inline-flex;
+  padding: 5px;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+}
+.compare-switch button {
+  min-height: 46px;
+  padding: 0.5rem 1.15rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--surface-body);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+.compare-switch button:hover { background: var(--surface-hover); }
+/* The selected tab is a filled capsule in the surface's own heading colour, not
+   gold: gold is the action, and choosing a view is not one. */
+.compare-switch button[aria-selected="true"] {
+  background: var(--surface-heading);
+  color: var(--surface-invert);
+}
+
+.compare-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+}
+.compare-col {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 2.4vw, 2.1rem);
+  display: flex;
+  flex-direction: column;
+}
+.compare-col h3 {
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.compare-col dl { display: grid; gap: 0; margin: 0; }
+.compare-col dt {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  padding-top: 1rem;
+}
+.compare-col dd {
+  margin: 0.3rem 0 0;
+  color: var(--surface-body);
+  font-size: 1.02rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--surface-line);
+}
+.compare-col dl > dd:last-of-type { border-bottom: 0; padding-bottom: 0; }
+.compare-col .btn { margin-top: auto; align-self: flex-start; }
+.compare-col .actions { margin-top: auto; padding-top: 1.6rem; }
+
+/* Single-view mode, set by the switch. Without JS both columns simply show,
+   which is the correct fallback for a comparison. */
+.compare[data-view="advantage"] .compare-col[data-plan="supplement"],
+.compare[data-view="supplement"] .compare-col[data-plan="advantage"] {
+  display: none;
+}
+
+/* ---------- Comparison table ----------
+   The lettered Medigap plans. A table is the honest structure for this; the
+   work is making it readable on a phone, which it does by scrolling inside its
+   own box with the first column pinned. */
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+  -webkit-overflow-scrolling: touch;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  min-width: 720px;   /* below this the cells stop being readable — scroll instead */
+}
+.compare-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  border-bottom: 1px solid var(--surface-line);
+}
+.compare-table th,
+.compare-table td {
+  padding: 0.85rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--surface-line);
+  color: var(--surface-body);
+}
+.compare-table thead th {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--surface-heading);
+  white-space: nowrap;
+}
+/* The benefit name column: pinned, left-aligned, and the widest thing here. */
+.compare-table th[scope="row"],
+.compare-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  min-width: 240px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--surface-heading);
+  background: var(--surface-card);
+  border-right: 1px solid var(--surface-line);
+  white-space: normal;
+}
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Cell values. Green is the reassurance mark, exactly as everywhere else; the
+   other states are neutral type, never red — nothing here is a warning. */
+.cell-yes { color: var(--surface-mark); font-weight: 700; }
+.cell-no { color: var(--surface-label); }
+.cell-part { font-size: 0.9rem; color: var(--surface-body); }
+/* A coverage cell we have not confirmed against the official chart. Marked, not
+   guessed — an invented cell in a Medicare benefits table is a compliance
+   problem, so it says so on its face. */
+.cell-todo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--surface-label);
+  border: 1px dashed var(--surface-line);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  display: inline-block;
+}
+
+.table-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--surface-label);
+}
+.source-note {
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--surface-label);
+  max-width: 80ch;
+}
+
+/* An empty frame waiting on a real asset — the official PDF chart, a video.
+   Dashed, so it never reads as a finished component. */
+.embed-slot {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px dashed var(--surface-line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+.embed-slot h3 { font-size: 1.05rem; }
+.embed-slot p { color: var(--surface-body); font-size: 1rem; }
+
+/* ---------- Carrier strip ----------
+   A rolling row of carrier chips. Duplicated in the markup and translated by
+   exactly half its width, so the loop is seamless. It pauses on hover and stops
+   dead under reduced motion, where it becomes a plain wrapped row. */
+.carrier-strip {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  overflow: hidden;
+  /* Fades both ends so chips enter and leave rather than appearing at a hard
+     edge. Masking beats a gradient overlay here — the panel behind it changes
+     colour from section to section. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.carrier-track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: carrier-roll 38s linear infinite;
+}
+.carrier-strip:hover .carrier-track,
+.carrier-strip:focus-within .carrier-track { animation-play-state: paused; }
+@keyframes carrier-roll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.carrier-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 0 0 auto;
+  min-height: 64px;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+  color: var(--surface-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.carrier-chip .chip-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.carrier-lane + .carrier-lane { margin-top: 0.75rem; }
+.carrier-lane-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.7rem;
+}
+/* The second lane rolls the other way, so the two don't read as one block. */
+.carrier-lane--reverse .carrier-track { animation-direction: reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .carrier-strip { -webkit-mask-image: none; mask-image: none; }
+  .carrier-track {
+    animation: none;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  /* The duplicate half exists only to make the loop seamless; with the loop off
+     it is just the same list printed twice. */
+  .carrier-track [data-clone] { display: none; }
+}
+
+/* ---------- Stat / fact chips ----------
+   Small standing facts. Never a number we haven't got — these carry statements. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: clamp(1.5rem, 2.5vw, 2rem);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+  color: var(--surface-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.chip .mark { color: var(--surface-mark); flex: 0 0 auto; }
+
+/* ---------- Callout ----------
+   A single paragraph that needs to sit apart: the Part D penalty, a compliance
+   note, the "this is a template" banner on the testimonials. */
+.callout {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  border-left: 3px solid var(--surface-mark-line);
+  background: var(--surface-mark-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: clamp(1.15rem, 2vw, 1.5rem) clamp(1.25rem, 2.2vw, 1.75rem);
+  display: grid;
+  gap: 0.5rem;
+}
+.callout h3 { font-size: 1.05rem; }
+.callout p { color: var(--surface-body); font-size: 1.02rem; }
+/* The neutral variant, for "this is placeholder content" notices, which are
+   information rather than reassurance — so no green. */
+.callout--note {
+  border-left-color: var(--surface-line);
+  background: var(--surface-card);
+}
+
+/* ---------- Post list (Education hub) ---------- */
+.post-list { display: grid; gap: 0; border-top: 1px solid var(--surface-line); }
+.post-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2.5rem;
+  align-items: baseline;
+  padding: clamp(1.5rem, 2.6vw, 2.1rem) 0;
+  border-bottom: 1px solid var(--surface-line);
+}
+.post-row h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.post-row h3 a { text-decoration: none; }
+.post-row h3 a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.post-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.post-row p { color: var(--surface-body); font-size: 1.02rem; }
+
+/* Post body — the article itself. */
+.post-body { max-width: 68ch; }
+.post-body > * + * { margin-top: 1.2rem; }
+.post-body h2 {
+  margin-top: 2.5rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+}
+.post-body h3 { margin-top: 2rem; }
+.post-body ul, .post-body ol { padding-left: 1.3rem; display: grid; gap: 0.6rem; }
+
+/* ---------- Newsletter ---------- */
+.subscribe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  max-width: 560px;
+}
+.subscribe .field { flex: 1 1 240px; }
+.subscribe label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.45rem;
+}
+.subscribe input {
+  width: 100%;
+  min-height: 54px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+}
+
+/* ---------- Breadcrumbs ---------- */
+.crumbs {
+  font-size: 0.9rem;
+  color: var(--surface-label);
+  margin-bottom: 1.25rem;
+}
+.crumbs a { color: var(--surface-label); text-underline-offset: 4px; }
+.crumbs a:hover { color: var(--surface-heading); }
+
+/* ==========================================================================
    Breakpoints
    ========================================================================== */
 
@@ -1340,11 +1997,11 @@ main {
   :root { --gutter: 8px; --radius-panel: 22px; }
   .hero .display-xl { letter-spacing: -0.035em; }
 
-  /* Phones give the nav its own rows, so the header eats ~200px of a ~810px
-     screen, and the headline now takes two lines. The hero's own rhythm
-     tightens to pay for both — otherwise its bottom edge (and the gutter under
-     it) is pushed past the fold. */
-  .hero { --hero-gap: clamp(0.5rem, 1.5vh, 1.25rem); }
+  /* The hamburger bought this back a lot of room — the header is one ~76px row
+     on a phone now, not the ~200px of wrapped nav rows it used to be. The gap
+     stays modest anyway: the headline still takes two lines here, and the
+     quick-start bar has to clear the fold with the bottom gutter under it. */
+  .hero { --hero-gap: clamp(0.75rem, 2.2vh, 1.6rem); }
   .review-chip { margin-top: 0.85rem; }
   .review-chip blockquote { font-size: 0.86rem; padding: 0.7rem 1.05rem; }
   .hero-sub { font-size: 1rem; }
@@ -1353,6 +2010,7 @@ main {
 @media (min-width: 640px) {
   .trust-band ul { grid-template-columns: repeat(2, 1fr); }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: repeat(2, 1fr); }
+  .media-grid--2 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (min-width: 900px) {
@@ -1377,6 +2035,16 @@ main {
   .section-intro { max-width: none; }
   .section-intro h2 { max-width: 18ch; }
   .lead { margin-top: 0; }
+
+  /* Term and explanation go side by side once there's room for both. */
+  .def-row { grid-template-columns: 15rem 1fr; align-items: baseline; }
+  .post-row { grid-template-columns: 1fr 20rem; }
+  .split { grid-template-columns: 1.15fr 1fr; }
+  .split--media-first { grid-template-columns: 1fr 1.15fr; }
+  /* Two columns is the point of a comparison — show both unless the visitor
+     has actively picked one view. */
+  .compare-cols { grid-template-columns: repeat(2, 1fr); }
+  .media-grid--3 { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (min-width: 1024px) {

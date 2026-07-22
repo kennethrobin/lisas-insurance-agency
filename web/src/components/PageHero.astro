@@ -1,0 +1,26 @@
+---
+/**
+ * Interior page hero — the homepage hero's little brother.
+ *
+ * Same warm navy field, same grain, same eyebrow-then-display-type structure,
+ * but sized to its content instead of to the viewport. The homepage hero fills
+ * the first screen because it has to hold the quick-start bar on the fold; an
+ * interior page has nothing to pin down there, and a full-height hero would
+ * just push the actual answer below the fold.
+ */
+interface Props {
+  eyebrow: string;
+  heading: string;
+  intro?: string;
+}
+const { eyebrow, heading, intro } = Astro.props;
+---
+
+<section class="page-hero" aria-labelledby="page-heading">
+  <div class="container">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 id="page-heading">{heading}</h1>
+    {intro && <p class="page-hero-intro">{intro}</p>}
+    <slot />
+  </div>
+</section>

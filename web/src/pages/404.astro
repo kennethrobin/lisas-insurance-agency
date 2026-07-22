@@ -1,13 +1,44 @@
 ---
-import Base from '../layouts/Base.astro';
+import Page from '../layouts/Page.astro';
 import { site } from '../data/site';
 ---
 
-<Base title="Page Not Found" noindex>
-  <h1>We couldn't find that page</h1>
-  <p class="stub-note">
-    The page may have moved during our site rebuild. Use the navigation above, or call us at
-    <a href={site.phoneHref}>{site.phone}</a> and we'll point you the right way.
-  </p>
-  <p><a class="btn" href="/">Back to home</a></p>
-</Base>
+<Page
+  title="Page not found"
+  eyebrow="404"
+  heading="We couldn’t find that page."
+  intro="It may have moved during the site rebuild. The menu will get you where you were going — or call me and I’ll point you the right way."
+  noindex
+>
+  <section class="section">
+    <div class="container">
+      <div class="section-intro">
+        <h2>Where you probably meant to go</h2>
+      </div>
+
+      <div class="cards cards--3 cards--tiles">
+        <article class="card">
+          <h3>Medicare</h3>
+          <p>Parts A, B, C and D in plain language, plus the plan pages.</p>
+          <a class="card-link" href="/medicare">Medicare overview</a>
+        </article>
+        <article class="card">
+          <h3>Health insurance</h3>
+          <p>Marketplace coverage for individuals and families under 65.</p>
+          <a class="card-link" href="/health-insurance">Health insurance</a>
+        </article>
+        <article class="card">
+          <h3>Dental &amp; vision</h3>
+          <p>Compare plans and enroll, on Medicare or not.</p>
+          <a class="card-link" href="/dental-insurance">Dental &amp; vision</a>
+        </article>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--ghost" href="/">Back to home</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+</Page>

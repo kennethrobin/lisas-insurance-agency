@@ -1,0 +1,103 @@
+---
+/**
+ * The closing panel. Repeats the hero's warm field so a page opens and shuts on
+ * the same note, exactly as the homepage does.
+ *
+ * "Schedule a call" resolves through links.ts: with a booking URL it links
+ * there, without one it becomes the tap-to-call action. Either way it works.
+ */
+import { site } from '../data/site';
+import { links, isPending, scheduleCta, externalAttrs } from '../data/links';
+
+interface Props {
+  heading: string;
+  /** One sentence under the heading. */
+  copy?: string;
+  /** Show the "Schedule a call" secondary. */
+  schedule?: boolean;
+  id?: string;
+}
+const { heading, copy, schedule = true, id = 'contact' } = Astro.props;
+const booking = scheduleCta(site.phoneHref);
+---
+
+<section class="section cta-band" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="container">
+    <p class="eyebrow">Get in touch</p>
+
+    <div class="cta-grid">
+      <div class="cta-copy">
+        <h2 id={`${id}-heading`}>{heading}</h2>
+        {copy && <p class="lead">{copy}</p>}
+        <div class="actions actions--stack">
+          <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+          <a class="btn btn--ghost" href={site.smsHref}>Text me</a>
+          {schedule && (
+            <a
+              class="btn btn--ghost"
+              href={booking.href}
+              {...(booking.external ? externalAttrs : {})}
+            >
+              {booking.label}
+            </a>
+          )}
+        </div>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+
+      <div class="contact-card">
+        <h3>Or send me a note</h3>
+
+        <!-- WIRE LATER: form posts nowhere yet — hook up backend/email service -->
+        <form class="contact-form" novalidate>
+          <div>
+            <label for={`${id}-name`}>Name</label>
+            <input id={`${id}-name`} name="name" type="text" autocomplete="name" required />
+          </div>
+          <div>
+            <label for={`${id}-phone`}>Phone</label>
+            <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" required />
+          </div>
+          <div>
+            <label for={`${id}-topic`}>What can I help with?</label>
+            <select id={`${id}-topic`} name="topic">
+              <option value="medicare">Medicare</option>
+              <option value="health">Health insurance (under 65)</option>
+              <option value="dental">Dental &amp; vision</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <button class="btn btn--accent" type="submit">Send</button>
+        </form>
+
+        <div class="form-success" tabindex="-1" role="status">
+          <span class="check-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+            </svg>
+          </span>
+          <p>
+            Thank you — I got your note. I’ll call you back within one business
+            day. — Lisa
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Contact form: WIRE LATER — posts nowhere yet, shows the success state so the
+     button is never a dead control. Scoped per form so the component can appear
+     more than once on a page without one submit clearing the others. */
+  document.querySelectorAll<HTMLFormElement>('.contact-form').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      form.hidden = true;
+      const success = form.parentElement?.querySelector<HTMLElement>('.form-success');
+      success?.classList.add('is-visible');
+      success?.focus();
+    });
+  });
+</script>

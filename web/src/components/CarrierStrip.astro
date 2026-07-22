@@ -1,0 +1,49 @@
+---
+/**
+ * Rolling strip of carrier partners.
+ *
+ * The chips are in-brand text plates, not logos: real carrier marks are
+ * trademarked assets that need permission and the right files, so shipping a
+ * fake logo would be worse than shipping none. Swap `logo` in for the real
+ * artwork when it arrives — the chip's shape is already the right one.
+ *
+ * The list is duplicated in the markup and the track is translated by exactly
+ * half its width, which is what makes the loop seamless. Under reduced motion
+ * the animation stops and the clones hide, leaving a plain wrapped row.
+ */
+export type Carrier = { name: string; note?: string };
+
+interface Props {
+  /** Optional label above this lane, e.g. "Enroll online". */
+  label?: string;
+  carriers: Carrier[];
+  /** Roll the other way — useful when two lanes sit together. */
+  reverse?: boolean;
+}
+const { label, carriers, reverse = false } = Astro.props;
+---
+
+<div class:list={['carrier-lane', { 'carrier-lane--reverse': reverse }]}>
+  {label && <p class="carrier-lane-label">{label}</p>}
+
+  <div class="carrier-strip">
+    {/* The list is decorative repetition of names already in the page copy, so
+        the whole strip is hidden from assistive tech — a screen reader hearing
+        every carrier twice is noise, not information. */}
+    <div class="carrier-track" aria-hidden="true">
+      {carriers.map((carrier) => (
+        <span class="carrier-chip">
+          {carrier.name}
+          {carrier.note && <span class="chip-tag">{carrier.note}</span>}
+        </span>
+      ))}
+      {/* The duplicate half. `data-clone` so reduced motion can drop it. */}
+      {carriers.map((carrier) => (
+        <span class="carrier-chip" data-clone>
+          {carrier.name}
+          {carrier.note && <span class="chip-tag">{carrier.note}</span>}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>

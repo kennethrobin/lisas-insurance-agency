@@ -1,0 +1,135 @@
+---
+/**
+ * Medicare Advantage vs Medicare Supplement, side by side.
+ *
+ * The same component runs on both plan pages; `stay` says which page it is on,
+ * so the column for the page you are already on offers to keep reading while
+ * the other one offers to go there. That is the whole point of the "click here
+ * to compare" prompt — the visitor should never land in a comparison and lose
+ * track of which page they came from.
+ *
+ * The switch collapses it to one column at a time. Without JS both columns
+ * render, which is the correct fallback for a comparison.
+ *
+ * Nothing here carries a premium, a plan count, or a carrier claim: the two
+ * products differ in STRUCTURE, and structure is what this describes.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  /** Which page this instance sits on. The other column links away. */
+  stay: 'advantage' | 'supplement';
+  /** Heading id to associate the region with. */
+  id?: string;
+}
+const { stay, id = 'compare' } = Astro.props;
+
+const advantage = {
+  key: 'advantage' as const,
+  title: 'Medicare Advantage (Part C)',
+  href: '/medicare/advantage',
+  rows: [
+    ['How it works', 'Replaces Original Medicare as the way you get your Part A and Part B benefits. A private carrier administers the plan.'],
+    ['Seeing a doctor', 'You use the plan’s network. Care outside it may cost more, or may not be covered at all — it depends on the plan type.'],
+    ['Referrals', 'HMO plans usually route you through a primary care doctor. PPO and PFFS plans generally don’t.'],
+    ['Prescription drugs', 'Many plans include Part D drug coverage in the same plan.'],
+    ['Extras', 'Some plans include benefits Original Medicare doesn’t cover, such as routine dental, vision, or hearing. What’s included varies by plan.'],
+    ['What you pay', 'Typically a lower monthly premium, with copays and coinsurance as you use care, up to the plan’s yearly out-of-pocket maximum.'],
+    ['Changing later', 'You can change plans during the Annual Enrollment Period each fall, and in some other qualifying situations.'],
+  ],
+};
+
+const supplement = {
+  key: 'supplement' as const,
+  title: 'Medicare Supplement (Medigap)',
+  href: '/medicare/supplement',
+  rows: [
+    ['How it works', 'Sits alongside Original Medicare and helps pay the share Original Medicare leaves to you — deductibles, copays, coinsurance.'],
+    ['Seeing a doctor', 'Any provider in the country who accepts Medicare. There is no network to check.'],
+    ['Referrals', 'Not required. You keep Original Medicare’s rules.'],
+    ['Prescription drugs', 'Not included. You add a separate Part D plan — see Prescription Drugs.'],
+    ['Extras', 'None. Medigap does one job: covering Original Medicare’s cost-sharing.'],
+    ['What you pay', 'Typically a higher monthly premium, in exchange for fewer costs at the time you get care.'],
+    ['Changing later', 'Easiest when you first become eligible. Applying later can involve health questions, depending on your state and situation.'],
+  ],
+};
+
+const columns = stay === 'advantage' ? [advantage, supplement] : [supplement, advantage];
+---
+
+<div class="compare" data-compare data-view="both" aria-labelledby={id}>
+  {/* Tabs, not a checkbox: three states (both / one / the other) is a choice,
+      and a choice reads as tabs. Hidden until JS confirms it can do anything. */}
+  <div class="compare-switch" role="tablist" aria-label="Compare view" data-compare-switch hidden>
+    <button type="button" role="tab" aria-selected="true" data-view="both">Side by side</button>
+    <button type="button" role="tab" aria-selected="false" data-view="advantage">Advantage only</button>
+    <button type="button" role="tab" aria-selected="false" data-view="supplement">Supplement only</button>
+  </div>
+
+  <div class="compare-cols">
+    {columns.map((column) => (
+      <article class="compare-col" data-plan={column.key}>
+        <h3>{column.title}</h3>
+        <dl>
+          {column.rows.map(([term, detail]) => (
+            <>
+              <dt>{term}</dt>
+              <dd>{detail}</dd>
+            </>
+          ))}
+        </dl>
+
+        <div class="actions">
+          {column.key === stay ? (
+            <>
+              <span class="chip">
+                <svg class="mark" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+                </svg>
+                You’re on this page
+              </span>
+              <a class="btn btn--ghost" href={site.phoneHref}>Ask Lisa which fits</a>
+            </>
+          ) : (
+            <a class="btn btn--accent" href={column.href}>Read about {column.key === 'advantage' ? 'Advantage' : 'Supplement'}</a>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <p class="source-note">
+    Which one fits depends on your doctors, your prescriptions, where you live,
+    and what you want to pay month to month. There is no answer that is right for
+    everyone — that is the conversation to have before you choose.
+  </p>
+</div>
+
+<script>
+  /* Reveals the view switch and wires it. The switch ships hidden so that a
+     visitor without JS never sees a control that does nothing — they get both
+     columns, which is the right default for a comparison anyway. */
+  document.querySelectorAll<HTMLElement>('[data-compare]').forEach((compare) => {
+    const bar = compare.querySelector<HTMLElement>('[data-compare-switch]');
+    if (!bar) return;
+    bar.hidden = false;
+
+    const tabs = Array.from(bar.querySelectorAll<HTMLButtonElement>('button[data-view]'));
+
+    const select = (view: string) => {
+      compare.dataset.view = view;
+      tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.view === view)));
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => select(tab.dataset.view ?? 'both'));
+    });
+
+    /* On a narrow screen the columns stack, so "side by side" is a long scroll
+       through both. Default to one at a time there — the page this component is
+       on, since that is what the visitor came for. */
+    const narrow = window.matchMedia('(max-width: 899px)');
+    const stay = compare.querySelector<HTMLElement>('.compare-col')?.dataset.plan;
+    if (narrow.matches && stay) select(stay);
+  });
+</script>
