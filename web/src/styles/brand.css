@@ -573,7 +573,10 @@ main {
    separate object dropping beneath it. Scrolls internally if the menu outgrows
    the window, which keeps it usable on a landscape phone. */
 .nav-drawer {
-  --drawer-gap: 8px;
+  /* One value for the gap above the panel and (on desktop) the gap to its right,
+     so the panel is inset by the same amount on both — tucked under the tab's
+     top-right corner with even spacing. */
+  --drawer-gap: 5px;
   position: absolute;
   top: calc(100% + var(--drawer-gap));
   left: 0;
@@ -660,17 +663,16 @@ main {
 
 .drawer-sublist {
   list-style: none;
-  margin: 0 0 0.6rem;
-  padding: 0 0 0 0.9rem;
-  border-left: 1px solid var(--surface-line);
+  margin: 0 0 0.5rem;
+  padding: 0 0 0 0.9rem;   /* a small indent still reads as "child of", no rule needed */
   display: grid;
 }
 .drawer-sublink {
   display: block;
   min-height: 44px;
-  padding: 0.45rem 0;
+  padding: 0.4rem 0;
   font-size: 1.05rem;
-  font-weight: 400;
+  font-weight: 300;        /* lighter than the main items, so subs read as secondary */
   color: var(--surface-body);
   text-decoration: none;
 }
@@ -683,10 +685,15 @@ main {
    a left-aligned text column inside; only its footprint changes. */
 @media (min-width: 720px) {
   .nav-drawer {
-    left: auto;                 /* release the left edge... */
-    right: 0;                   /* ...and anchor to the tab's right edge */
-    width: min(400px, calc(100vw - var(--container-pad) * 2));
-    padding-inline: clamp(1.4rem, 2vw, 1.9rem);
+    left: auto;                      /* release the left edge... */
+    right: var(--drawer-gap);        /* ...and inset from the tab's right edge by
+                                        the same gap as the top, so the panel is
+                                        evenly tucked under the corner */
+    /* Sized to the content, not the tab: the longest label ("Health Insurance")
+       is ~152px, so the panel only needs room for that plus its padding — a
+       wider one just leaves dead space to the right of the text. */
+    width: min(216px, calc(100vw - var(--container-pad) * 2));
+    padding-inline: 1.3rem;
   }
   /* The container's auto-centring and max-width fight a fixed-width panel, so
      inside the panel the list runs edge to edge and the drawer's own padding
