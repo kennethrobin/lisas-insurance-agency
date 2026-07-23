@@ -166,8 +166,9 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
     toggle.setAttribute('aria-expanded', String(open));
     drawer.hidden = !open;
     header?.classList.toggle('nav-open', open);
-    // Stops the page behind the drawer from scrolling under it on touch.
-    document.body.classList.toggle('has-nav-open', open);
+    // No body scroll-lock on purpose: locking removed the page scrollbar and
+    // shifted the whole layout ~15px wider on open. The drawer is a dropdown, so
+    // the page is allowed to stay scrollable behind it.
     if (open) drawer.querySelector<HTMLElement>('a, summary')?.focus();
   };
 

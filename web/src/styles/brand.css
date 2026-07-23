@@ -591,7 +591,12 @@ main {
 .site-header { isolation: isolate; }
 .site-header > .container { position: relative; z-index: 2; }
 
-body.has-nav-open { overflow: hidden; }
+/* Deliberately NO body scroll-lock here. The drawer is a dropdown pinned to the
+   fixed header, not a full-screen modal — and locking the body meant removing
+   the page's scrollbar, which reflowed the whole layout ~15px wider every time
+   the menu opened (and the fixed header jumped with it). Letting the page keep
+   its scrollbar means opening the menu shifts nothing. The drawer's own
+   overscroll-behavior keeps its internal scroll from chaining to the page. */
 
 .drawer-list { list-style: none; margin: 0; padding: 0; }
 
@@ -682,6 +687,23 @@ body.has-nav-open { overflow: hidden; }
 }
 .drawer-sublink:hover { color: var(--surface-heading); }
 .drawer-sublink[aria-current="page"] { color: var(--surface-heading); font-weight: 700; }
+
+/* Wide screens: the menu drops from the hamburger as a panel on the right,
+   rather than spanning the whole tab. On phones (below this) it stays full-width
+   — a right panel would be the full screen width there anyway. It is still just
+   a left-aligned text column inside; only its footprint changes. */
+@media (min-width: 720px) {
+  .nav-drawer {
+    left: auto;                 /* release the left edge... */
+    right: 0;                   /* ...and anchor to the tab's right edge */
+    width: min(400px, calc(100vw - var(--container-pad) * 2));
+    padding-inline: clamp(1.4rem, 2vw, 1.9rem);
+  }
+  /* The container's auto-centring and max-width fight a fixed-width panel, so
+     inside the panel the list runs edge to edge and the drawer's own padding
+     does the insetting. */
+  .nav-drawer > .container { max-width: none; padding-inline: 0; margin-inline: 0; }
+}
 
 /* Very narrow: the phone pill keeps the icon but drops the digits, so the
    wordmark and the menu control both stay on one row. The number is the first
