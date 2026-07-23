@@ -637,13 +637,13 @@ main {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  min-height: 46px;
-  padding: 0.45rem 0;
+  min-height: 44px;
+  padding: 0.38rem 0;
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.15;
   color: var(--surface-heading);
   text-decoration: none;
   cursor: pointer;
@@ -678,14 +678,14 @@ main {
 
 .drawer-sublist {
   list-style: none;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   padding: 0 0 0 0.9rem;   /* a small indent still reads as "child of", no rule needed */
   display: grid;
 }
 .drawer-sublink {
   display: block;
-  min-height: 44px;
-  padding: 0.4rem 0;
+  min-height: 42px;
+  padding: 0.3rem 0;
   font-size: 0.95rem;
   font-weight: 300;        /* lighter than the main items, so subs read as secondary */
   color: var(--surface-body);
