@@ -37,7 +37,7 @@ Build one for real by adding its own file under `src/pages/`; real files win ove
 ## Design system
 
 - `web/src/styles/brand.css` is the whole visual design (tokens, type scale, components) — the
-  "airy panel" clean direction. It is the only stylesheet; import it, never anything else.
+  "clean" direction. It is the only stylesheet; import it, never anything else.
 - Type: self-hosted Open Sans (variable, latin) at `web/public/fonts/`. Body 18px minimum — the
   audience skews senior, so legibility rules over density.
 - Colour: navy `#20344F`, gold `#C68A3C` **on primary action buttons only**, green `#34704F` for
