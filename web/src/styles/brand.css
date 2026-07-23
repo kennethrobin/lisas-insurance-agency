@@ -449,7 +449,11 @@ main {
   transition: background-color 0.25s, box-shadow 0.25s;
 }
 
-.site-header .container {
+/* Direct child only. The drawer nested inside the header ALSO uses .container
+   (so its menu column lines up with this row), and a descendant selector here
+   would turn that one into a flex box too — which made the menu panel shrink to
+   its text instead of filling to the content line. */
+.site-header > .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -572,26 +576,20 @@ main {
    deliberate — the header tab keeps its own shape and the menu is clearly a
    separate object dropping beneath it. Scrolls internally if the menu outgrows
    the window, which keeps it usable on a landscape phone. */
+/* The drawer is a full-width positioning layer spanning the header, holding an
+   ordinary .container inside — the SAME container geometry as the header row and
+   the page. The visible panel (.drawer-list) is right-aligned inside that
+   container, so its right edge lands exactly on the site's content line: flush
+   with the menu button above it and the hero's quick-start box, at every
+   viewport width (the container centres identically here and there). The panel,
+   not this layer, carries the background, rounding and shadow. */
 .nav-drawer {
-  /* One value for the gap above the panel and (on desktop) the gap to its right,
-     so the panel is inset by the same amount on both — tucked under the tab's
-     top-right corner with even spacing. */
-  --drawer-gap: 5px;
+  --drawer-gap: 5px;   /* the small gap between the header tab and the panel */
   position: absolute;
   top: calc(100% + var(--drawer-gap));
   left: 0;
   right: 0;
   z-index: 70;
-  max-height: calc(
-    100svh - var(--header-actual, var(--header-h)) - var(--drawer-gap) - var(--gutter) * 2
-  );
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-block: clamp(0.85rem, 2vw, 1.35rem);
-  background: var(--navy-deep);
-  border: 1px solid var(--surface-line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-float);
 }
 /* [hidden] is set in the markup so the drawer starts closed and out of the tab
    order with no JS. It needs the !important because .nav-drawer's own `display`
@@ -609,7 +607,24 @@ main {
    its scrollbar means opening the menu shifts nothing. The drawer's own
    overscroll-behavior keeps its internal scroll from chaining to the page. */
 
-.drawer-list { list-style: none; margin: 0; padding: 0; }
+/* The visible panel: its own rounded card with a shadow and no outline, sized to
+   its content. Right-aligned to the content line on desktop (see the media query
+   below), full content width on phones. It is the scroll container if the menu
+   ever outgrows the screen. */
+.drawer-list {
+  list-style: none;
+  margin: 0;
+  padding-block: clamp(0.8rem, 1.6vw, 1.1rem);
+  padding-inline: 1.6rem;
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-float);
+  max-height: calc(
+    100svh - var(--header-actual, var(--header-h)) - var(--drawer-gap) - var(--gutter) * 2
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 
 .drawer-item + .drawer-item { border-top: 1px solid var(--surface-line); }
 
@@ -622,10 +637,10 @@ main {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  min-height: 48px;
-  padding: 0.5rem 0;
+  min-height: 46px;
+  padding: 0.45rem 0;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -671,7 +686,7 @@ main {
   display: block;
   min-height: 44px;
   padding: 0.4rem 0;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 300;        /* lighter than the main items, so subs read as secondary */
   color: var(--surface-body);
   text-decoration: none;
@@ -679,26 +694,16 @@ main {
 .drawer-sublink:hover { color: var(--surface-heading); }
 .drawer-sublink[aria-current="page"] { color: var(--surface-heading); font-weight: 700; }
 
-/* Wide screens: the menu drops from the hamburger as a panel on the right,
-   rather than spanning the whole tab. On phones (below this) it stays full-width
-   — a right panel would be the full screen width there anyway. It is still just
-   a left-aligned text column inside; only its footprint changes. */
+/* Desktop: the panel is a fixed-width column pinned to the RIGHT of the
+   container content box (margin-left: auto), so its right edge sits on the
+   content line — flush under the menu button, no gap. On phones (below this) it
+   drops the fixed width and fills the content box, from under the wordmark to
+   under the menu button. Sized to the content: the longest label is short. */
 @media (min-width: 720px) {
-  .nav-drawer {
-    left: auto;                      /* release the left edge... */
-    right: var(--drawer-gap);        /* ...and inset from the tab's right edge by
-                                        the same gap as the top, so the panel is
-                                        evenly tucked under the corner */
-    /* Sized to the content, not the tab: the longest label ("Health Insurance")
-       is ~152px, so the panel only needs room for that plus its padding — a
-       wider one just leaves dead space to the right of the text. */
-    width: min(216px, calc(100vw - var(--container-pad) * 2));
-    padding-inline: 1.3rem;
+  .drawer-list {
+    width: 248px;
+    margin-left: auto;
   }
-  /* The container's auto-centring and max-width fight a fixed-width panel, so
-     inside the panel the list runs edge to edge and the drawer's own padding
-     does the insetting. */
-  .nav-drawer > .container { max-width: none; padding-inline: 0; margin-inline: 0; }
 }
 
 /* Very narrow: the phone pill keeps the icon but drops the digits, so the
