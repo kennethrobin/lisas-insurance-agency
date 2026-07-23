@@ -554,9 +554,11 @@ main {
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:first-child { transform: rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:last-child  { transform: rotate(-45deg); }
 
-/* Solid (scrolled) state — frosted, so it reads over any panel. */
-.site-header.is-solid,
-.site-header.nav-open {
+/* Solid (scrolled) state — frosted, so it reads over any panel. Note this is
+   driven ONLY by scroll, never by the menu: opening the drawer must not touch
+   the header tab's appearance. The header stays solid navy over the hero and
+   frosted once scrolled, open or closed. */
+.site-header.is-solid {
   background: rgba(12, 24, 38, 0.92);   /* --navy-black, translucent */
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
@@ -564,22 +566,28 @@ main {
 }
 
 /* ---------- The drawer ----------
-   Hangs off the bottom of the header tab and shares its shape: same inset, same
-   bottom radius, so the two read as one object opening rather than a panel
-   arriving from somewhere else. It scrolls internally if the menu outgrows the
-   window, which is what keeps it usable on a landscape phone. */
+   Its own floating panel, in the site's panel language: it sits just below the
+   header tab with a small gap, fully rounded on all four corners, and a hairline
+   edge so it reads crisply on the hero rather than bleeding into it. The gap is
+   deliberate — the header tab keeps its own shape and the menu is clearly a
+   separate object dropping beneath it. Scrolls internally if the menu outgrows
+   the window, which keeps it usable on a landscape phone. */
 .nav-drawer {
+  --drawer-gap: 8px;
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--drawer-gap));
   left: 0;
   right: 0;
   z-index: 70;
-  max-height: calc(100svh - var(--header-actual, var(--header-h)) - var(--gutter) * 2);
+  max-height: calc(
+    100svh - var(--header-actual, var(--header-h)) - var(--drawer-gap) - var(--gutter) * 2
+  );
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-block: clamp(0.75rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2rem);
+  padding-block: clamp(0.85rem, 2vw, 1.35rem);
   background: var(--navy-deep);
-  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-float);
 }
 /* [hidden] is set in the markup so the drawer starts closed and out of the tab
@@ -601,25 +609,6 @@ main {
 .drawer-list { list-style: none; margin: 0; padding: 0; }
 
 .drawer-item + .drawer-item { border-top: 1px solid var(--surface-line); }
-
-/* The under-65 / ACA path is a different audience from everything else in the
-   menu, so it is set apart rather than ranked: a heavier rule above it and a
-   quieter type colour. Deliberately NOT a second accent — the tab has exactly
-   one filled action on it, the phone pill. */
-.drawer-item--apart {
-  margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 2px solid var(--surface-line) !important;
-}
-.drawer-item--apart .drawer-link { color: var(--surface-label); font-weight: 400; }
-.drawer-item--apart .drawer-link:hover { color: var(--surface-heading); }
-.drawer-apart-mark { width: 14px; height: 14px; flex: 0 0 auto; opacity: 0.75; }
-.drawer-note {
-  margin: -0.15rem 0 0.6rem;
-  font-size: 0.85rem;
-  color: var(--surface-label);
-  max-width: 42ch;
-}
 
 /* Menu rows: comfortable tap targets for a senior audience, but sized so the
    whole menu — including Medicare's six sub-items expanded — fits a phone

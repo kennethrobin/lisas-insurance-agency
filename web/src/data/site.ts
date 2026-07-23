@@ -26,18 +26,8 @@ export type NavLink = {
 };
 
 export type NavItem =
-  | {
-      label: string;
-      href: string;
-      children?: never;
-      /**
-       * Sets the item apart in the menu: a divider above it and an
-       * external-link mark beside it. Used for the under-65 / ACA path, which
-       * is a different audience from everything else in the menu.
-       */
-      setApart?: boolean;
-    }
-  | { label: string; href: string; children: NavLink[]; setApart?: never };
+  | { label: string; href: string; children?: never }
+  | { label: string; href: string; children: NavLink[] };
 
 /** Slim utility links — existing clients, kept out of the prospect path. */
 export const utilityNav: NavLink[] = [
@@ -51,7 +41,7 @@ export const utilityNav: NavLink[] = [
  * standing action, matching how the phone pill already behaves.
  */
 export const mainNav: NavItem[] = [
-  { label: 'Health Insurance', href: '/health-insurance', setApart: true },
+  { label: 'Health Insurance', href: '/health-insurance' },
   {
     label: 'Medicare',
     href: '/medicare',

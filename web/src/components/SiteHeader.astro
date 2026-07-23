@@ -90,29 +90,14 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
                 </details>
               </li>
             ) : (
-              <li class:list={['drawer-item', { 'drawer-item--apart': item.setApart }]}>
+              <li class="drawer-item">
                 <a
                   class="drawer-link"
                   href={item.href}
                   aria-current={isCurrent(item.href) ? 'page' : undefined}
                 >
                   {item.label}
-                  {item.setApart && (
-                    <svg class="drawer-apart-mark" viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  )}
                 </a>
-                {item.setApart && (
-                  <p class="drawer-note">Under 65 — the Health Insurance Marketplace path.</p>
-                )}
               </li>
             )
           )
@@ -165,10 +150,9 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
     if (!toggle || !drawer) return;
     toggle.setAttribute('aria-expanded', String(open));
     drawer.hidden = !open;
-    header?.classList.toggle('nav-open', open);
-    // No body scroll-lock on purpose: locking removed the page scrollbar and
-    // shifted the whole layout ~15px wider on open. The drawer is a dropdown, so
-    // the page is allowed to stay scrollable behind it.
+    // The header tab is deliberately NOT restyled while the menu is open — its
+    // appearance is driven only by scroll. And no body scroll-lock: locking
+    // removed the page scrollbar and shifted the layout ~15px wider on open.
     if (open) drawer.querySelector<HTMLElement>('a, summary')?.focus();
   };
 
