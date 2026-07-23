@@ -1,5 +1,12 @@
 ---
 // How it works with Lisa — 3 steps, set as a numbered process row.
+//
+// The "Schedule a call" action resolves through links.ts: with a booking URL it
+// links there, and without one it becomes the text path with wording that
+// matches, so the button is never a dead control.
+import { site } from '../../data/site';
+import { links, isPending, externalAttrs } from '../../data/links';
+
 const steps = [
   {
     title: 'Call or text me',
@@ -14,6 +21,8 @@ const steps = [
     copy: 'I handle the enrollment and stay your agent for the life of the policy.',
   },
 ];
+
+const bookingPending = isPending(links.booking);
 ---
 
 <section class="section" id="how-it-works" aria-labelledby="how-heading">
@@ -32,5 +41,18 @@ const steps = [
         </li>
       ))}
     </ol>
+
+    <div class="actions actions--stack">
+      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      {bookingPending ? (
+        /* TODO: links.booking — no scheduling page yet, so this is the text
+           path with wording that matches rather than a button that opens
+           nothing. */
+        <a class="btn btn--ghost" href={site.smsHref}>Text me a good time</a>
+      ) : (
+        <a class="btn btn--ghost" href={links.booking} {...externalAttrs}>Schedule a call</a>
+      )}
+    </div>
+    <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
   </div>
 </section>

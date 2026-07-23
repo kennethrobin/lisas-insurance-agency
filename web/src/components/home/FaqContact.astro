@@ -1,13 +1,20 @@
 ---
-// FAQ (native <details>, mirrored by FAQPage schema in Layout) + the closing CTA
-// band, which repeats the hero's warm field. Form posts nowhere yet — WIRE LATER.
+// The homepage FAQ, plus the closing CTA band.
+//
+// Both are now the shared components — Faq emits the FAQPage schema alongside
+// the visible copy, which is what keeps the two from drifting apart (they used
+// to be maintained as two separate lists in two files). CtaBand carries the
+// call, text and schedule actions and the note form.
+import Faq from '../Faq.astro';
+import CtaBand from '../CtaBand.astro';
+
 const faqs = [
   {
     q: 'Does it cost extra to use an agent?',
     a: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
   },
   {
-    q: 'Do I have to meet you in person?',
+    q: 'Do we have to meet in person?',
     a: 'Not at all. Most of my clients I’ve never met in person — we handle everything by phone, and many have been with me for years.',
   },
   {
@@ -19,8 +26,6 @@ const faqs = [
     a: 'I’m licensed in 43 states. Ask me — if I can’t help, I’ll say so.',
   },
 ];
-import { site } from '../../data/site';
-
 ---
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
@@ -31,64 +36,16 @@ import { site } from '../../data/site';
       <h2 id="faq-heading">Questions I hear every week.</h2>
     </div>
 
-    <div class="faq-list">
-      {faqs.map((f) => (
-        <details>
-          <summary>{f.q}</summary>
-          <p>{f.a}</p>
-        </details>
-      ))}
+    <Faq items={faqs} schema />
+
+    <div class="actions actions--stack">
+      <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
+      <a class="btn btn--ghost" href="/medicare/resources">Official Medicare resources</a>
     </div>
   </div>
 </section>
 
-<section class="section cta-band" id="contact" aria-labelledby="contact-heading">
-  <div class="container">
-    <p class="eyebrow">Get in touch</p>
-
-    <div class="cta-grid">
-      <div class="cta-copy">
-        <h2 id="contact-heading">Let’s talk. No pressure, no cost — just answers.</h2>
-        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
-        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
-      </div>
-
-      <div class="contact-card">
-        <h3>Or send me a note</h3>
-
-        <!-- WIRE LATER: form posts nowhere yet — hook up backend/email service -->
-        <form class="contact-form" novalidate>
-          <div>
-            <label for="contact-name">Name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required />
-          </div>
-          <div>
-            <label for="contact-phone">Phone</label>
-            <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required />
-          </div>
-          <div>
-            <label for="contact-topic">What can I help with?</label>
-            <select id="contact-topic" name="topic">
-              <option value="medicare">Medicare</option>
-              <option value="dental">Dental &amp; Vision</option>
-              <option value="other">Something else</option>
-            </select>
-          </div>
-          <button class="btn btn--accent" type="submit">Send</button>
-        </form>
-
-        <div class="form-success" tabindex="-1" role="status">
-          <span class="check-icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
-            </svg>
-          </span>
-          <p>
-            Thank you — I got your note. I’ll call you back within one business
-            day. — Lisa
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<CtaBand
+  heading="Let’s talk. No pressure, no cost — just answers."
+  copy="Call, text, or book a time — whichever suits you. There’s nothing to decide on the first conversation."
+/>

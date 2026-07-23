@@ -1,8 +1,8 @@
 ---
 // Medicare made simple: Supplement vs Advantage, no prices, no superlatives.
-// The two explainers read as tall tinted tiles (.cards--tiles).
+// The two explainers read as tall tinted tiles (.cards--tiles), and each now
+// links to its own page rather than dead-ending on the homepage.
 import { site } from '../../data/site';
-
 ---
 
 <section class="section" id="medicare" aria-labelledby="medicare-heading">
@@ -30,6 +30,7 @@ import { site } from '../../data/site';
           deductibles, copays, coinsurance. See any doctor who accepts Medicare.
           Fewer surprise costs, usually a higher monthly premium.
         </p>
+        <a class="btn btn--ghost" href="/medicare/supplement">About Supplement plans</a>
       </article>
       <article class="card">
         {/* Both spaces non-breaking: binding only the first one still let the
@@ -40,6 +41,7 @@ import { site } from '../../data/site';
           extras like prescription, dental, or vision. Usually a lower premium —
           you work within the plan’s network.
         </p>
+        <a class="btn btn--ghost" href="/medicare/advantage">About Advantage plans</a>
       </article>
     </div>
 
@@ -53,12 +55,12 @@ import { site } from '../../data/site';
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
     </div>
 
-    <!-- VIDEO ASSET PENDING: swap this frame for the real 2-minute explainer -->
-    <div class="video-placeholder" role="img" aria-label="Video coming soon">
+    <!-- VIDEO ASSET PENDING: swap this frame for the real 3-minute explainer -->
+    <div class="video-placeholder" role="img" aria-label="Video coming soon: Advantage versus Supplement in three minutes">
       <span class="play-ring" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </span>
-      <p>2-minute explainer — coming soon</p>
+      <p>Advantage vs Supplement in 3 minutes — coming soon</p>
     </div>
   </div>
 </section>

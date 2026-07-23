@@ -24,61 +24,24 @@ import HowItWorks from '../components/home/HowItWorks.astro';
 import Reviews from '../components/home/Reviews.astro';
 import FaqContact from '../components/home/FaqContact.astro';
 
-const title = 'Independent Medicare, Dental & Vision Agent | Lisa’s Insurance Agency';
+const title = 'Medicare, Health, Dental & Vision Agent | Lisa’s Insurance Agency';
 const description =
-  'Medicare made simple — with a real person in your corner. Free, independent help with Medicare, dental & vision plans in 43 states. Talk to Lisa today.';
+  'Medicare made simple — with a real person in your corner. Free help with Medicare, health, dental & vision plans in 43 states. Talk to Lisa today.';
 
 const agencySchema = {
   '@context': 'https://schema.org',
   '@type': 'InsuranceAgency',
   name: site.name,
   telephone: site.phoneHref.replace('tel:', ''),
-  email: 'lisa@lisasinsuranceagency.com',
+  email: site.email,
   description:
-    'Independent Medicare, dental & vision help — free, and for the life of your policy.',
+    'Medicare, health, dental & vision help — free, and for the life of your policy.',
   // CONFIRM: replace with the actual list of 43 licensed states
   areaServed: 'United States — licensed in 43 states',
 };
 
-// Mirrors the visible FAQ copy in FaqContact.astro exactly.
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'Does it cost extra to use an agent?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Do I have to meet you in person?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Not at all. Most of my clients I've never met in person — we handle everything by phone, and many have been with me for years.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: "What's the difference between Supplement and Advantage?",
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Supplement works alongside Original Medicare with freedom to see any Medicare doctor; Advantage is an all-in-one alternative with networks and often lower premiums. Which fits depends on your doctors, prescriptions, and budget — that's what we'd talk through.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can you help in my state?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "I'm licensed in 43 states. Ask me — if I can't help, I'll say so.",
-      },
-    },
-  ],
-};
+// The FAQPage schema now ships from the Faq component alongside the visible
+// copy, so the two can't drift apart the way two hand-kept lists did.
 ---
 
 <Shell title={title} description={description} rawTitle>
@@ -102,7 +65,6 @@ const faqSchema = {
     <meta name="twitter:card" content="summary_large_image" />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(agencySchema)} />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </Fragment>
 
   <SiteHeader />

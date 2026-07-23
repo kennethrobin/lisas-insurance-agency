@@ -1,6 +1,18 @@
 ---
 // Reviews — stacked cards (simpler and calmer than a carousel for this audience).
 // Every review below is a placeholder awaiting real, verbatim client reviews.
+//
+// The review buttons come from links.ts and only render once a real URL exists,
+// so this row can never show a button that goes nowhere. Google, Facebook and X;
+// no Instagram. Room is left for more — add a key to links.ts and a line here.
+import { links, isPending, externalAttrs } from '../../data/links';
+
+const reviewSites = [
+  { label: 'Google', href: links.reviewGoogle, star: true },
+  { label: 'Facebook', href: links.reviewFacebook },
+  { label: 'X', href: links.reviewX },
+  // Room for more: add the key to links.ts, then a line here.
+].filter((entry) => !isPending(entry.href));
 ---
 
 <section class="section section--navy" id="reviews" aria-labelledby="reviews-heading">
@@ -43,12 +55,21 @@
       </article>
     </div>
 
-    <div class="reviews-actions">
-      <!-- PLACEHOLDER LINK: real Google review URL -->
-      <a class="btn btn--ghost" href="#" target="_blank" rel="noopener">★ Leave a review on Google</a>
-      <!-- PLACEHOLDER LINK: real Facebook review URL -->
-      <a class="btn btn--ghost" href="#" target="_blank" rel="noopener">Facebook</a>
-    </div>
+    {reviewSites.length > 0 ? (
+      <div class="reviews-actions">
+        {reviewSites.map((entry) => (
+          <a class="btn btn--ghost" href={entry.href} {...externalAttrs}>
+            {entry.star ? `★ Leave a review on ${entry.label}` : entry.label}
+          </a>
+        ))}
+      </div>
+    ) : (
+      /* TODO: links.reviewGoogle / reviewFacebook / reviewX. Until at least one
+         is real, the row is a call to action rather than a set of dead buttons. */
+      <div class="reviews-actions">
+        <a class="btn btn--ghost" href="/contact">Been a client? Tell me how it went</a>
+      </div>
+    )}
 
     <p class="reviews-footnote">Reviews shown exactly as written by real clients.</p>
   </div>
