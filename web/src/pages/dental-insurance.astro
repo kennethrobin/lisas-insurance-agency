@@ -14,6 +14,7 @@
 import Page from '../layouts/Page.astro';
 import CtaBand from '../components/CtaBand.astro';
 import CarrierStrip from '../components/CarrierStrip.astro';
+import DentalCarrierTable from '../components/DentalCarrierTable.astro';
 import Faq from '../components/Faq.astro';
 import { site } from '../data/site';
 
@@ -96,67 +97,25 @@ const faqs = [
   title={title}
   description={description}
   rawTitle
-  eyebrow="Dental &amp; vision"
-  heading="Coverage for your teeth and your eyes."
-  intro="Two ways in: enroll online in a few minutes with a network check built in, or have me walk you through it. Same premium either way — the difference is only how much of it you'd rather do yourself."
+  eyebrow="Dental and Vision"
+  heading="Choose the Way That Works Best for You"
+  intro="Review your dental and vision options online in just a few minutes, or have me guide you through the process and help answer your questions. I'm here to make finding coverage simple and easy to understand."
 >
   <!-- ─── The comparison chart (homepage links straight here) ─────────── -->
   <section class="section" id="compare" aria-labelledby="compare-heading">
     <div class="container">
       <p class="eyebrow">Compare</p>
 
+      {/* HEADING NOT SUPPLIED: DV-03 gives the table's columns and rows but no
+          heading for the section, and the h2 it replaced ("Two paths to the
+          same coverage.") no longer describes what is here. This is deliberately
+          the plainest label that reuses her own column wording rather than new
+          marketing copy — flagged for her approval. */}
       <div class="section-intro">
-        <h2 id="compare-heading">Two paths to the same coverage.</h2>
-        <p class="lead">
-          Which one you take depends on how straightforward your situation is —
-          not on how much you pay.
-        </p>
+        <h2 id="compare-heading">Dental and Vision Carriers</h2>
       </div>
 
-      <div class="table-scroll">
-        <table class="compare-table">
-          <caption>Enroll online, or with an agent</caption>
-          <thead>
-            <tr>
-              <th scope="col">&nbsp;</th>
-              <th scope="col">Enroll online</th>
-              <th scope="col">With Lisa</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Carriers on this path</th>
-              <td class="cell-part">Ameritas, Manhattan Life, Allstate</td>
-              <td class="cell-part">Healthspring, Aetna, Mutual of Omaha</td>
-            </tr>
-            <tr>
-              <th scope="row">Checking your dentist is in network</th>
-              <td class="cell-part">Built into the enrollment link — you check before you commit</td>
-              <td class="cell-part">I check it with you on the call</td>
-            </tr>
-            <tr>
-              <th scope="row">How long it takes</th>
-              <td class="cell-part">Minutes, on your own schedule</td>
-              <td class="cell-part">One phone call</td>
-            </tr>
-            <tr>
-              <th scope="row">Good fit when</th>
-              <td class="cell-part">You know what you want and your dentist is in the network</td>
-              <td class="cell-part">You want the options weighed up, or your situation has a wrinkle in it</td>
-            </tr>
-            <tr>
-              <th scope="row">What it costs you</th>
-              <td class="cell-part">The plan’s premium</td>
-              <td class="cell-part">The plan’s premium — my help is free</td>
-            </tr>
-            <tr>
-              <th scope="row">Who you call afterwards</th>
-              <td class="cell-part">Me — I’m your agent either way</td>
-              <td class="cell-part">Me</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <DentalCarrierTable />
 
       <p class="source-note">
         Availability, plan designs and pricing vary by state and by carrier. Online
