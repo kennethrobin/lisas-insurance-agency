@@ -1,0 +1,75 @@
+---
+/**
+ * Policyholder Service — the existing-client page.
+ *
+ * SCAFFOLD. HP-39 restructures the route: the Existing Client Hub is now a
+ * section inside this page rather than the destination itself, and the page is
+ * linked from the utility links and the footer only, never from the prospect
+ * nav. It stays out of mainNav in site.ts for exactly that reason.
+ *
+ * NO SELF-SERVICE BY DESIGN. There is deliberately no proof-of-insurance
+ * retrieval, no policy changes, no document access and no carrier contact form
+ * here. Lisa handles all of that by phone on purpose — see §10 of the revision
+ * notes. Do not add them back.
+ *
+ * COPY PENDING: the only sentence the client supplied for this page is the
+ * contact line below. Everything else is structure waiting on Pass 2, so
+ * nothing here invents copy in her voice.
+ */
+import Page from '../layouts/Page.astro';
+import { site } from '../data/site';
+import { links, isPending } from '../data/links';
+
+const directLinePending = isPending(links.policyholderDirectLine);
+---
+
+<Page
+  title="Policyholder Service"
+  eyebrow="Policyholder Service"
+  heading="Policyholder Service"
+  noindex
+>
+  <section class="section" id="client-hub" aria-labelledby="client-hub-heading">
+    <div class="container">
+      <div class="section-intro">
+        <h2 id="client-hub-heading">Existing Client Hub</h2>
+      </div>
+
+      {/* CONTENT PENDING — Pass 2. The hub's copy has not been written yet.
+          Whatever lands here stays informational: the services Lisa runs by
+          phone are described, never turned into self-service controls. */}
+      <div class="callout callout--note">
+        <h3>This section is still being written</h3>
+        <p>
+          Until it is, the fastest route is the number below — that is how these
+          requests are handled anyway.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--navy" id="contact" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="section-intro">
+        <h2 id="contact-heading">Questions about your coverage? Contact Lisa directly.</h2>
+      </div>
+
+      <div class="actions actions--stack">
+        {directLinePending ? (
+          <>
+            {/* PLACEHOLDER — awaiting confirmed direct line. Until
+                links.policyholderDirectLine is filled in, this falls back to the
+                agency number rather than rendering a dead control, following the
+                same rule as every other pending link on this site. */}
+            <a class="btn btn--accent" href={site.phoneHref}>Call · {site.phone}</a>
+            <span class="chip">Lisa's direct line is being confirmed — this is the agency number</span>
+          </>
+        ) : (
+          <a class="btn btn--accent" href={links.policyholderDirectLine}>Call Lisa directly</a>
+        )}
+      </div>
+
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+</Page>

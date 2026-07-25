@@ -89,7 +89,6 @@ export const legalNav: NavLink[] = [
 export type PageStub = { path: string; title: string; note: string };
 
 export const pageStubs: PageStub[] = [
-  { path: '/policyholders', title: 'Policyholder Service', note: 'Existing-client hub. Lives in the footer, out of the prospect conversion path.' },
   { path: '/policyholders/proof-of-insurance', title: 'Proof of Insurance', note: '' },
   { path: '/policyholders/policy-changes', title: 'Policy Changes', note: '' },
   { path: '/policyholders/policy-review', title: 'Policy Review', note: '' },
@@ -115,6 +114,7 @@ export const canonicalRoutes: string[] = [
   '/dental-insurance',
   '/about',
   '/contact',
+  '/policyholders',
   ...pageStubs.map((stub) => stub.path),
 ];
 
