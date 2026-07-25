@@ -65,7 +65,8 @@ const faqs = [
   rawTitle
   eyebrow="Medicare"
   heading="Medicare, in plain language."
-  intro="Four letters, two roads, and one decision most people only make once. Here’s the whole picture in the order it actually makes sense — then we’ll narrow it down to the part that’s yours."
+  subhead="Understanding Medicare"
+  intro="Explore the four parts of Medicare: Parts A, B, C, and D. Learn what they cover, how they work together, and which coverage is right for you"
 >
   <!-- ─── The four parts ──────────────────────────────────────────────── -->
   <section class="section" id="parts" aria-labelledby="parts-heading">
@@ -100,7 +101,7 @@ const faqs = [
       <p class="eyebrow">The decision</p>
 
       <div class="section-intro">
-        <h2 id="roads-heading">Once you have A and B, there are two roads.</h2>
+        <h2 id="roads-heading">Once you have Medicare Parts A and B, you have two coverage paths to consider</h2>
         <p class="lead">
           Original Medicare leaves a share of every bill to you, with no yearly
           ceiling. Both roads exist to deal with that — they just do it in
@@ -110,25 +111,27 @@ const faqs = [
 
       <div class="cards cards--2 cards--tiles">
         <article class="card">
-          <h3>Keep Original Medicare, add to it</h3>
+          <h3>Your Original Medicare Coverage Options</h3>
           <p>
-            You stay in Original Medicare and add a Medicare Supplement (Medigap)
-            policy to help pay the share it leaves behind, plus a separate Part D
-            plan for prescriptions. Any doctor in the country who takes Medicare
-            will take you. Generally a higher monthly premium, fewer costs at the
-            time you get care.
+            You keep Original Medicare (Parts A and B) and explore additional
+            coverage options, including a Medicare Supplement (Medigap) policy to
+            help cover costs that Original Medicare does not, along with a
+            separate Part D plan for prescription drug coverage. This option
+            allows you to see any doctor nationwide who accepts Medicare while
+            helping provide more complete coverage.
           </p>
           <a class="btn btn--ghost" href="/medicare/supplement">About Supplement plans</a>
         </article>
 
         <article class="card">
-          <h3>Replace it with an all-in-one plan</h3>
+          <h3>All Your Medicare Benefits in One Plan</h3>
           <p>
-            You get your Part A and Part B benefits through a Medicare Advantage
-            plan from a private carrier instead. Care runs through the plan’s
-            network, prescriptions are often built in, and there’s a yearly cap on
-            what you pay out of pocket. Generally a lower monthly premium, more
-            costs as you use care.
+            You receive your Medicare Part A and Part B benefits through a
+            Medicare Advantage plan offered by a private Medicare-approved
+            insurance company. These plans often include prescription drug
+            coverage and may offer additional benefits. Care is typically
+            coordinated through the plan’s network of providers, with an annual
+            limit on your out-of-pocket costs for covered services.
           </p>
           <a class="btn btn--ghost" href="/medicare/advantage">About Advantage plans</a>
         </article>
@@ -136,10 +139,10 @@ const faqs = [
 
       <div class="medicare-cta">
         <p>
-          You can’t have both a Medicare Advantage plan and a Medigap policy at the
-          same time — this is genuinely a fork. Which way suits you comes down to
-          your doctors, your prescriptions, how much you travel, and what you’d
-          rather pay monthly versus at the point of care.
+          Choosing between Original Medicare with a Medicare Supplement plan and a
+          Medicare Advantage plan is an important decision. The option that fits
+          you best depends on your healthcare needs, preferred doctors,
+          medications, travel habits, and coverage preferences
         </p>
         <a class="btn btn--accent" href={site.phoneHref}>Talk it through · {site.phone}</a>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
@@ -153,31 +156,45 @@ const faqs = [
       <p class="eyebrow">Read on</p>
 
       <div class="section-intro">
-        <h2 id="plan-pages-heading">The three plan pages.</h2>
+        <h2 id="plan-pages-heading">Your Medicare Plan Options</h2>
       </div>
 
-      <div class="cards cards--3 cards--tiles">
+      {/* The connectors carry the relationship between the three cards:
+          Advantage is an ALTERNATIVE to Supplement, Supplement COMBINES with
+          Part D. Decorative only — the same relationship is stated in the copy
+          above, so they are hidden from screen readers rather than read out as
+          stray letters between headings. */}
+      <div class="cards cards--3 cards--tiles cards--connected">
         <article class="card">
           <h3>Medicare Advantage</h3>
           <p>
-            How Part C plans work, the difference between HMO, PPO and PFFS, and
-            the three things to check before you pick one.
+            Learn how Medicare Advantage (Part C) plans work, the differences
+            between HMO, PPO, and PFFS plans, and the three key things to consider
+            before choosing a plan
           </p>
           <a class="btn btn--ghost" href="/medicare/advantage">Medicare Advantage</a>
         </article>
+
+        <p class="card-connector" aria-hidden="true">OR</p>
+
         <article class="card">
           <h3>Medicare Supplement</h3>
           <p>
-            What Medigap covers, how the standardized plans A through N compare,
-            and why the letter matters more than the company.
+            Learn how Medicare Supplement (Medigap) plans help cover costs that
+            Original Medicare doesn’t, and explore the many standardized plan
+            options available, including Plans A through N
           </p>
           <a class="btn btn--ghost" href="/medicare/supplement">Medicare Supplement</a>
         </article>
+
+        <p class="card-connector" aria-hidden="true">+</p>
+
         <article class="card">
           <h3>Prescription Drugs</h3>
           <p>
-            How Part D works, why the late-enrollment penalty is permanent, and
-            how to match a plan to the medicines you actually take.
+            Understand how Medicare Part D works, the importance of enrolling at
+            the right time, and how to compare plans based on your prescription
+            needs
           </p>
           <a class="btn btn--ghost" href="/medicare/prescription-drugs">Prescription Drugs</a>
         </article>

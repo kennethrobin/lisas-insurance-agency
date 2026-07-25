@@ -26,6 +26,8 @@ interface Props {
   eyebrow: string;
   /** The <h1>. Defaults to `title` when the two are the same sentence. */
   heading?: string;
+  /** Optional titled line between the h1 and the intro. */
+  subhead?: string;
   /** One or two sentences under the heading. */
   intro?: string;
   /** Set false to supply a bespoke hero in the default slot instead. */
@@ -39,6 +41,7 @@ const {
   noindex = false,
   eyebrow,
   heading,
+  subhead,
   intro,
   hero = true,
 } = Astro.props;
@@ -65,7 +68,14 @@ const {
 
   <SiteHeader />
   <main id="main">
-    {hero && <PageHero eyebrow={eyebrow} heading={heading ?? title} intro={intro} />}
+    {hero && (
+      <PageHero
+        eyebrow={eyebrow}
+        heading={heading ?? title}
+        subhead={subhead}
+        intro={intro}
+      />
+    )}
     <slot />
   </main>
   <SiteFooter />
