@@ -1489,6 +1489,25 @@ main {
 }
 .page-hero .container { position: relative; z-index: 1; }
 .page-hero h1 { max-width: 16ch; }
+
+/* Back control. Sits above the eyebrow on every interior page, in the same
+   small-label register as the eyebrow so the hero opens on one voice. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: clamp(14px, 1.6vw, 20px);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--surface-label);
+  text-decoration: none;
+}
+.back-link svg { flex: 0 0 auto; transition: transform 0.15s ease; }
+.back-link:hover { color: var(--surface-heading); text-decoration: underline; }
+.back-link:hover svg { transform: translateX(-2px); }
+@media (prefers-reduced-motion: reduce) {
+  .back-link svg { transition: none; }
+}
 .page-hero-intro {
   margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
   max-width: 54ch;

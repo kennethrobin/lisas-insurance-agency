@@ -120,3 +120,32 @@ export const canonicalRoutes: string[] = [
   '/contact',
   ...pageStubs.map((stub) => stub.path),
 ];
+
+/**
+ * Human label for a route, for the back control. Built from the IA above so a
+ * renamed nav item renames the back link with it. Top-level nav wins over a
+ * child of the same href: /medicare is "Medicare" in the menu and "Overview"
+ * inside its own dropdown, and the back link wants the former.
+ */
+const routeLabels = new Map<string, string>([['/', 'Home']]);
+for (const stub of pageStubs) routeLabels.set(stub.path, stub.title);
+for (const link of footerNav) routeLabels.set(link.href, link.label);
+for (const item of mainNav) {
+  if (item.children) {
+    for (const child of item.children) routeLabels.set(child.href, child.label);
+  }
+}
+for (const item of mainNav) routeLabels.set(item.href, item.label);
+
+export type ParentPage = { href: string; label: string };
+
+/**
+ * The logical parent of a route: one path segment up, bottoming out at Home.
+ * Every page has a real ancestor this way, so the back control is always a
+ * plain anchor and never has to fall back to session history.
+ */
+export function parentOf(path: string): ParentPage {
+  const segments = path.replace(/\/+$/, '').split('/').filter(Boolean);
+  const href = segments.length > 1 ? '/' + segments.slice(0, -1).join('/') : '/';
+  return { href, label: routeLabels.get(href) ?? 'Home' };
+}
