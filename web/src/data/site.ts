@@ -36,12 +36,11 @@ export const utilityNav: NavLink[] = [
 ];
 
 /**
- * Main nav. Medicare is the only group, and it is FLAT — six sibling pages,
+ * Main nav. Medicare is the only group, and it is FLAT — five sibling pages,
  * no "Plans" hub in between. Contact is both a menu item and the header's
  * standing action, matching how the phone pill already behaves.
  */
 export const mainNav: NavItem[] = [
-  { label: 'Health Insurance', href: '/health-insurance' },
   {
     label: 'Medicare',
     href: '/medicare',
@@ -51,9 +50,9 @@ export const mainNav: NavItem[] = [
       { label: 'Medicare Supplement', href: '/medicare/supplement' },
       { label: 'Prescription Drugs', href: '/medicare/prescription-drugs' },
       { label: 'Education', href: '/medicare/education' },
-      { label: 'Resources', href: '/medicare/resources' },
     ],
   },
+  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Dental & Vision', href: '/dental-insurance' },
   {
     label: 'About',
