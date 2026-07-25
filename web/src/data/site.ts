@@ -32,7 +32,6 @@ export type NavItem =
 /** Slim utility links — existing clients, kept out of the prospect path. */
 export const utilityNav: NavLink[] = [
   { label: 'Policyholder Service', href: '/policyholders' },
-  { label: 'Agent Login', href: '/agent-login' },
 ];
 
 /**
@@ -67,13 +66,12 @@ export const mainNav: NavItem[] = [
 
 /** Footer quick links — the prospect-facing pages, flattened. */
 export const footerNav: NavLink[] = [
-  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Medicare', href: '/medicare' },
+  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Medicare Advantage', href: '/medicare/advantage' },
   { label: 'Medicare Supplement', href: '/medicare/supplement' },
   { label: 'Prescription Drugs', href: '/medicare/prescription-drugs' },
   { label: 'Dental & Vision', href: '/dental-insurance' },
-  { label: 'Meet Lisa', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -98,7 +96,6 @@ export const pageStubs: PageStub[] = [
   { path: '/policyholders/update-info', title: 'Update My Info', note: '' },
   { path: '/policyholders/documents', title: 'Online Documents', note: '' },
   { path: '/policyholders/contact-carrier', title: 'Contact My Carrier', note: '' },
-  { path: '/agent-login', title: 'Agent Login', note: 'Footer link. Likely an external carrier/agency portal rather than a real page.' },
 
   { path: '/accessibility', title: 'Accessibility Statement', note: 'Keep — legal.' },
   { path: '/privacy', title: 'Privacy Policy', note: 'New page. Missing on the current site; needed for trust + compliance.' },
