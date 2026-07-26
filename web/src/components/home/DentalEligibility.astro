@@ -1,0 +1,77 @@
+---
+/**
+ * "How do I know if this is right for me?" — the dental eligibility list.
+ *
+ * Native <details>/<summary>, deliberately. The disclosure state, the
+ * keyboard handling and the expanded/collapsed announcement all come from the
+ * browser, so items 1–4 work with JavaScript disabled and there is no script
+ * on this component at all. Each <details> is independent, so several can be
+ * open at once — this is not an accordion and must not become one.
+ *
+ * The fifth item is NOT a disclosure. It is a plain anchor to the carrier
+ * comparison table built in Pass 1, styled to read as "this takes you
+ * somewhere" rather than "this expands" — different affordance, different
+ * element. It reuses the same destination the homepage dental button already
+ * points at rather than introducing a second link to the same table.
+ */
+const items = [
+  {
+    label: 'I just lost coverage',
+    copy: 'If you recently left a job or a plan ended, several of these plans waive their waiting periods when you enroll soon after — usually within 30 to 60 days.',
+  },
+  {
+    label: 'I have a procedure coming up',
+    copy: 'If you know dental work is ahead, it’s worth checking which plans cover major services and how soon that coverage begins.',
+  },
+  {
+    label: 'I want my routine care covered',
+    copy: 'Cleanings, exams, and eye exams are covered from day one on most of these plans, often at little or no out-of-pocket cost.',
+  },
+  {
+    label: 'I need vision coverage',
+    copy: 'Vision can be added onto a dental plan or purchased on its own, depending on the carrier.',
+  },
+];
+
+/** Same destination as the "Compare dental plans" button above. */
+const compareHref = '/dental-insurance#compare';
+---
+
+<div class="eligibility">
+  <h3 class="eligibility-heading">How do I know if this is right for me?</h3>
+
+  <ul class="eligibility-list">
+    {items.map((item) => (
+      <li>
+        <details class="eligibility-item">
+          {/* The flex row is a span INSIDE the summary, not the summary
+              itself: giving <summary> display:flex drops its native button
+              semantics in some engines, and the whole point of using
+              <details> is to keep them. */}
+          <summary>
+            <span class="eligibility-row">
+              <span class="eligibility-label">{item.label}</span>
+              <span class="eligibility-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </span>
+            </span>
+          </summary>
+          <p>{item.copy}</p>
+        </details>
+      </li>
+    ))}
+
+    <li>
+      <a class="eligibility-item eligibility-link" href={compareHref}>
+        <span class="eligibility-label">Compare plans side by side</span>
+        <span class="eligibility-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

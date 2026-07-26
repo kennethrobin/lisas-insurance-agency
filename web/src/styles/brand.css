@@ -1300,6 +1300,87 @@ main {
 }
 .cta-copy .btn { margin-top: 2rem; }
 
+/* ---------- Dental eligibility disclosure list (homepage) ----------
+   Native <details>/<summary>, so the open state, keyboard handling and the
+   expanded announcement are the browser's. Rows are at least 44px tall.
+   The last row is an anchor, not a disclosure: it carries an arrow instead of
+   a plus and moves right on hover, so the two affordances never read alike. */
+.eligibility { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+.eligibility-heading {
+  margin-bottom: clamp(0.9rem, 1.6vw, 1.2rem);
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+}
+.eligibility-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+  max-width: 62ch;
+}
+
+.eligibility-item {
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+}
+/* summary keeps display:list-item — giving it display:flex drops its native
+   button semantics in some engines. The flex row is a span inside it. The
+   default triangle is removed via the marker, not via display. */
+.eligibility-item summary {
+  display: list-item;
+  list-style: none;
+  cursor: pointer;
+}
+.eligibility-item summary::-webkit-details-marker { display: none; }
+.eligibility-item summary::marker { content: ''; }
+
+.eligibility-row,
+.eligibility-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  padding: 0.85rem 1.15rem;
+  font-weight: 600;
+  color: var(--surface-heading);
+  text-decoration: none;
+}
+
+.eligibility-item summary:hover .eligibility-row,
+.eligibility-link:hover { background: var(--surface-hover); border-radius: var(--radius); }
+
+.eligibility-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  color: var(--surface-label);
+  transition: transform 0.2s ease;
+}
+.eligibility-item[open] .eligibility-icon { transform: rotate(45deg); }
+.eligibility-link:hover .eligibility-icon { transform: translateX(3px); }
+/* Focus ring hugs the row, not the whole disclosure panel. */
+.eligibility-item summary:focus-visible { outline: none; }
+.eligibility-item summary:focus-visible .eligibility-row {
+  outline: 3px solid var(--surface-heading);
+  outline-offset: -3px;
+  border-radius: var(--radius);
+}
+
+.eligibility-item > p {
+  margin: 0;
+  padding: 0 1.15rem 1.15rem;
+  color: var(--surface-body);
+  max-width: 58ch;
+}
+
+/* The navigation row reads as a destination, not a panel. */
+.eligibility-link { border-radius: var(--radius); }
+.eligibility-link .eligibility-label { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .eligibility-icon { transition: none; }
+}
+
 /* The "Talk to Lisa" block (HP-33). The number is an inline tap-to-call link
    inside the sentence rather than a button, so it needs to read as a link on
    the navy field like every other inline link does. */
