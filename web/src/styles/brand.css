@@ -1472,6 +1472,127 @@ main {
 .form-success .check-icon { margin-bottom: 0; flex: 0 0 auto; }
 .form-success p { color: var(--surface-body); }
 
+/* ---------- Unified "Get in Touch" card (GetInTouch.astro) ----------
+   Two steps in one footprint: the lead form, then the cal.com booking view,
+   then a confirmation. One step visible at a time; the hidden ones use the
+   [hidden] attribute so they leave the accessibility tree entirely. Lives
+   inside .contact-card, which supplies the paper surface and shadow. */
+.get-in-touch { --form-error: #B3261E; }
+.git-step { color: var(--surface-body); }
+.git-step[hidden] { display: none; }
+.git-step > h3 {
+  margin-bottom: 1.2rem;
+  font-size: 1.15rem;
+  color: var(--surface-heading);
+  outline: none; /* it's a focus target on step change; ring would be noise */
+}
+
+.git-form { display: grid; gap: 1rem; }
+.git-field { display: grid; }
+.git-field label,
+.git-consent label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.4rem;
+}
+.git-field input,
+.git-field textarea {
+  width: 100%;
+  min-height: 54px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+}
+.git-field textarea { min-height: 7rem; resize: vertical; line-height: 1.5; }
+.git-field input:focus-visible,
+.git-field textarea:focus-visible,
+.git-consent input:focus-visible {
+  outline: 3px solid var(--surface-heading);
+  outline-offset: 1px;
+  border-color: var(--surface-heading);
+}
+.git-field input[aria-invalid='true'],
+.git-field textarea[aria-invalid='true'] { border-color: var(--form-error); }
+
+.git-error {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--form-error);
+}
+
+/* Honeypot: gone for humans AND assistive tech. display:none, never opacity. */
+.git-honeypot { display: none; }
+
+/* Consent: checkbox variant, a generous target, easy to downgrade to a plain
+   statement by dropping the input. */
+.git-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 0.7rem;
+  align-items: start;
+}
+.git-consent input {
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin-top: 0.1rem;
+  align-self: start;
+}
+.git-consent label {
+  grid-column: 2;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--surface-body);
+  line-height: 1.45;
+}
+.git-consent .git-error { grid-column: 2; }
+
+.git-submit-row { display: grid; gap: 0.75rem; justify-items: start; }
+.git-form-error {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--form-error);
+}
+
+/* The cal.com mount. min-heights come from leadForm.ts via custom properties;
+   overflow:auto replaces the vendor's forced scrollbars. */
+.git-cal {
+  min-height: var(--git-cal-min, 640px);
+  overflow: auto;
+}
+.git-cal-fallback { color: var(--surface-body); }
+.git-dismiss { margin-top: 1.25rem; }
+
+/* Confirmation step. */
+.git-step--done { display: grid; justify-items: start; gap: 0.6rem; }
+.git-step--done[hidden] { display: none; }
+.git-step--done .check-icon { color: var(--surface-mark); }
+
+/* Cross-fade on step change; stripped under reduced motion. */
+.git-step.is-entering { animation: git-fade 0.25s ease both; }
+@keyframes git-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 640px) {
+  .git-cal { min-height: var(--git-cal-min-mobile, 520px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .git-step.is-entering { animation: none; }
+}
+
 /* ---------- Footer ----------
    Light like everything else, closing on the oversized wordmark clipped by the
    panel's bottom edge. */
