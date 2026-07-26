@@ -1,26 +1,26 @@
 ---
 // "Life of the policy" — 4 feature cards with small outlined icon tiles.
 //
-// The word "independent" is gone on purpose. It's industry vocabulary that
-// means nothing to someone buying their first plan, and it invites the follow-up
-// question it was meant to answer. The plain version — who I'm loyal to, and who
-// pays me — is what people actually want to know, so the card says that instead.
+// Copy here is client-approved and compliance-reviewed (Revision 2, Pass 2).
+// An earlier draft avoided the word "independent" as industry vocabulary; the
+// approved text uses it deliberately, so that note no longer applies. Do not
+// reword these cards without going back through review.
 const reasons = [
   {
     title: 'Loyal to you, not a carrier',
-    copy: 'I’m a broker. No single insurance company employs me or decides what I recommend — I represent a number of them and compare them for you.',
+    copy: 'As an independent licensed insurance agent, I’m contracted with multiple carriers. I’m not employed by any single company, so no one insurer influences my recommendations. Instead, I compare plans side by side and present the options that best fit your needs and budget, helping you make a confident, well-informed decision.',
   },
   {
-    title: 'Costs you nothing',
-    copy: 'Premiums are set by the carriers. You pay exactly the same with me or without me, because the carriers pay me — not you.',
+    title: 'Your Premium Doesn’t Change',
+    copy: 'Plan premiums are set by the carrier and filed with the state, they’re identical whether you enroll on your own or with my help. What I bring is the legwork: comparing the plans you’re eligible for and finding a competitive rate on coverage that actually fits what you need.',
   },
   {
-    title: 'Lifetime service',
-    copy: 'Billing questions, claim issues, a move to a new state — you call me, not a call centre. For as long as you hold the policy.',
+    title: 'A Year-Round Advisor',
+    copy: 'Your coverage shouldn’t be a one-time decision. I’m available to review your plan with you annually and help you make changes when your health, your prescriptions, or your budget change. With a Medicare Supplement, you may qualify to make a change at any time of year. With a Medicare Advantage plan, changes are generally made during the Annual Enrollment Period (AEP) each fall, during the Medicare Advantage Open Enrollment Period from January 1 through March 31, or if you qualify for a Special Enrollment Period (SEP).',
   },
   {
-    title: 'Out of your way',
-    copy: 'Enroll online in minutes, or talk it through with me first. Both doors are open, and neither one costs more.',
+    title: 'Enrollment Options',
+    copy: 'Enroll online whenever you’re ready, or walk through it with me first. Both doors are open, and you have professional guidance either way.',
   },
 ];
 ---
@@ -30,10 +30,15 @@ const reasons = [
     <p class="eyebrow">Why Lisa</p>
 
     <div class="section-intro">
-      <h2 id="why-heading">You get me — for the life of your policy.</h2>
+      <h2 id="why-heading">
+        You get a licensed advisor for the life of your policy, someone who knows
+        your coverage and is still here when it needs to change.
+      </h2>
+      {/* COMPLIANCE-REVIEWED (HP-07). Do not add "top rated", "best" or
+          "most competitive" to this line under any circumstances. */}
       <p class="lead">
-        An agent works for one company. A broker works for you. I’m the second
-        one, and it costs you nothing to have me in your corner.
+        As a licensed agent since 2007, I shop multiple carriers to find the
+        right coverage at a competitive rate for every client.
       </p>
     </div>
 
