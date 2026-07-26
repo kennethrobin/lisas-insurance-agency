@@ -3,17 +3,15 @@
  * The closing panel. Repeats the hero's warm field so a page opens and shuts on
  * the same note, exactly as the homepage does.
  *
- * HP-33 replaced the old three-button row (call / text / schedule) with the
- * "Talk to Lisa" block below: the number is an inline tap-to-call link and
- * "Book a time" is the single action. The text button is gone deliberately.
- * This band renders on every interior page, so the change is sitewide.
- *
- * "Book a time" resolves through links.booking. While that is still the "#"
- * placeholder the control is a DISABLED button with a note beside it, rather
- * than an anchor pointing nowhere.
+ * The right-hand card is the unified two-step GetInTouch component: capture the
+ * lead into the CRM, then offer booking in place. The left-hand "Talk to Lisa"
+ * block is the fallback path for anyone who won't use a form — an inline
+ * click-to-dial tel: link that stays (§9). The separate "Book a time" button
+ * that used to sit here is gone: booking now happens inside the card, so a
+ * second booking control beside it was redundant.
  */
 import { site } from '../data/site';
-import { links, isPending, externalAttrs } from '../data/links';
+import GetInTouch from './GetInTouch.astro';
 
 interface Props {
   heading: string;
@@ -24,7 +22,6 @@ interface Props {
   id?: string;
 }
 const { heading, copy, note, id = 'contact' } = Astro.props;
-const bookingPending = isPending(links.booking);
 ---
 
 <section class="section cta-band" id={id} aria-labelledby={`${id}-heading`}>
@@ -43,75 +40,14 @@ const bookingPending = isPending(links.booking);
             Call <a href={site.phoneHref}>{site.phone}</a> — or pick a time that
             works for you.
           </p>
-
-          <div class="actions actions--stack">
-            {bookingPending ? (
-              <>
-                <button class="btn btn--accent" type="button" disabled>Book a time</button>
-                <span class="chip">Online booking is being set up — call or leave a message for now</span>
-              </>
-            ) : (
-              <a class="btn btn--accent" href={links.booking} {...externalAttrs}>Book a time</a>
-            )}
-          </div>
         </div>
 
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
       </div>
 
       <div class="contact-card">
-        <h3>Or send me a note</h3>
-
-        <!-- WIRE LATER: form posts nowhere yet — hook up backend/email service -->
-        <form class="contact-form" novalidate>
-          <div>
-            <label for={`${id}-name`}>Name</label>
-            <input id={`${id}-name`} name="name" type="text" autocomplete="name" required />
-          </div>
-          <div>
-            <label for={`${id}-phone`}>Phone</label>
-            <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" required />
-          </div>
-          <div>
-            <label for={`${id}-topic`}>What can I help with?</label>
-            <select id={`${id}-topic`} name="topic">
-              <option value="medicare">Medicare</option>
-              <option value="health">Health insurance (under 65)</option>
-              <option value="dental">Dental &amp; vision</option>
-              <option value="other">Something else</option>
-            </select>
-          </div>
-          <button class="btn btn--accent" type="submit">Send</button>
-        </form>
-
-        <div class="form-success" tabindex="-1" role="status">
-          <span class="check-icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
-            </svg>
-          </span>
-          <p>
-            Thank you — I got your note. I’ll call you back within one business
-            day. — Lisa
-          </p>
-        </div>
+        <GetInTouch id={id} />
       </div>
     </div>
   </div>
 </section>
-
-<script>
-  /* Contact form: WIRE LATER — posts nowhere yet, shows the success state so the
-     button is never a dead control. Scoped per form so the component can appear
-     more than once on a page without one submit clearing the others. */
-  document.querySelectorAll<HTMLFormElement>('.contact-form').forEach((form) => {
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      form.hidden = true;
-      const success = form.parentElement?.querySelector<HTMLElement>('.form-success');
-      success?.classList.add('is-visible');
-      success?.focus();
-    });
-  });
-</script>
