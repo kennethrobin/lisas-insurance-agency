@@ -70,7 +70,7 @@ const faqs = [
   description={description}
   rawTitle
   eyebrow="Medicare"
-  heading="Medicare, in plain language."
+  heading="Understanding your Medicare options"
   subhead="Understanding Medicare"
   intro="Explore the four parts of Medicare: Parts A, B, C, and D. Learn what they cover, how they work together, and which coverage is right for you"
 >
@@ -159,7 +159,11 @@ const faqs = [
   <!-- ─── Where to next ───────────────────────────────────────────────── -->
   <section class="section" id="plan-pages" aria-labelledby="plan-pages-heading">
     <div class="container">
-      <p class="eyebrow">Read on</p>
+      {/* MO-07. Its literal target, "The three plan pages.", was already
+          replaced in Pass 1 by MO-09 with the h2 below, which §8 says to leave
+          alone — so the new label lands on this section eyebrow, the only
+          remaining slot above that heading. Confirmed before applying. */}
+      <p class="eyebrow">Ways to use your Medicare coverage</p>
 
       <div class="section-intro">
         <h2 id="plan-pages-heading">Your Medicare Plan Options</h2>
@@ -230,6 +234,6 @@ const faqs = [
 
   <CtaBand
     heading="Start with a conversation, not a form."
-    copy="Tell me your doctors, your prescriptions, and roughly what you want to spend. That’s enough for me to point you at the right road."
+    copy="Let’s talk about your doctors and the prescriptions you’re currently taking. That’s all we’ll need to begin exploring your options and identifying the coverage worth considering for you. We’ll walk through the details together, and the decision is yours."
   />
 </Page>
