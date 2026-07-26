@@ -10,20 +10,38 @@ import CtaBand from '../CtaBand.astro';
 
 const faqs = [
   {
-    q: 'Does it cost extra to use an agent?',
-    a: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
+    q: 'What’s the difference between a Medicare Supplement and a Medicare Advantage plan?',
+    a: 'A Medicare Supplement (Medigap) policy works alongside Original Medicare and helps cover costs that Parts A and B don’t. You keep Original Medicare and can see any provider nationwide who accepts it, and you’d add a separate Part D plan for prescriptions. A Medicare Advantage plan delivers your Part A and Part B benefits through a private Medicare-approved company instead, usually with prescription coverage built in and care coordinated through the plan’s network. Which one fits comes down to your doctors, your prescriptions, how much you travel, and how you’d rather handle costs.',
   },
   {
-    q: 'Do we have to meet in person?',
-    a: 'Not at all. Most of my clients I’ve never met in person — we handle everything by phone, and many have been with me for years.',
+    q: 'Can I keep my own doctors?',
+    a: 'With Original Medicare and a Medicare Supplement, you can see any provider in the country who accepts Medicare. With a Medicare Advantage plan, care runs through the plan’s network, so it’s important to check that your doctors participate before you enroll. Reviewing your provider list is one of the first things I do with anyone considering Advantage.',
   },
   {
-    q: 'What’s the difference between Supplement and Advantage?',
-    a: 'Supplement works alongside Original Medicare with freedom to see any Medicare doctor; Advantage is an all-in-one alternative with networks and often lower premiums. Which fits depends on your doctors, prescriptions, and budget — that’s what we’d talk through.',
+    q: 'When can I enroll or make a change?',
+    a: 'Your first opportunity is the seven-month window around your 65th birthday. After that, the Annual Enrollment Period each fall is when most changes to Medicare Advantage and Part D plans are made. If you’re already in a Medicare Advantage plan, the Medicare Advantage Open Enrollment Period from January 1 through March 31 gives you another opportunity to switch. Medicare Supplement plans work differently — you may qualify to make a change at any time of year, though acceptance can depend on health questions once your initial window has passed. Certain life events can also open a Special Enrollment Period.',
   },
   {
-    q: 'Can you help in my state?',
-    a: 'I’m licensed in 43 states. Ask me — if I can’t help, I’ll say so.',
+    q: 'Do I need a Part D plan if I don’t take any prescriptions right now?',
+    a: 'It’s worth considering. If you go 63 days or more without creditable prescription drug coverage after becoming eligible, a late enrollment penalty may be added to your premium if you sign up later, and it can stay with you for as long as you have Medicare drug coverage. Many people enroll in a low-cost plan simply to avoid that.',
+  },
+  {
+    q: 'What happens if I travel or move?',
+    a: 'Original Medicare with a Supplement travels well, since any provider nationwide who accepts Medicare will see you. Medicare Advantage plans are built around regional networks, so travel and relocation are worth talking through before you choose. If you move out of your plan’s service area, that generally opens a Special Enrollment Period.',
+  },
+  {
+    q: 'Do I have to be on Medicare to get dental or vision coverage?',
+    a: 'No. The dental, vision, and hearing plans I offer are standalone. You can start one at any time of year, on Medicare or not.',
+  },
+  {
+    q: 'I just lost my dental coverage. Do I have to wait to use a new plan?',
+    a: 'Not always. Several carriers waive their usual waiting periods if you enroll shortly after losing prior coverage, typically within 30 to 60 days. If you’ve recently lost a plan, it’s worth moving sooner rather than later.',
+  },
+  {
+    /* The only permitted "no cost" on the site — a deliberate client decision.
+       Do not replicate this phrasing anywhere else. */
+    q: 'Does it cost extra to work with an agent?',
+    a: 'No. Plan premiums are set by the carrier and filed with the state, they’re the same whether you enroll on your own or with my help. Consultation is provided at no cost.',
   },
 ];
 ---
@@ -33,7 +51,7 @@ const faqs = [
     <p class="eyebrow">Questions</p>
 
     <div class="section-intro">
-      <h2 id="faq-heading">Questions I hear every week.</h2>
+      <h2 id="faq-heading">Questions I hear most often</h2>
     </div>
 
     <Faq items={faqs} schema />
