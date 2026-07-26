@@ -1,0 +1,461 @@
+---
+/**
+ * The unified two-step "Get in Touch" card. Sits where the old "send me a note"
+ * form was, in the same footprint, and does two things in sequence WITHOUT the
+ * visitor ever leaving the page:
+ *
+ *   Step 1 — contact details + "what can I help with", posted to /api/lead,
+ *            which forwards to the CRM. The lead is captured the moment this
+ *            succeeds and is NEVER gated behind booking.
+ *   Step 2 — the same card swaps in place to a cal.com inline booking view,
+ *            prefilled with what was just typed. Booking is optional; if it is
+ *            skipped, dismissed, errors, or the embed never loads, the Step 1
+ *            record still stands and the card shows a graceful confirmation.
+ *
+ * Field `name` attributes and all CRM/scheduler config come from
+ * src/data/leadForm.ts — the one place they are defined.
+ *
+ * The cal.com script is NOT loaded on page load. It is injected only when Step 2
+ * is first shown, since this card is on nearly every page and most visitors will
+ * never reach Step 2.
+ */
+import { crm, scheduler } from '../data/leadForm';
+
+interface Props {
+  /** Scopes every id so the card is unique on its page. */
+  id?: string;
+}
+const { id = 'contact' } = Astro.props;
+const f = crm.fields;
+
+// The embed's min-heights come from config so there's one place to tune them;
+// CSS reads these custom properties (desktop vs mobile via a media query).
+const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mobile:${scheduler.minHeightMobile}`;
+---
+
+<div class="get-in-touch" data-get-in-touch data-cta-id={id}>
+  {/* Polite live region: announces step changes and submit status. */}
+  <p class="visually-hidden" data-git-live aria-live="polite" role="status"></p>
+
+  {/* ── Step 1 — the form ─────────────────────────────────────────────── */}
+  <section class="git-step git-step--form" data-git-step="form" aria-labelledby={`${id}-form-heading`}>
+    <h3 id={`${id}-form-heading`} tabindex="-1">Send me your details</h3>
+
+    <form class="git-form" data-git-form novalidate>
+      <div class="git-field">
+        <label for={`${id}-firstName`}>First name</label>
+        <input id={`${id}-firstName`} name={f.firstName} type="text" autocomplete="given-name"
+          required aria-describedby={`${id}-firstName-error`} />
+        <p class="git-error" id={`${id}-firstName-error`} data-git-error hidden></p>
+      </div>
+
+      <div class="git-field">
+        <label for={`${id}-lastName`}>Last name</label>
+        <input id={`${id}-lastName`} name={f.lastName} type="text" autocomplete="family-name"
+          required aria-describedby={`${id}-lastName-error`} />
+        <p class="git-error" id={`${id}-lastName-error`} data-git-error hidden></p>
+      </div>
+
+      <div class="git-field">
+        <label for={`${id}-email`}>Email</label>
+        <input id={`${id}-email`} name={f.email} type="email" autocomplete="email" inputmode="email"
+          required aria-describedby={`${id}-email-error`} />
+        <p class="git-error" id={`${id}-email-error`} data-git-error hidden></p>
+      </div>
+
+      <div class="git-field">
+        <label for={`${id}-phone`}>Phone</label>
+        <input id={`${id}-phone`} name={f.phone} type="tel" autocomplete="tel" inputmode="tel"
+          required aria-describedby={`${id}-phone-error`} />
+        <p class="git-error" id={`${id}-phone-error`} data-git-error hidden></p>
+      </div>
+
+      <div class="git-field">
+        <label for={`${id}-help`}>What can I help you with?</label>
+        <textarea id={`${id}-help`} name={f.help} rows="4"
+          required aria-describedby={`${id}-help-error`}></textarea>
+        <p class="git-error" id={`${id}-help-error`} data-git-error hidden></p>
+      </div>
+
+      {/* Honeypot. Named exactly `_Website`, hidden from humans AND assistive
+          tech, empty by default. A non-empty value on submit means a bot — the
+          submission is dropped client-side (and again server-side). Hidden with
+          display:none, never opacity/off-screen. Do not remove. */}
+      <div class="git-honeypot" aria-hidden="true">
+        <label for={`${id}-hp`}>Leave this field empty</label>
+        <input id={`${id}-hp`} name={f.honeypot} type="text" value="" tabindex="-1" autocomplete="off" />
+      </div>
+
+      {/* ── Consent ──────────────────────────────────────────────────────
+          TODO: the exact consent wording is PENDING COMPLIANCE REVIEW and must
+          be supplied by the account owner and her compliance contact before
+          launch — it governs permission to phone the visitor. Built as the
+          required-checkbox variant so it can be downgraded to a plain statement
+          (drop the <input> and the `required`) without restructuring. The
+          consent text version + submission timestamp are attached server-side
+          in /api/lead from leadForm.ts. */}
+      <div class="git-consent">
+        <input id={`${id}-consent`} data-git-consent type="checkbox" required
+          aria-describedby={`${id}-consent-error`} />
+        <label for={`${id}-consent`}>
+          <strong>[TODO: consent wording pending compliance review]</strong>
+          By checking this box you agree to be contacted about your request. Final
+          language is pending review and this placeholder must not ship as-is.
+        </label>
+        <p class="git-error" id={`${id}-consent-error`} data-git-error hidden></p>
+      </div>
+
+      {/* Submit + non-destructive error slot. */}
+      <div class="git-submit-row">
+        <button class="btn btn--accent" type="submit" data-git-submit>
+          <span data-git-submit-label>Send</span>
+        </button>
+        <p class="git-form-error" data-git-form-error role="alert" hidden></p>
+      </div>
+    </form>
+  </section>
+
+  {/* ── Step 2 — the scheduler ────────────────────────────────────────── */}
+  <section class="git-step git-step--book" data-git-step="book" aria-labelledby={`${id}-book-heading`} hidden>
+    {/* TODO: booking-step heading copy is not written — pending. */}
+    <h3 id={`${id}-book-heading`} tabindex="-1">[TODO: booking step heading]</h3>
+
+    {/* cal.com injects its iframe here once Step 2 is first shown. */}
+    <div class="git-cal" data-git-cal style={calSizing}></div>
+
+    {/* Shown only if the embed fails or never loads — never a blank box. */}
+    <p class="git-cal-fallback" data-git-cal-fallback hidden>
+      The booking calendar couldn’t load. Your details are already with me — I’ll
+      be in touch. You can also call to set up a time.
+    </p>
+
+    <button class="btn btn--ghost git-dismiss" type="button" data-git-dismiss>
+      No thanks — I’ll wait to hear from you
+    </button>
+  </section>
+
+  {/* ── Confirmation — after dismiss or a successful booking ──────────── */}
+  <section class="git-step git-step--done" data-git-step="done" aria-labelledby={`${id}-done-heading`} hidden>
+    <span class="check-icon" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+      </svg>
+    </span>
+    <h3 id={`${id}-done-heading`} tabindex="-1">Thank you — I’ve got your details.</h3>
+    <p data-git-done-message>I’ll be in touch. — Lisa</p>
+  </section>
+</div>
+
+<script>
+  import { crm, scheduler } from '../data/leadForm';
+
+  type CalWindow = Window & {
+    Cal?: ((...args: unknown[]) => void) & {
+      ns?: Record<string, (...args: unknown[]) => void>;
+      loaded?: boolean;
+    };
+  };
+
+  const digits = (v: string) => v.replace(/\D+/g, '');
+  const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const prefersReducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** Load the cal.com embed script exactly once, lazily. */
+  let calScriptPromise: Promise<void> | null = null;
+  function loadCalOnce(): Promise<void> {
+    if (calScriptPromise) return calScriptPromise;
+    calScriptPromise = new Promise((resolve, reject) => {
+      const w = window as CalWindow;
+      // Official cal.com embed bootstrap (queues calls until the script lands).
+      (function (C: CalWindow, A: string, L: string) {
+        const p = (a: { q: unknown[] }, ar: unknown) => a.q.push(ar);
+        const d = C.document;
+        C.Cal =
+          C.Cal ||
+          function (...args: unknown[]) {
+            const cal = C.Cal!;
+            if (!cal.loaded) {
+              cal.ns = {};
+              (cal as unknown as { q: unknown[] }).q =
+                (cal as unknown as { q: unknown[] }).q || [];
+              const script = d.createElement('script');
+              script.src = A;
+              script.onerror = () => reject(new Error('cal embed failed to load'));
+              script.onload = () => resolve();
+              d.head.appendChild(script);
+              cal.loaded = true;
+            }
+            if (args[0] === L) {
+              const api = function (...a: unknown[]) {
+                p(api as unknown as { q: unknown[] }, a);
+              };
+              (api as unknown as { q: unknown[] }).q = [];
+              const namespace = args[1];
+              if (typeof namespace === 'string') {
+                cal.ns![namespace] = cal.ns![namespace] || (api as never);
+                p(cal.ns![namespace] as unknown as { q: unknown[] }, args);
+                p(cal as unknown as { q: unknown[] }, ['initNamespace', namespace]);
+              } else {
+                p(cal as unknown as { q: unknown[] }, args);
+              }
+              return;
+            }
+            p(cal as unknown as { q: unknown[] }, args);
+          };
+      })(w, `${scheduler.origin}/embed/embed.js`, 'init');
+      // Resolve on a safety timer too, in case onload already fired inside the IIFE.
+      setTimeout(resolve, 4000);
+    });
+    return calScriptPromise;
+  }
+
+  function wire(root: HTMLElement) {
+    const form = root.querySelector<HTMLFormElement>('[data-git-form]');
+    const live = root.querySelector<HTMLElement>('[data-git-live]');
+    const steps = new Map<string, HTMLElement>();
+    root.querySelectorAll<HTMLElement>('[data-git-step]').forEach((s) =>
+      steps.set(s.dataset.gitStep!, s),
+    );
+    if (!form) return;
+
+    const submitBtn = root.querySelector<HTMLButtonElement>('[data-git-submit]');
+    const submitLabel = root.querySelector<HTMLElement>('[data-git-submit-label]');
+    const formError = root.querySelector<HTMLElement>('[data-git-form-error]');
+    const consent = root.querySelector<HTMLInputElement>('[data-git-consent]');
+    const honeypot = form.querySelector<HTMLInputElement>(`[name="${crm.fields.honeypot}"]`);
+
+    const announce = (msg: string) => {
+      if (live) live.textContent = msg;
+    };
+
+    /* ── validation ──────────────────────────────────────────────────── */
+    const errorFor = (control: HTMLElement) => {
+      const field = control.closest('.git-field, .git-consent');
+      return field?.querySelector<HTMLElement>('[data-git-error]') ?? null;
+    };
+    const setError = (control: HTMLElement, message: string) => {
+      control.setAttribute('aria-invalid', 'true');
+      const slot = errorFor(control);
+      if (slot) {
+        slot.textContent = message;
+        slot.hidden = false;
+      }
+    };
+    const clearError = (control: HTMLElement) => {
+      control.removeAttribute('aria-invalid');
+      const slot = errorFor(control);
+      if (slot) {
+        slot.textContent = '';
+        slot.hidden = true;
+      }
+    };
+
+    const validateField = (control: HTMLInputElement | HTMLTextAreaElement): boolean => {
+      const value = control.value.trim();
+      const name = control.getAttribute('name');
+      if (control === consent) return true; // handled separately
+      if (!value) {
+        setError(control, 'This field is required.');
+        return false;
+      }
+      if (name === crm.fields.email && !looksLikeEmail(value)) {
+        setError(control, 'Please enter a valid email address.');
+        return false;
+      }
+      if (name === crm.fields.phone && digits(value).length < 10) {
+        setError(control, 'Please enter a phone number with at least 10 digits.');
+        return false;
+      }
+      clearError(control);
+      return true;
+    };
+
+    const requiredControls = () =>
+      Array.from(
+        form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+          'input[required], textarea[required]',
+        ),
+      ).filter((el) => el !== honeypot && el !== consent);
+
+    // Validate on blur (not every keystroke).
+    requiredControls().forEach((control) =>
+      control.addEventListener('blur', () => validateField(control)),
+    );
+    consent?.addEventListener('change', () => {
+      if (consent.checked) clearError(consent);
+    });
+
+    /* ── step swapping ───────────────────────────────────────────────── */
+    const show = (name: 'form' | 'book' | 'done', announcement: string) => {
+      steps.forEach((el, key) => {
+        el.hidden = key !== name;
+      });
+      const target = steps.get(name)!;
+      const heading = target.querySelector<HTMLElement>('h3');
+      const reveal = () => {
+        heading?.focus();
+        announce(announcement);
+      };
+      if (prefersReducedMotion()) {
+        reveal();
+      } else {
+        target.classList.remove('is-entering');
+        // reflow, then fade in
+        void target.offsetWidth;
+        target.classList.add('is-entering');
+        reveal();
+      }
+    };
+
+    /* ── cal.com step ────────────────────────────────────────────────── */
+    let calStarted = false;
+    async function startScheduler(prefill: { name: string; email: string; notes: string }) {
+      const mount = root.querySelector<HTMLElement>('[data-git-cal]');
+      const fallback = root.querySelector<HTMLElement>('[data-git-cal-fallback]');
+      if (!mount || calStarted) return;
+      calStarted = true;
+
+      const showFallback = () => {
+        if (fallback) fallback.hidden = false;
+      };
+      const failTimer = window.setTimeout(() => {
+        if (!mount.querySelector('iframe')) showFallback();
+      }, 12000);
+
+      try {
+        await loadCalOnce();
+        const w = window as CalWindow;
+        const Cal = w.Cal;
+        if (!Cal) throw new Error('Cal unavailable');
+
+        Cal('init', scheduler.namespace, { origin: scheduler.origin });
+        const ns = Cal.ns![scheduler.namespace];
+
+        mount.id = mount.id || `${root.dataset.ctaId ?? 'contact'}-cal`;
+        ns('inline', {
+          elementOrSelector: `#${mount.id}`,
+          calLink: scheduler.calLink,
+          config: {
+            layout: scheduler.layout,
+            name: prefill.name,
+            email: prefill.email,
+            notes: prefill.notes,
+          },
+        });
+
+        // Brand + small-screen behaviour + theme handoff.
+        ns('ui', {
+          layout: scheduler.layout,
+          useSlotsViewOnSmallScreen: true,
+          hideEventTypeDetails: false,
+          cssVarsPerTheme: {
+            light: { 'cal-brand': '#20344F' },
+            dark: { 'cal-brand': '#7A9EBE' },
+          },
+        });
+
+        ns('on', {
+          action: 'bookingSuccessful',
+          callback: () => {
+            window.clearTimeout(failTimer);
+            const doneMsg = root.querySelector<HTMLElement>('[data-git-done-message]');
+            if (doneMsg)
+              doneMsg.textContent = "You're booked — I'll see you then. A confirmation is on its way. — Lisa";
+            show('done', 'Your booking is confirmed.');
+          },
+        });
+
+        // If the iframe mounts, cancel the failure fallback.
+        window.setTimeout(() => {
+          if (mount.querySelector('iframe')) window.clearTimeout(failTimer);
+        }, 2500);
+      } catch {
+        window.clearTimeout(failTimer);
+        showFallback();
+      }
+    }
+
+    /* ── dismiss ─────────────────────────────────────────────────────── */
+    root.querySelector<HTMLButtonElement>('[data-git-dismiss]')?.addEventListener('click', () => {
+      show('done', 'Thanks — your details are with me and I’ll be in touch.');
+    });
+
+    /* ── submit ──────────────────────────────────────────────────────── */
+    let busy = false;
+    const setBusy = (state: boolean) => {
+      busy = state;
+      if (submitBtn) submitBtn.disabled = state;
+      if (submitLabel) submitLabel.textContent = state ? 'Sending…' : 'Send';
+    };
+
+    const advance = (prefill: { name: string; email: string; notes: string }) => {
+      show('book', 'Step 2 of 2. Optionally pick a time to talk — your details are already with me.');
+      startScheduler(prefill);
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (busy) return;
+      if (formError) formError.hidden = true;
+
+      // Honeypot filled → a bot. Discard client-side, show the normal success
+      // path so it learns nothing. (The server drops it too.)
+      if (honeypot && honeypot.value.trim() !== '') {
+        advance({ name: '', email: '', notes: '' });
+        return;
+      }
+
+      // Validate everything; focus the first failure.
+      let firstBad: HTMLElement | null = null;
+      requiredControls().forEach((control) => {
+        if (!validateField(control) && !firstBad) firstBad = control;
+      });
+      if (consent && !consent.checked) {
+        setError(consent, 'Please confirm to continue.');
+        if (!firstBad) firstBad = consent;
+      }
+      if (firstBad) {
+        (firstBad as HTMLElement).focus();
+        announce('Please fix the highlighted fields.');
+        return;
+      }
+
+      const data = new FormData(form);
+      const first = String(data.get(crm.fields.firstName) ?? '').trim();
+      const last = String(data.get(crm.fields.lastName) ?? '').trim();
+      const email = String(data.get(crm.fields.email) ?? '').trim();
+      const notes = String(data.get(crm.fields.help) ?? '').trim();
+
+      setBusy(true);
+      announce('Sending your details…');
+      try {
+        const res = await fetch('/api/lead', { method: 'POST', body: data });
+        const payload = (await res.json().catch(() => ({ ok: false }))) as {
+          ok: boolean;
+          error?: string;
+        };
+        if (payload.ok) {
+          advance({ name: `${first} ${last}`.trim(), email, notes });
+        } else {
+          throw new Error(payload.error || 'Something went wrong.');
+        }
+      } catch (err) {
+        // Never clear the form. Show the error and the phone fallback.
+        if (formError) {
+          formError.textContent =
+            (err instanceof Error && err.message) ||
+            'Something went wrong sending your details. Please call instead.';
+          formError.hidden = false;
+        }
+        announce('Something went wrong. Your details were not sent — please call instead.');
+      } finally {
+        setBusy(false);
+      }
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-get-in-touch]')
+    .forEach((root) => wire(root));
+</script>
