@@ -3,22 +3,28 @@
  * The closing panel. Repeats the hero's warm field so a page opens and shuts on
  * the same note, exactly as the homepage does.
  *
- * "Schedule a call" resolves through links.ts: with a booking URL it links
- * there, without one it becomes the tap-to-call action. Either way it works.
+ * HP-33 replaced the old three-button row (call / text / schedule) with the
+ * "Talk to Lisa" block below: the number is an inline tap-to-call link and
+ * "Book a time" is the single action. The text button is gone deliberately.
+ * This band renders on every interior page, so the change is sitewide.
+ *
+ * "Book a time" resolves through links.booking. While that is still the "#"
+ * placeholder the control is a DISABLED button with a note beside it, rather
+ * than an anchor pointing nowhere.
  */
 import { site } from '../data/site';
-import { scheduleCta, externalAttrs } from '../data/links';
+import { links, isPending, externalAttrs } from '../data/links';
 
 interface Props {
   heading: string;
   /** One sentence under the heading. */
   copy?: string;
-  /** Show the "Schedule a call" secondary. */
-  schedule?: boolean;
+  /** Optional second paragraph, under `copy`. */
+  note?: string;
   id?: string;
 }
-const { heading, copy, schedule = true, id = 'contact' } = Astro.props;
-const booking = scheduleCta(site.phoneHref);
+const { heading, copy, note, id = 'contact' } = Astro.props;
+const bookingPending = isPending(links.booking);
 ---
 
 <section class="section cta-band" id={id} aria-labelledby={`${id}-heading`}>
@@ -29,19 +35,27 @@ const booking = scheduleCta(site.phoneHref);
       <div class="cta-copy">
         <h2 id={`${id}-heading`}>{heading}</h2>
         {copy && <p class="lead">{copy}</p>}
-        <div class="actions actions--stack">
-          <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
-          <a class="btn btn--ghost" href={site.smsHref}>Text me</a>
-          {schedule && (
-            <a
-              class="btn btn--ghost"
-              href={booking.href}
-              {...(booking.external ? externalAttrs : {})}
-            >
-              {booking.label}
-            </a>
-          )}
+        {note && <p class="lead">{note}</p>}
+
+        <div class="cta-talk">
+          <h3>Talk to Lisa</h3>
+          <p>
+            Call <a href={site.phoneHref}>{site.phone}</a> — or pick a time that
+            works for you.
+          </p>
+
+          <div class="actions actions--stack">
+            {bookingPending ? (
+              <>
+                <button class="btn btn--accent" type="button" disabled>Book a time</button>
+                <span class="chip">Online booking is being set up — call or leave a message for now</span>
+              </>
+            ) : (
+              <a class="btn btn--accent" href={links.booking} {...externalAttrs}>Book a time</a>
+            )}
+          </div>
         </div>
+
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
       </div>
 

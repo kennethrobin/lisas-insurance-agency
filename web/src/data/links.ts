@@ -21,8 +21,14 @@ export const links = {
   /** TODO: Sunfire "Simply Enroll" — Part D */
   sunfirePartD: '#',
 
-  /** TODO: booking page (e.g. Calendly). While "#", every "Schedule a call"
-   *  control falls back to the call/text path instead of a dead link. */
+  /**
+   * PLACEHOLDER — awaiting cal.com booking URL.
+   *
+   * While this is "#", the "Book a time" control in CtaBand renders as a
+   * disabled button with a note beside it, rather than an anchor pointing at a
+   * broken destination (HP-33). Fill in the real URL and it becomes a normal
+   * external link everywhere the band appears.
+   */
   booking: '#',
 
   /** TODO: Google review URL */

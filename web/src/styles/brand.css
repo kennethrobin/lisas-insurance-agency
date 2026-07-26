@@ -1300,6 +1300,31 @@ main {
 }
 .cta-copy .btn { margin-top: 2rem; }
 
+/* The "Talk to Lisa" block (HP-33). The number is an inline tap-to-call link
+   inside the sentence rather than a button, so it needs to read as a link on
+   the navy field like every other inline link does. */
+.cta-talk { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+.cta-talk h3 { margin-bottom: 0.5rem; }
+.cta-talk p { color: var(--surface-body); max-width: 46ch; }
+.cta-talk a {
+  color: var(--surface-heading);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.cta-talk .btn { margin-top: 1.25rem; }
+
+/* A pending action is disabled, not hidden and not a dead link: it stays
+   readable and announces itself as unavailable, with the chip beside it saying
+   why and what to do instead. */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .contact-card {
   background: var(--paper);
   border-radius: var(--radius);
