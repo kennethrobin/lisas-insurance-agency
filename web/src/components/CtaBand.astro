@@ -3,14 +3,11 @@
  * The closing panel. Repeats the hero's warm field so a page opens and shuts on
  * the same note, exactly as the homepage does.
  *
- * The right-hand card is the unified two-step GetInTouch component: capture the
- * lead into the CRM, then offer booking in place. The left-hand "Talk to Lisa"
- * block is the fallback path for anyone who won't use a form — an inline
- * click-to-dial tel: link that stays (§9). The separate "Book a time" button
- * that used to sit here is gone: booking now happens inside the card, so a
- * second booking control beside it was redundant.
+ * The left column is the heading and copy; the right is the unified two-step
+ * GetInTouch card (capture the lead into the CRM, then offer booking in place).
+ * The old "Talk to Lisa" tel: block and its microline were removed at the
+ * owner's request — the phone still lives in the site header and footer.
  */
-import { site } from '../data/site';
 import GetInTouch from './GetInTouch.astro';
 
 interface Props {
@@ -33,16 +30,6 @@ const { heading, copy, note, id = 'contact' } = Astro.props;
         <h2 id={`${id}-heading`}>{heading}</h2>
         {copy && <p class="lead">{copy}</p>}
         {note && <p class="lead">{note}</p>}
-
-        <div class="cta-talk">
-          <h3>Talk to Lisa</h3>
-          <p>
-            Call <a href={site.phoneHref}>{site.phone}</a> — or pick a time that
-            works for you.
-          </p>
-        </div>
-
-        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
       </div>
 
       <div class="contact-card">

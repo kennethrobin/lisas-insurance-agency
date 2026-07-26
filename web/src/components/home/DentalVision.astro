@@ -21,23 +21,32 @@ const carriers = [
 
 <section class="section section--navy" id="dental" aria-labelledby="dental-heading">
   <div class="container">
-    <p class="eyebrow">Dental &amp; Vision</p>
+    {/* Two columns on desktop: the pitch and the actions on the left, the
+        tap-to-reveal eligibility list on the right. This keeps the section from
+        running tall by sitting the list beside the copy rather than beneath it;
+        it stacks to one column on narrow screens. */}
+    <div class="dental-split">
+      <div class="dental-lede">
+        <p class="eyebrow">Dental &amp; Vision</p>
+        <h2 id="dental-heading">Looking for dental or vision coverage? You can begin any time of year.</h2>
 
-    <div class="section-intro">
-      <h2 id="dental-heading">Looking for dental or vision coverage? You can begin any time of year.</h2>
+        <div class="reviews-actions">
+          <a class="btn btn--accent" href="/dental-insurance#compare">Compare dental plans</a>
+          <a class="btn btn--ghost" href="#contact">Talk to Lisa first</a>
+        </div>
+      </div>
+
+      <div class="dental-aside">
+        <DentalEligibility />
+      </div>
     </div>
 
-    <DentalEligibility />
+    <div class="dental-carriers">
+      <CarrierStrip label="Carrier partners" carriers={carriers} />
 
-    <div class="reviews-actions">
-      <a class="btn btn--accent" href="/dental-insurance#compare">Compare dental plans</a>
-      <a class="btn btn--ghost" href="#contact">Talk to Lisa first</a>
+      <p class="reviews-footnote">
+        Online enrollment available in 43 states. Not available in CT, VT, UT, HI, WY, WV, RI.
+      </p>
     </div>
-
-    <CarrierStrip label="Carrier partners" carriers={carriers} />
-
-    <p class="reviews-footnote">
-      Online enrollment available in 43 states. Not available in CT, VT, UT, HI, WY, WV, RI.
-    </p>
   </div>
 </section>

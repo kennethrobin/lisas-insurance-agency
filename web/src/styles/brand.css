@@ -1298,7 +1298,30 @@ main {
   line-height: 0.98;
   letter-spacing: -0.04em;
 }
+/* The heading sets tight to nothing by default; give the copy room to breathe
+   under the oversized display type, and separate the two paragraphs. */
+.cta-copy .lead { margin-top: clamp(1.1rem, 2.4vw, 1.75rem); max-width: 52ch; }
+.cta-copy .lead + .lead { margin-top: clamp(0.75rem, 1.4vw, 1rem); }
 .cta-copy .btn { margin-top: 2rem; }
+
+/* ---------- Dental & Vision homepage section ----------
+   Two columns on desktop: the pitch + actions on the left, the eligibility
+   list on the right, so the section reads wide rather than tall. The carrier
+   strip is a full-width band below both, with clear separation. */
+.dental-split { display: grid; grid-template-columns: 1fr; gap: clamp(1.75rem, 4vw, 3rem); align-items: start; }
+.dental-lede { align-self: start; }
+.dental-lede .reviews-actions { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+@media (min-width: 900px) {
+  .dental-split { grid-template-columns: 1.05fr 0.95fr; gap: clamp(2.5rem, 5vw, 4.5rem); }
+  /* On its own column the list aligns to the top of the copy, no extra offset. */
+  .dental-aside .eligibility { margin-top: 0; }
+}
+/* Clear the carrier band off the columns above it — this was flush before. */
+.dental-carriers {
+  margin-top: clamp(2.75rem, 5vw, 4rem);
+  padding-top: clamp(2.25rem, 4vw, 3rem);
+  border-top: 1px solid var(--surface-line);
+}
 
 /* ---------- Dental eligibility disclosure list (homepage) ----------
    Native <details>/<summary>, so the open state, keyboard handling and the
@@ -1308,7 +1331,12 @@ main {
 .eligibility { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .eligibility-heading {
   margin-bottom: clamp(0.9rem, 1.6vw, 1.2rem);
-  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  /* A column sub-heading, deliberately lighter than the section h2 (which is
+     500). It was inheriting the bold h3 default (700) and reading as the
+     heaviest text in the section. */
+  font-weight: 500;
+  font-size: clamp(1.1rem, 1.7vw, 1.3rem);
+  color: var(--surface-heading);
 }
 .eligibility-list {
   list-style: none;
@@ -1380,21 +1408,6 @@ main {
 @media (prefers-reduced-motion: reduce) {
   .eligibility-icon { transition: none; }
 }
-
-/* The "Talk to Lisa" block (HP-33). The number is an inline tap-to-call link
-   inside the sentence rather than a button, so it needs to read as a link on
-   the navy field like every other inline link does. */
-.cta-talk { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
-.cta-talk h3 { margin-bottom: 0.5rem; }
-.cta-talk p { color: var(--surface-body); max-width: 46ch; }
-.cta-talk a {
-  color: var(--surface-heading);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-.cta-talk .btn { margin-top: 1.25rem; }
 
 /* A pending action is disabled, not hidden and not a dead link: it stays
    readable and announces itself as unavailable, with the chip beside it saying
@@ -1572,6 +1585,14 @@ main {
   min-height: var(--git-cal-min, 640px);
   overflow: auto;
 }
+/* Shown until the cal iframe paints, so the tall mount is never a blank void. */
+.git-cal-loading {
+  margin: 0;
+  padding: 1.5rem 0;
+  color: var(--surface-label);
+  font-size: 0.95rem;
+}
+.git-book-intro { margin: 0 0 1.25rem; color: var(--surface-body); }
 .git-cal-fallback { color: var(--surface-body); }
 .git-dismiss { margin-top: 1.25rem; }
 

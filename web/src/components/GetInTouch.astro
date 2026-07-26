@@ -117,11 +117,18 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
 
   {/* ── Step 2 — the scheduler ────────────────────────────────────────── */}
   <section class="git-step git-step--book" data-git-step="book" aria-labelledby={`${id}-book-heading`} hidden>
-    {/* TODO: booking-step heading copy is not written — pending. */}
-    <h3 id={`${id}-book-heading`} tabindex="-1">[TODO: booking step heading]</h3>
+    <h3 id={`${id}-book-heading`} tabindex="-1">Want to grab a time to talk?</h3>
+    <p class="git-book-intro">
+      Your details are already with me, so this part’s optional — but if you’d
+      like, pick a time that works for you below.
+    </p>
 
-    {/* cal.com injects its iframe here once Step 2 is first shown. */}
-    <div class="git-cal" data-git-cal style={calSizing}></div>
+    {/* cal.com injects its iframe here once Step 2 is first shown. The loading
+        line sits underneath until the calendar paints, so this is never a blank
+        box. */}
+    <div class="git-cal" data-git-cal style={calSizing}>
+      <p class="git-cal-loading" data-git-cal-loading>Loading the calendar…</p>
+    </div>
 
     {/* Shown only if the embed fails or never loads — never a blank box. */}
     <p class="git-cal-fallback" data-git-cal-fallback hidden>
@@ -313,15 +320,32 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
     async function startScheduler(prefill: { name: string; email: string; notes: string }) {
       const mount = root.querySelector<HTMLElement>('[data-git-cal]');
       const fallback = root.querySelector<HTMLElement>('[data-git-cal-fallback]');
+      const loading = root.querySelector<HTMLElement>('[data-git-cal-loading]');
       if (!mount || calStarted) return;
       calStarted = true;
 
+      const hideLoading = () => {
+        if (loading) loading.hidden = true;
+      };
       const showFallback = () => {
+        hideLoading();
         if (fallback) fallback.hidden = false;
       };
-      const failTimer = window.setTimeout(() => {
-        if (!mount.querySelector('iframe')) showFallback();
-      }, 12000);
+
+      // Poll for the calendar iframe: when it paints, drop the loading line;
+      // if it never arrives, drop it and show the graceful fallback instead —
+      // so the box is never left blank.
+      let waited = 0;
+      const poll = window.setInterval(() => {
+        waited += 500;
+        if (mount.querySelector('iframe')) {
+          hideLoading();
+          window.clearInterval(poll);
+        } else if (waited >= 12000) {
+          window.clearInterval(poll);
+          showFallback();
+        }
+      }, 500);
 
       try {
         await loadCalOnce();
@@ -358,20 +382,15 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
         ns('on', {
           action: 'bookingSuccessful',
           callback: () => {
-            window.clearTimeout(failTimer);
+            window.clearInterval(poll);
             const doneMsg = root.querySelector<HTMLElement>('[data-git-done-message]');
             if (doneMsg)
               doneMsg.textContent = "You're booked — I'll see you then. A confirmation is on its way. — Lisa";
             show('done', 'Your booking is confirmed.');
           },
         });
-
-        // If the iframe mounts, cancel the failure fallback.
-        window.setTimeout(() => {
-          if (mount.querySelector('iframe')) window.clearTimeout(failTimer);
-        }, 2500);
       } catch {
-        window.clearTimeout(failTimer);
+        window.clearInterval(poll);
         showFallback();
       }
     }
