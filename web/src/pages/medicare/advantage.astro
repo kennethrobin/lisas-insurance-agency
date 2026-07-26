@@ -41,7 +41,10 @@ const types = [
 const checks = [
   {
     title: 'Check the network',
-    copy: 'Every plan has one, and it’s local. A plan that’s a good fit in the next county over may not be here. Start by seeing which carriers even operate where you live.',
+    /* "Every plan has one" was inaccurate: a PFFS plan may have no network at
+       all, which the plan-types list on this same page already says. Corrected
+       for CMS accuracy — see the compliance note in the "What it is" section. */
+    copy: 'Most plans have one, and it’s local — a PFFS plan may not, in which case what matters is whether your providers will accept the plan’s terms. A plan that’s a good fit in the next county over may not be here. Start by seeing which carriers even operate where you live.',
   },
   {
     title: 'Confirm your providers are in it',
@@ -108,6 +111,20 @@ const faqs = [
           prescription drug coverage (Part D) and may offer additional benefits,
           such as dental, vision, hearing, and fitness benefits. Benefits, provider
           networks, and out-of-pocket costs vary by plan
+        </p>
+
+        {/* COMPLIANCE DISCLOSURE — NOT client-supplied copy. MA-04's replacement
+            states that Advantage plans must cover all medically necessary
+            services covered by Original Medicare; hospice is the standing CMS
+            exception, and the paragraph MA-04 replaced used to say so. Written
+            to match how Medicare.gov states it. Needs Lisa's sign-off, but the
+            page should not ship without the carve-out disclosed. */}
+        <p>
+          <strong>Hospice care is the exception.</strong> If you elect hospice,
+          Original Medicare Part A covers that care even while you stay enrolled
+          in your Medicare Advantage plan. The plan keeps covering services that
+          aren’t related to your terminal condition, as long as you keep paying
+          its premiums.
         </p>
       </div>
 

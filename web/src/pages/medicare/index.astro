@@ -30,7 +30,13 @@ const parts = [
   {
     letter: 'Part C',
     name: 'Medicare Advantage',
-    copy: 'An alternative way to get your Part A and Part B benefits, run by a private carrier instead of directly by Medicare. Plans work through a network, often include prescription coverage, and may add benefits Original Medicare doesn’t cover. Every plan has a yearly out-of-pocket maximum.',
+    /* MO-03 compliance correction — NOT client-supplied copy. Two problems with
+       the previous wording: "Plans work through a network" was stated
+       universally, which is not true of PFFS or MSA plans, and the coverage
+       claim omitted hospice, which stays with Part A under CMS rules. Both are
+       corrected here to match how Medicare.gov states them. Needs Lisa's
+       sign-off; the page should not ship with either claim uncorrected. */
+    copy: 'An alternative way to get your Part A and Part B benefits, run by a private carrier instead of directly by Medicare. Plans must cover everything Original Medicare covers except hospice care, which Part A keeps paying for even while you’re in an Advantage plan. Most plans work through a network, though the rules vary by plan type — a PFFS plan may not have one. Many include prescription coverage and may add benefits Original Medicare doesn’t cover. Every plan has a yearly out-of-pocket maximum.',
   },
   {
     letter: 'Part D',
