@@ -1308,14 +1308,14 @@ main {
    Two columns on desktop: the pitch + actions on the left, the eligibility
    list on the right, so the section reads wide rather than tall. The carrier
    strip is a full-width band below both, with clear separation. */
-.dental-split { display: grid; grid-template-columns: 1fr; gap: clamp(1.75rem, 4vw, 3rem); align-items: start; }
-.dental-lede { align-self: start; }
+.dental-split, .faq-split { display: grid; grid-template-columns: 1fr; gap: clamp(1.75rem, 4vw, 3rem); align-items: start; }
+.dental-lede, .faq-lede { align-self: start; }
 /* Restore the heading cap the section-intro wrapper used to give it. */
-.dental-lede h2 { max-width: 20ch; }
-.dental-lede .reviews-actions { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+.dental-lede h2, .faq-lede h2 { max-width: 20ch; }
+.dental-lede .reviews-actions, .faq-lede .actions { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
 @media (min-width: 900px) {
-  .dental-split { grid-template-columns: 1.05fr 0.95fr; gap: clamp(2.5rem, 5vw, 4.5rem); }
-  /* On its own column the list aligns to the top of the copy, no extra offset. */
+  .dental-split, .faq-split { grid-template-columns: 1.05fr 0.95fr; gap: clamp(2.5rem, 5vw, 4.5rem); }
+  /* On its own column the list/accordion aligns to the top of the copy. */
   .dental-aside .eligibility { margin-top: 0; }
 }
 /* Clear the carrier band off the columns above it — this was flush before. */

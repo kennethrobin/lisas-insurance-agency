@@ -48,17 +48,23 @@ const faqs = [
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
   <div class="container">
-    <p class="eyebrow">Questions</p>
+    {/* Two columns on desktop — heading and links on the left, the accordion on
+        the right — so the questions sit in half the width instead of running
+        the full page. Same split as the Dental & Vision section. */}
+    <div class="faq-split">
+      <div class="faq-lede">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
 
-    <div class="section-intro">
-      <h2 id="faq-heading">Questions I hear most often</h2>
-    </div>
+        <div class="actions actions--stack">
+          <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
+          <a class="btn btn--ghost" href="/medicare/resources">Official Medicare resources</a>
+        </div>
+      </div>
 
-    <Faq items={faqs} schema />
-
-    <div class="actions actions--stack">
-      <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
-      <a class="btn btn--ghost" href="/medicare/resources">Official Medicare resources</a>
+      <div class="faq-aside">
+        <Faq items={faqs} schema />
+      </div>
     </div>
   </div>
 </section>
