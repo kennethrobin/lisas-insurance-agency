@@ -1,18 +1,16 @@
 ---
 /**
- * "How do I know if this is right for me?" — the dental eligibility list.
+ * The dental eligibility list — the four "is this right for me?" prompts under
+ * the section statement.
  *
- * Native <details>/<summary>, deliberately. The disclosure state, the
- * keyboard handling and the expanded/collapsed announcement all come from the
- * browser, so items 1–4 work with JavaScript disabled and there is no script
- * on this component at all. Each <details> is independent, so several can be
- * open at once — this is not an accordion and must not become one.
+ * Native <details>/<summary>, deliberately. The disclosure state, keyboard
+ * handling and the expanded/collapsed announcement all come from the browser,
+ * so the items work with JavaScript disabled and there is no script here. Each
+ * <details> is independent, so several can be open at once — not an accordion.
  *
- * The fifth item is NOT a disclosure. It is a plain anchor to the carrier
- * comparison table built in Pass 1, styled to read as "this takes you
- * somewhere" rather than "this expands" — different affordance, different
- * element. It reuses the same destination the homepage dental button already
- * points at rather than introducing a second link to the same table.
+ * The section's own heading and the "Compare dental plans" button live in
+ * DentalVision.astro; there's deliberately no sub-heading or compare link in
+ * here, since both would duplicate what sits right beside this list.
  */
 const items = [
   {
@@ -32,14 +30,9 @@ const items = [
     copy: 'Vision can be added onto a dental plan or purchased on its own, depending on the carrier.',
   },
 ];
-
-/** Same destination as the "Compare dental plans" button above. */
-const compareHref = '/dental-insurance#compare';
 ---
 
 <div class="eligibility">
-  <h3 class="eligibility-heading">How do I know if this is right for me?</h3>
-
   <ul class="eligibility-list">
     {items.map((item) => (
       <li>
@@ -58,16 +51,5 @@ const compareHref = '/dental-insurance#compare';
         </details>
       </li>
     ))}
-
-    <li>
-      <a class="eligibility-item eligibility-link" href={compareHref}>
-        <span class="eligibility-label">Compare plans side by side</span>
-        <span class="eligibility-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </span>
-      </a>
-    </li>
   </ul>
 </div>

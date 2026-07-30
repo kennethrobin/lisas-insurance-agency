@@ -1360,8 +1360,7 @@ main {
 .eligibility-item summary::-webkit-details-marker { display: none; }
 .eligibility-item summary::marker { content: ''; }
 
-.eligibility-row,
-.eligibility-link {
+.eligibility-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1373,7 +1372,6 @@ main {
   font-weight: 500;
   letter-spacing: -0.015em;
   color: var(--surface-heading);
-  text-decoration: none;
 }
 
 /* The +/- marker, matching the FAQ list. A flex child at the row's end. */
@@ -1383,20 +1381,11 @@ main {
   font-weight: 300;
   line-height: 1;
   color: var(--surface-label);
-  transition: transform 0.2s ease;
 }
 .eligibility-item[open] .eligibility-row::after { content: "\2013"; }
 
-.eligibility-item summary:hover .eligibility-row,
-.eligibility-link:hover { color: var(--surface-label); }
-.eligibility-link:hover .eligibility-icon { transform: translateX(3px); }
+.eligibility-item summary:hover .eligibility-row { color: var(--surface-label); }
 
-.eligibility-icon {
-  flex: 0 0 auto;
-  display: inline-flex;
-  color: var(--surface-label);
-  transition: transform 0.2s ease;
-}
 /* Focus ring hugs the row. */
 .eligibility-item summary:focus-visible { outline: none; }
 .eligibility-item summary:focus-visible .eligibility-row {
@@ -1410,13 +1399,6 @@ main {
   padding: 0 2rem 1.5rem 0;
   color: var(--surface-body);
   max-width: 62ch;
-}
-
-/* The navigation row reads as a destination, not a panel. */
-.eligibility-link .eligibility-label { text-decoration: underline; text-underline-offset: 4px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .eligibility-icon, .eligibility-row::after { transition: none; }
 }
 
 /* A pending action is disabled, not hidden and not a dead link: it stays
