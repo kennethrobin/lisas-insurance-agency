@@ -1243,9 +1243,12 @@ main {
   list-style: none;
   cursor: pointer;
   position: relative;
-  padding: 1.5rem 3.2rem 1.5rem 0;
-  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
-  font-weight: 400;
+  padding: clamp(1.15rem, 2vw, 1.5rem) 3.2rem clamp(1.15rem, 2vw, 1.5rem) 0;
+  font-family: var(--font-display);
+  /* Same question treatment as the dental list and the interior .def-list:
+     mid weight (500), sized by scale not weight, tight tracking. Was 400. */
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 500;
   letter-spacing: -0.015em;
   color: var(--surface-heading);
   min-height: 44px;
@@ -1326,35 +1329,29 @@ main {
 }
 
 /* ---------- Dental eligibility disclosure list (homepage) ----------
-   Native <details>/<summary>, so the open state, keyboard handling and the
-   expanded announcement are the browser's. Rows are at least 44px tall.
-   The last row is an anchor, not a disclosure: it carries an arrow instead of
-   a plus and moves right on hover, so the two affordances never read alike. */
+   Same typographic system as the FAQ and the interior-page .def-list: hairline
+   rows (no card chrome), question text at the site's mid weight (500) sized by
+   scale not weight, and a light +/- marker. The last row is an anchor, not a
+   disclosure — it keeps an underline + arrow so the two affordances differ. */
 .eligibility { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .eligibility-heading {
-  margin-bottom: clamp(0.9rem, 1.6vw, 1.2rem);
-  /* Lighter than the bold h3 default (700), which read as the heaviest text in
-     the section. Size unchanged. */
+  margin-bottom: clamp(1rem, 1.8vw, 1.35rem);
+  font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
+  letter-spacing: -0.02em;
   color: var(--surface-heading);
 }
 .eligibility-list {
   list-style: none;
   padding: 0;
   display: grid;
-  gap: 0.5rem;
-  max-width: 62ch;
+  border-top: 1px solid var(--surface-line);
 }
+.eligibility-item { border-bottom: 1px solid var(--surface-line); }
 
-.eligibility-item {
-  border: 1px solid var(--surface-line);
-  border-radius: var(--radius);
-  background: var(--surface-card);
-}
 /* summary keeps display:list-item — giving it display:flex drops its native
-   button semantics in some engines. The flex row is a span inside it. The
-   default triangle is removed via the marker, not via display. */
+   button semantics in some engines. The flex row is a span inside it. */
 .eligibility-item summary {
   display: list-item;
   list-style: none;
@@ -1370,14 +1367,29 @@ main {
   justify-content: space-between;
   gap: 1rem;
   min-height: 44px;
-  padding: 0.85rem 1.15rem;
-  font-weight: 600;
+  padding: clamp(1.15rem, 2vw, 1.5rem) 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
   color: var(--surface-heading);
   text-decoration: none;
 }
 
+/* The +/- marker, matching the FAQ list. A flex child at the row's end. */
+.eligibility-row::after {
+  content: "+";
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--surface-label);
+  transition: transform 0.2s ease;
+}
+.eligibility-item[open] .eligibility-row::after { content: "\2013"; }
+
 .eligibility-item summary:hover .eligibility-row,
-.eligibility-link:hover { background: var(--surface-hover); border-radius: var(--radius); }
+.eligibility-link:hover { color: var(--surface-label); }
+.eligibility-link:hover .eligibility-icon { transform: translateX(3px); }
 
 .eligibility-icon {
   flex: 0 0 auto;
@@ -1385,29 +1397,26 @@ main {
   color: var(--surface-label);
   transition: transform 0.2s ease;
 }
-.eligibility-item[open] .eligibility-icon { transform: rotate(45deg); }
-.eligibility-link:hover .eligibility-icon { transform: translateX(3px); }
-/* Focus ring hugs the row, not the whole disclosure panel. */
+/* Focus ring hugs the row. */
 .eligibility-item summary:focus-visible { outline: none; }
 .eligibility-item summary:focus-visible .eligibility-row {
   outline: 3px solid var(--surface-heading);
-  outline-offset: -3px;
-  border-radius: var(--radius);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
 }
 
 .eligibility-item > p {
   margin: 0;
-  padding: 0 1.15rem 1.15rem;
+  padding: 0 2rem 1.5rem 0;
   color: var(--surface-body);
-  max-width: 58ch;
+  max-width: 62ch;
 }
 
 /* The navigation row reads as a destination, not a panel. */
-.eligibility-link { border-radius: var(--radius); }
 .eligibility-link .eligibility-label { text-decoration: underline; text-underline-offset: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .eligibility-icon { transition: none; }
+  .eligibility-icon, .eligibility-row::after { transition: none; }
 }
 
 /* A pending action is disabled, not hidden and not a dead link: it stays

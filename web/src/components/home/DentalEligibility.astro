@@ -47,15 +47,11 @@ const compareHref = '/dental-insurance#compare';
           {/* The flex row is a span INSIDE the summary, not the summary
               itself: giving <summary> display:flex drops its native button
               semantics in some engines, and the whole point of using
-              <details> is to keep them. */}
+              <details> is to keep them. The +/- marker is a CSS ::after on the
+              row, the same treatment the FAQ list uses. */}
           <summary>
             <span class="eligibility-row">
               <span class="eligibility-label">{item.label}</span>
-              <span class="eligibility-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-              </span>
             </span>
           </summary>
           <p>{item.copy}</p>
