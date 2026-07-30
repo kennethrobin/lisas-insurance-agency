@@ -135,17 +135,13 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
   this grid does not describe coverage in those three states.
 </p>
 
-<!-- ASSET SLOT: the official Medicare.gov PDF chart.
-     Drop the file in web/public/docs/ and swap this block for the link or the
-     <object> embed. Leaving the frame visible on purpose so it is obvious this
-     is waiting on something. -->
 <div class="embed-slot">
   <h3>Official Medicare.gov comparison chart</h3>
   <p>
-    ASSET PENDING — the official PDF chart goes here. Once Lisa provides the
-    file, this becomes a download link alongside the table above.
+    Compare what every standardized Medigap plan covers, side by side, on the
+    official Medicare.gov chart.
   </p>
-  <a class="btn btn--ghost" href={links.medicareGov} {...externalAttrs}>
-    Read the official guide at Medicare.gov
+  <a class="btn btn--ghost" href={links.medigapCompareChart} {...externalAttrs}>
+    Compare plans on Medicare.gov
   </a>
 </div>

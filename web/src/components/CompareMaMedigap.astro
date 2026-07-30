@@ -47,7 +47,7 @@ const supplement = {
   title: 'Medicare Supplement (Medigap)',
   href: '/medicare/supplement',
   rows: [
-    ['How it works', 'Sits alongside Original Medicare and helps pay the share Original Medicare leaves to you — deductibles, copays, coinsurance.'],
+    ['How it works', 'Sits alongside Original Medicare and helps pay the share Original Medicare leaves to you, such as deductibles, copays, and coinsurance.'],
     ['Seeing a doctor', 'Any provider in the country who accepts Medicare. There is no network to check.'],
     ['Referrals', 'Not required. You keep Original Medicare’s rules.'],
     ['Prescription drugs', 'Not included. You add a separate Part D plan — see Prescription Drugs.'],
@@ -91,7 +91,7 @@ const columns = stay === 'advantage' ? [advantage, supplement] : [supplement, ad
                 </svg>
                 You’re on this page
               </span>
-              <a class="btn btn--ghost" href={site.phoneHref}>Ask Lisa which fits</a>
+              <a class="btn btn--ghost" href={site.phoneHref}>Learn More</a>
             </>
           ) : (
             <a class="btn btn--accent" href={column.href}>Read about {column.key === 'advantage' ? 'Advantage' : 'Supplement'}</a>
@@ -102,9 +102,8 @@ const columns = stay === 'advantage' ? [advantage, supplement] : [supplement, ad
   </div>
 
   <p class="source-note">
-    Which one fits depends on your doctors, your prescriptions, where you live,
-    and what you want to pay month to month. There is no answer that is right for
-    everyone — that is the conversation to have before you choose.
+    The right choice depends on your doctors, prescriptions, location, and
+    budget. No single option fits everyone, so compare before you choose.
   </p>
 </div>
 

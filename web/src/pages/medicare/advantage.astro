@@ -40,19 +40,16 @@ const types = [
 
 const checks = [
   {
-    title: 'Check the network',
-    /* "Every plan has one" was inaccurate: a PFFS plan may have no network at
-       all, which the plan-types list on this same page already says. Corrected
-       for CMS accuracy — see the compliance note in the "What it is" section. */
-    copy: 'Most plans have one, and it’s local — a PFFS plan may not, in which case what matters is whether your providers will accept the plan’s terms. A plan that’s a good fit in the next county over may not be here. Start by seeing which carriers even operate where you live.',
+    title: 'Check The Plans Network',
+    copy: 'Most plans have a local provider network. PFFS plans may not, so your providers must accept the plan’s terms. A plan available in the next county over may not be available in yours. Start by seeing which insurance companies offer plans where you live.',
   },
   {
-    title: 'Confirm your providers are in it',
-    copy: 'Look up each doctor you actually see — primary care, every specialist, and the hospital you’d want to use. Directories go out of date, so confirming with the office directly is worth the phone call.',
+    title: 'Confirm Your Providers',
+    copy: 'Verify that your doctors, specialists, and hospital is part of the plan’s network.',
   },
   {
-    title: 'Confirm your prescriptions are covered',
-    copy: 'Each plan has its own drug list, and it decides both whether a medicine is covered and what tier it sits on. Have your actual prescriptions and doses in front of you — this is where plans that looked identical stop being identical.',
+    title: 'Verify Prescription Coverage',
+    copy: 'Each plan has its own drug list. It determines which medications are covered and how much you may pay. Reviewing your actual prescriptions and dosages is where plans that look identical may differ.',
   },
 ];
 
@@ -67,15 +64,15 @@ const faqs = [
   },
   {
     q: 'Do I need a separate Part D plan?',
-    a: 'Usually not — many Medicare Advantage plans include prescription coverage in the plan. Some don’t, though, so it’s something to check rather than assume. If your plan includes it, you generally can’t add a separate Part D plan on top.',
+    a: 'Usually Not. Many Medicare Advantage plans include prescription coverage in the plan. Some don’t, though, so it’s something to check rather than assume. If your plan includes it, you generally can’t add a separate Part D plan on top.',
   },
   {
     q: 'What if my doctor leaves the network?',
-    a: 'Networks can change during the year. If it happens, call me — depending on the circumstances and the timing there may be options, and I’d rather hear about it early than at the next enrollment window.',
+    a: 'Networks can change during the year. If your situation changes, reach out to me. The timing and circumstances may create options, and it’s always better to discuss them early rather than wait for the next enrollment period.',
   },
   {
     q: 'When can I change plans?',
-    a: 'The Annual Enrollment Period each autumn is the main window, and there’s a further window early in the year for people already in an Advantage plan. Certain life events — a move, a change in eligibility — can open a Special Enrollment Period as well.',
+    a: 'The Annual Enrollment Period (AEP), October 15 - December 7, is the main time to change plans. The Medicare Advantage Open Enrollment Period, January 1 - March 31, may allow changes if you’re already in an Advantage plan. Certain life events or eligibility changes may also open a Special Enrollment Period.',
   },
 ];
 ---
@@ -86,7 +83,7 @@ const faqs = [
   rawTitle
   eyebrow="Medicare · Part C"
   heading="Medicare Advantage, start to finish."
-  intro="An all-in-one alternative to Original Medicare, run by a private carrier. Here’s how it works, how it differs from a Supplement, and the three checks to make before you sign anything."
+  intro="An all-in-one alternative to Original Medicare, run by private insurance companies. Here’s how it works, how it differs from a Supplement, and the three checks to make before you sign anything."
 >
   <!-- ─── What it is ──────────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
@@ -229,7 +226,7 @@ const faqs = [
       <div class="medicare-cta">
         <p>
           Once those three check out, enrolling is quick. You can do it yourself
-          below, or call me and we’ll go through it together — the premium is
+          below, or call me and we’ll go through it together. The premium is
           identical either way.
         </p>
 
@@ -259,7 +256,7 @@ const faqs = [
       <p class="eyebrow">Questions</p>
 
       <div class="section-intro">
-        <h2 id="faq-heading">Questions about Advantage plans.</h2>
+        <h2 id="faq-heading">Questions About Advantage Plans</h2>
       </div>
 
       <Faq items={faqs} schema />
@@ -267,7 +264,7 @@ const faqs = [
       <div class="callout" style="margin-top: clamp(40px, 5vw, 64px)">
         <h3>If your plan doesn’t include drug coverage</h3>
         <p>
-          You’ll want to understand Part D before you decide — including the
+          You’ll want to understand Part D before you decide, including the
           late-enrollment penalty, which is permanent once it applies.
           <a href="/medicare/prescription-drugs">Read about prescription drug coverage</a>.
         </p>

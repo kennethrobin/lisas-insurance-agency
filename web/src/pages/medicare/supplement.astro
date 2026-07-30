@@ -54,7 +54,7 @@ const faqs = [
   },
   {
     q: 'What if I apply after that window?',
-    a: 'Outside of your open enrollment period — and outside certain guaranteed-issue situations — companies may ask health questions and can decline your application or charge more based on the answers. The rules vary by state. If you’re past your window, call me before you apply anywhere.',
+    a: 'Outside of your open enrollment period and outside certain guaranteed-issue situations, companies may ask health questions and can decline your application or charge more based on the answers. The rules vary by state. If you’re past your enrollment window, call me before you apply anywhere.',
   },
   {
     q: 'Does a Medigap policy cover my spouse too?',
@@ -62,7 +62,7 @@ const faqs = [
   },
   {
     q: 'Can I keep it if I move to another state?',
-    a: 'Generally yes — Medigap isn’t network-based, so it travels with you. Tell me when you move anyway, because pricing and available plans can differ, and it’s worth a look.',
+    a: 'Generally Yes. Medigap isn’t network-based, so it travels with you. Tell me when you move anyway, because pricing and available plans can differ, and it’s worth a look.',
   },
   {
     q: 'Does it cost extra to buy through you?',
@@ -76,20 +76,20 @@ const faqs = [
   description={description}
   rawTitle
   eyebrow="Medicare · Medigap"
-  heading="Medicare Supplement, explained properly."
-  intro="A Medigap policy sits alongside Original Medicare and picks up the share it leaves to you. Here’s what that means in practice, how the lettered plans differ, and why the letter matters more than the company."
+  heading="Medicare Supplement (Medigap)"
+  intro="Medicare Supplement (Medigap) plans work alongside Original Medicare to help cover your share of costs. These plans are identified by letters, such as Plan G or Plan N. Each letter represents a standardized set of benefits established by the federal government, so the coverage for the same letter is the same no matter which insurance company offers it."
 >
   <!-- ─── What Medigap is ─────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
       <p class="crumbs"><a href="/medicare">Medicare</a> / Medicare Supplement</p>
-      <p class="eyebrow">What it is</p>
+      <p class="eyebrow">How Medigap works</p>
 
       <div class="section-intro">
         <h2 id="what-heading">It fills the gaps Original Medicare leaves.</h2>
         <p class="lead">
           Hence the nickname. Original Medicare pays most of a covered bill and
-          leaves you the rest — Medigap is what pays that rest.
+          leaves you the rest. Medigap is what pays that rest.
         </p>
       </div>
 
@@ -147,7 +147,7 @@ const faqs = [
           How does a Supplement compare to Medicare Advantage?
         </h2>
         <p class="lead">
-          The two side by side. You choose one road or the other — you can’t hold
+          The two plans side by side. You choose one or the other. You can’t have
           both at once.
         </p>
       </div>
@@ -182,26 +182,24 @@ const faqs = [
         <h2 id="part-d-heading">Why you still need Part D.</h2>
         <p class="lead">
           A Medigap policy does not cover prescriptions. That’s not a gap in your
-          plan — it’s a separate plan you need to add.
+          plan; it’s a separate plan you need to add.
         </p>
       </div>
 
       <div class="prose">
         <p>
-          People who take no regular medication often decide to skip Part D on the
-          reasonable-sounding grounds that they don’t need it. The problem is the
-          late-enrollment penalty.
+          People who take few or no regular medications often decide to skip Part D
+          because it seems unnecessary. The concern is the late enrollment penalty.
         </p>
         <p>
-          <strong>If you go without creditable prescription coverage for long
-          enough after you’re first eligible, and then sign up later, a penalty is
-          added to your Part D premium — and you keep paying it for as long as you
-          have Part D.</strong> It isn’t a one-off charge. It grows with the length
-          of the gap, and it doesn’t go away when your health does.
+          If you go without creditable prescription coverage after becoming
+          eligible for Part D, enrolling later can trigger a penalty added to your
+          premium. It’s not a one-time penalty charge. It can last as long as you
+          have Part D and grow the longer you go without coverage.
         </p>
         <p>
-          If you have drug coverage from somewhere else — an employer, a union, the
-          VA — it may count as creditable, in which case there’s no penalty for
+          If you have drug coverage from somewhere else (an employer, a union, or
+          the VA), it may count as creditable, in which case there’s no penalty for
           delaying. Whether yours counts is worth confirming rather than assuming.
         </p>
       </div>
@@ -210,7 +208,7 @@ const faqs = [
         <a class="btn btn--accent" href="/medicare/prescription-drugs">
           Read about Part D
         </a>
-        <a class="btn btn--ghost" href={site.phoneHref}>Ask if my coverage counts</a>
+        <a class="btn btn--ghost" href={site.phoneHref}>Verify Coverage</a>
       </div>
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
     </div>
@@ -259,29 +257,27 @@ const faqs = [
       <div class="section-intro">
         <h2 id="help-heading">Medigap is a phone call, not a checkout.</h2>
         <p class="lead">
-          There’s no enroll-online button on this page on purpose. Timing, state
-          rules and health questions all decide what you can actually get — and a
+          There’s no enroll online button on this page on purpose. Timing, state
+          rules, and health questions all decide what you can actually get, and a
           form can’t tell you that.
         </p>
       </div>
 
       <div class="prose">
         <p>
-          I’m a broker. I represent a number of insurance companies — not every
-          company, and I’ll say plainly which ones I can and can’t quote you. Where
-          I do have appointments, I compare them with you and tell you what I see,
-          including when the difference between two of them is not worth the change.
+          I’m an independent broker who works with multiple insurance companies.
+          I’ll help you compare the options available to you, explain the
+          differences, and point out when a change may not actually improve your
+          situation.
         </p>
         <p>
-          The Medigap carriers I work with hold S&amp;P financial strength ratings
-          of A, A+ or A++. Those ratings speak to a company’s ability to pay claims
-          — they are not a statement about price or about service, and they aren’t
-          a promise about your policy.
+          My role is to help people compare Medicare Supplement plan options from
+          highly rated insurance companies. Ratings reflect financial strength and
+          ability to pay claims, not price, service, or policy guarantees.
         </p>
         <p>
-          After you enroll, I stay your agent. Billing questions, a rate change you
-          don’t understand, a move to another state — you call me, and you’re not
-          paying anything extra for that.
+          After you enroll, I stay your agent. If you have any concerns regarding a
+          rate change you don’t understand or a move to another state, call me.
         </p>
       </div>
 
@@ -307,7 +303,7 @@ const faqs = [
   </section>
 
   <CtaBand
-    heading="Which letter, and which company?"
+    heading="Finding the Right Plan and Company"
     copy="That’s a fifteen-minute conversation, and it’s the one that saves people the most. No cost, no obligation, and no pressure to decide on the call."
   />
 </Page>

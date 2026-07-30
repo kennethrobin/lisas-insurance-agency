@@ -56,6 +56,10 @@ export const links = {
 
   /** Real. Lisa can refine this to the "ask a question" / help page. */
   medicareGov: 'https://www.medicare.gov',
+
+  /** Real. Official Medigap plan-benefits comparison chart, supplied by Lisa. */
+  medigapCompareChart:
+    'https://www.medicare.gov/health-drug-plans/medigap/basics/compare-plan-benefits',
 } as const;
 
 export type LinkKey = keyof typeof links;
