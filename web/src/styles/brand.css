@@ -1302,8 +1302,18 @@ main {
   letter-spacing: -0.04em;
 }
 /* The heading sets tight to nothing by default; give the copy room to breathe
-   under the oversized display type, and separate the two paragraphs. */
-.cta-copy .lead { margin-top: clamp(1.1rem, 2.4vw, 1.75rem); max-width: 52ch; }
+   under the oversized display type, and separate the two paragraphs.
+   text-wrap: pretty (the site default for body paragraphs) rather than the
+   .lead default of balance — balance is for SHORT blocks, and on these two
+   longer paragraphs it left uneven rags that read as mismatched widths. With
+   pretty they both fill the same measure, so their edges line up. The measure
+   is a touch narrower than the 52ch default so the column keeps clear air
+   between it and the form card on its right. */
+.cta-copy .lead {
+  margin-top: clamp(1.1rem, 2.4vw, 1.75rem);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
 .cta-copy .lead + .lead { margin-top: clamp(0.75rem, 1.4vw, 1rem); }
 .cta-copy .btn { margin-top: 2rem; }
 
