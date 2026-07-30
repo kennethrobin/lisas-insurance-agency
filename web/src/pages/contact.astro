@@ -36,8 +36,8 @@ const agencySchema = {
   description={description}
   rawTitle
   eyebrow="Contact"
-  heading="However you'd rather do this."
-  intro="Call, text, book a time, or write it down and I'll come back to you. There's no wrong door, and none of them cost you anything."
+  heading="I’m Here When You’re Ready"
+  intro="Choose what works best for you. You can call me directly or schedule a convenient time. Either way, I’m here to help."
 >
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(agencySchema)} />
@@ -49,26 +49,27 @@ const agencySchema = {
       <p class="eyebrow">Reach me</p>
 
       <div class="section-intro">
-        <h2 id="ways-heading">Pick whichever is easiest.</h2>
+        <h2 id="ways-heading">Connect Your Way</h2>
       </div>
 
       <div class="cards cards--3 cards--tiles">
         <article class="card">
           <h3>Call</h3>
           <p>
-            The fastest way, and the one most people use. If I’m with another
-            client, leave a message — I return them the same day wherever I can.
+            A phone call is the fastest way to reach me. If I’m with another
+            client, leave a message, and I’ll return your call as soon as
+            possible, usually within 24 hours.
           </p>
           <a class="btn btn--accent" href={site.phoneHref}>{site.phone}</a>
         </article>
 
         <article class="card">
-          <h3>Text</h3>
+          <h3>Send an email</h3>
           <p>
-            Good for a quick question, or for sending me a prescription name you
-            don’t want to spell out loud. Same number.
+            Send me an email with your request, and I’ll reply by email or call if
+            you prefer.
           </p>
-          <a class="btn btn--ghost" href={site.smsHref}>Send a text</a>
+          <a class="btn btn--ghost" href={`mailto:${site.email}`}>Send an email</a>
         </article>
 
         <article class="card">
@@ -78,8 +79,7 @@ const agencySchema = {
               {/* TODO: links.booking — online scheduling isn't set up yet, so
                   this is the call/text path with wording that matches. */}
               <p>
-                Online booking isn’t set up yet. Call or text me a couple of times
-                that suit you and I’ll lock one in — it takes about a minute.
+                Schedule a time on my calendar that works best for you.
               </p>
               <a class="btn btn--ghost" href={site.smsHref}>Text me a time</a>
             </>
