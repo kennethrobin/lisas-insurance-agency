@@ -53,14 +53,10 @@ export const mainNav: NavItem[] = [
   },
   { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Dental & Vision', href: '/dental-insurance' },
-  {
-    label: 'About',
-    href: '/about',
-    children: [
-      { label: 'Meet Lisa', href: '/about' },
-      { label: 'Contact', href: '/contact' },
-    ],
-  },
+  // About is now a single link (its old dropdown held Meet Lisa + Contact).
+  // Contact was pulled out to stand on its own, so About no longer needs a
+  // dropdown — the About page IS the "why Lisa" / about content.
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
