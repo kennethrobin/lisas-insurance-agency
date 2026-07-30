@@ -1333,11 +1333,10 @@ main {
 .eligibility { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .eligibility-heading {
   margin-bottom: clamp(0.9rem, 1.6vw, 1.2rem);
-  /* A column sub-heading, deliberately lighter than the section h2 (which is
-     500). It was inheriting the bold h3 default (700) and reading as the
-     heaviest text in the section. */
+  /* Lighter than the bold h3 default (700), which read as the heaviest text in
+     the section. Size unchanged. */
   font-weight: 500;
-  font-size: clamp(1.1rem, 1.7vw, 1.3rem);
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
   color: var(--surface-heading);
 }
 .eligibility-list {
