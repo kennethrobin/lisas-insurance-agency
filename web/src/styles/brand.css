@@ -1310,6 +1310,8 @@ main {
    strip is a full-width band below both, with clear separation. */
 .dental-split { display: grid; grid-template-columns: 1fr; gap: clamp(1.75rem, 4vw, 3rem); align-items: start; }
 .dental-lede { align-self: start; }
+/* Restore the heading cap the section-intro wrapper used to give it. */
+.dental-lede h2 { max-width: 20ch; }
 .dental-lede .reviews-actions { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
 @media (min-width: 900px) {
   .dental-split { grid-template-columns: 1.05fr 0.95fr; gap: clamp(2.5rem, 5vw, 4.5rem); }
