@@ -47,11 +47,20 @@ await page.waitForTimeout(400);
 
 const tag = (route === '/' ? 'home' : route.replace(/^\//, '').replace(/\//g, '-')) + `-${width}`;
 
+/* --scroll=N scrolls before capturing. Needed to reproduce the state where the
+   header has picked up `.is-solid` (and with it a backdrop-filter), which is a
+   different containing block for anything positioned `fixed` inside it. */
+if (opts.scroll) {
+  await page.evaluate((y) => window.scrollTo(0, y), Number(opts.scroll));
+  await page.waitForTimeout(300);
+}
+
 if (opts.menu) {
   await page.click('[data-nav-toggle]');
   await page.waitForTimeout(400);
-  await page.screenshot({ path: path.join(outDir, `${tag}-menu.png`) });
-  console.log(`menu -> ${tag}-menu.png`);
+  const suffix = opts.scroll ? `-menu-scrolled` : '-menu';
+  await page.screenshot({ path: path.join(outDir, `${tag}${suffix}.png`) });
+  console.log(`menu -> ${tag}${suffix}.png`);
 } else if (opts.sel) {
   const el = page.locator(String(opts.sel)).first();
   await el.screenshot({ path: path.join(outDir, `${tag}-el.png`) });

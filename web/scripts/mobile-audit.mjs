@@ -9,9 +9,17 @@
  *      change that leaks into >=1024px is caught instead of argued about.
  *
  * Usage (from web/):
- *   node scripts/mobile-audit.mjs --label=baseline     # capture + report
- *   node scripts/mobile-audit.mjs --label=after        # capture + report
+ *   npm run build && npx astro preview --port 4322
+ *   AUDIT_BASE_URL=http://localhost:4322 node scripts/mobile-audit.mjs --label=baseline
+ *   AUDIT_BASE_URL=http://localhost:4322 node scripts/mobile-audit.mjs --label=after
  *   node scripts/mobile-audit.mjs --diff=baseline:after
+ *
+ * RUN THE DIFF AGAINST THE BUILT OUTPUT, NOT THE DEV SERVER.
+ * `astro dev` injects the dev toolbar, which renders a floating pill over the
+ * page and puts a notification badge on it whose state varies between runs.
+ * That alone produced a 4px "regression" on every route and a 3,666px one on
+ * /medicare/supplement — none of it real. Against `astro preview` the same
+ * comparison is a clean zero.
  *
  * WHY THE OVERFLOW CHECK MEASURES ELEMENTS, NOT scrollWidth
  * brand.css sets `body { overflow-x: clip }`. That silently swallows horizontal
@@ -251,7 +259,24 @@ const probeFontSizes = () => {
    Capture
    ========================================================================== */
 
-async function capture(label) {
+/**
+ * Optional text-zoom multiplier (`--zoom=2`).
+ *
+ * WCAG 1.4.4 asks that text scale to 200% without loss of content. Doubling
+ * the root font-size is the honest way to test it on a rem-based stylesheet:
+ * page zoom would just shrink the viewport, which the responsive layout
+ * already handles, whereas this leaves the viewport alone and makes every
+ * rem-sized box grow inside it — which is where things actually break.
+ */
+async function applyZoom(page, zoom) {
+  if (!zoom || zoom === 1) return;
+  await page.addStyleTag({
+    content: `html { font-size: ${16 * zoom}px !important; }`,
+  });
+  await page.waitForTimeout(200);
+}
+
+async function capture(label, zoom = 1) {
   const outDir = path.join(OUT_ROOT, label);
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -283,6 +308,7 @@ async function capture(label) {
       }
 
       await page.evaluate(() => document.fonts?.ready);
+      await applyZoom(page, zoom);
       // Let the header measure itself and any layout settle.
       await page.waitForTimeout(350);
       await page.evaluate(() => window.scrollTo(0, 0));
@@ -426,8 +452,11 @@ if (opts.diff) {
   process.exit(r.worst === 0 ? 0 : 1);
 } else {
   const label = String(opts.label ?? 'after');
-  console.log(`Capturing "${label}" from ${BASE_URL} ...`);
-  const report = await capture(label);
+  const zoom = Number(opts.zoom ?? 1);
+  console.log(
+    `Capturing "${label}" from ${BASE_URL}${zoom !== 1 ? ` at ${zoom * 100}% text zoom` : ''} ...`
+  );
+  const report = await capture(label, zoom);
   const s = summarise(report);
   console.log(s.text);
   fs.writeFileSync(path.join(OUT_ROOT, label, 'summary.txt'), s.text);
