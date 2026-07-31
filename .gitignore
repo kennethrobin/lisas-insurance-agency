@@ -24,6 +24,11 @@ perception-first-design/
 /*.mp4
 /*.mov
 
+# Mobile audit artifacts — ~170 full-page PNGs per run plus the pixel diffs.
+# The findings live in docs/mobile-audit.md; the images are reproducible with
+# `npm run audit:mobile` and don't belong in history.
+web/.mobile-audit/
+
 # OS / WSL cruft
 .DS_Store
 *:Zone.Identifier
