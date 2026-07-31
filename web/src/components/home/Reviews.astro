@@ -158,3 +158,77 @@ const summary =
     )}
   </div>
 </section>
+
+<script>
+  /* Carousel dots for the phone layout.
+
+     Built in JS rather than shipped in the markup because they are a pure
+     progressive enhancement: below 768px the reviews are a scroll-snap track
+     that is already swipeable, and above it they are a plain grid where dots
+     would be meaningless. Nothing is lost if this never runs.
+
+     Each dot is labelled from the review's own attribution, so no new copy is
+     introduced — the accessible name is the client's name that is already
+     printed on the card. */
+  const track = document.querySelector<HTMLElement>('#reviews .cards');
+  const phone = window.matchMedia('(max-width: 767px)');
+
+  if (track) {
+    const cards = [...track.querySelectorAll<HTMLElement>('.review-card')];
+    let dots: HTMLElement | null = null;
+
+    const build = () => {
+      if (dots || cards.length < 2) return;
+      dots = document.createElement('div');
+      dots.className = 'review-dots';
+
+      cards.forEach((card, i) => {
+        const who = card.querySelector('footer')?.textContent?.trim() ?? String(i + 1);
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('aria-label', who);
+        if (i === 0) dot.setAttribute('aria-current', 'true');
+        dot.addEventListener('click', () => {
+          card.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              ? 'auto'
+              : 'smooth',
+            block: 'nearest',
+            inline: 'start',
+          });
+        });
+        dots!.appendChild(dot);
+      });
+
+      track.after(dots);
+
+      /* Keep the dots honest about which card is showing. An
+         IntersectionObserver on the track beats a scroll listener: it reports
+         the card that is actually in view rather than a position guess. */
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const i = cards.indexOf(entry.target as HTMLElement);
+            [...dots!.children].forEach((dot, j) =>
+              j === i
+                ? dot.setAttribute('aria-current', 'true')
+                : dot.removeAttribute('aria-current')
+            );
+          });
+        },
+        { root: track, threshold: 0.6 }
+      );
+      cards.forEach((card) => io.observe(card));
+    };
+
+    const teardown = () => {
+      dots?.remove();
+      dots = null;
+    };
+
+    const sync = () => (phone.matches ? build() : teardown());
+    phone.addEventListener('change', sync);
+    sync();
+  }
+</script>
