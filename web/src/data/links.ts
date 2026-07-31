@@ -35,6 +35,21 @@ export const links = {
   /** TODO: email-service form action (Mailchimp/ConvertKit/etc.) */
   newsletterEndpoint: '#',
 
+  /** TODO: where the "send me a note" form POSTs — Lisa's CMS/CRM form endpoint,
+   *  or a form service that forwards to her inbox.
+   *
+   *  Until this is a real URL the contact form does NOT render. That is
+   *  deliberate: it previously showed "Thank you — I got your note. I'll call
+   *  you back within one business day" while posting nowhere and discarding the
+   *  name and phone number, which is the worst of both worlds — Lisa never sees
+   *  the enquiry and the visitor thinks she is ignoring them.
+   *
+   *  Whoever wires this up: the endpoint should redirect to /thank-you on
+   *  success (most form services take a redirect field; the name differs per
+   *  vendor, so it is not guessed here). Without a redirect the visitor lands
+   *  on whatever the endpoint returns. */
+  contactEndpoint: '#',
+
   /** TODO: deferred — client profile signup. No auth/CRM is built yet. */
   profileSignup: '#',
 

@@ -287,3 +287,38 @@ desktop regression: 0 differing pixels (14 routes x 1024 and 1440)
 The `>=1024` column is identical before and after by design. The 14 overflow
 elements at ≥1024 under 200% zoom are pre-existing and cannot be fixed without
 touching frozen CSS.
+
+---
+
+## Addendum — the contact form (after the layout pass)
+
+The "0 differing pixels" result above describes the **layout pass only**. A
+separate fix afterwards deliberately changes desktop, so that number no longer
+holds for the current branch and this note records why.
+
+The contact form in `CtaBand.astro` had no `action` and no `method`. Its submit
+handler called `preventDefault()`, hid the form, and displayed *"Thank you — I
+got your note. I'll call you back within one business day. — Lisa"*. No request
+was ever made, and the site is a static build with no adapter, no API route and
+no backend dependency, so there was nothing for it to post to. Every submission
+was discarded behind a false confirmation.
+
+It now follows the rule `links.ts` already states — *"Nothing on this site is
+allowed to look clickable and do nothing"* — and the pattern `Subscribe.astro`
+already implements: while `links.contactEndpoint` is `'#'` the card renders an
+honest note plus the call and text actions, and the form does not render at all.
+Filling in one value in `links.ts` turns it back into a real form that POSTs
+natively (and therefore works without JS).
+
+Measured consequence, versus the frozen baseline:
+
+```
+15 desktop screenshots differ, on the 8 routes that render CtaBand.
+Each diff is a single rectangle — the contact card in the CTA grid's right
+column: ~412x407px at 1024, ~522x417px at 1440. Nothing outside it changed.
+Pages are marginally shorter (e.g. /privacy 2234px -> 2203px).
+Sub-13px text at >=1024 drops 156 -> 134: the form's 11.52px field labels
+are gone with it.
+```
+
+Mobile gates are unaffected and still clean at 360/390/430/768.

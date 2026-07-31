@@ -1361,15 +1361,13 @@ main {
   background-size: 12px 8px;
 }
 
-.form-success {
-  display: none;
-  align-items: flex-start;
-  gap: 0.9rem;
-  padding: 0.5rem 0;
-}
-.form-success.is-visible { display: flex; }
-.form-success .check-icon { margin-bottom: 0; flex: 0 0 auto; }
-.form-success p { color: var(--surface-body); }
+/* The contact card's pending state, shown while links.contactEndpoint is "#".
+   Replaces .form-success, which existed only to fake a submission: the form
+   discarded the visitor's name and phone and then told them Lisa had received
+   their note. A form that cannot store what it collects should not be on the
+   page — the same rule the newsletter already follows. */
+.contact-note p { color: var(--surface-body); }
+.contact-note .actions { margin-top: 1.3rem; }
 
 /* ---------- Footer ----------
    Light like everything else, closing on the oversized wordmark clipped by the
