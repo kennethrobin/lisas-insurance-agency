@@ -843,7 +843,9 @@ main {
    explicit break does the work, so nothing has to be kept on one line. */
 .hero .display-xl {
   display: block;
-  font-size: clamp(2rem, 4vw, 3.4rem);
+  /* A step up from the old clamp(2rem, 4vw, 3.4rem) — a bit more presence over
+     the video without tipping into the full-size h1 display scale. */
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
   font-weight: var(--display-weight);
   line-height: 1.02;
   letter-spacing: -0.03em;
@@ -972,6 +974,14 @@ main {
   padding: 0.6rem 1rem;   /* clears the 14px corner radius */
 }
 .quickstart .btn { flex: 0 0 auto; }
+
+/* Hidden for now, at the client's request: the rotating reviews capsule and the
+   quick-start ("what do you need help with") box in the hero. The markup is
+   kept in place so either can be switched back on by removing this rule. With
+   both gone, the "I'm Lisa" line is the only thing on the hero floor, so it
+   settles onto the baseline where the capsule used to sit. */
+.hero .review-chip,
+.hero .quickstart { display: none; }
 
 /* ---------- Trust band ----------
    A thin strip of small uppercase credentials under the hero. */
@@ -1295,11 +1305,15 @@ main {
   gap: clamp(2rem, 4vw, 3.5rem);
   align-items: start;
 }
+/* Match the site's section headings exactly — same size, weight and tracking as
+   every other statement heading (the base h2), not the oversized display scale
+   this used before. */
 .cta-copy h2 {
-  max-width: 14ch;
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  max-width: 20ch;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
 }
 /* The heading sets tight to nothing by default; give the copy room to breathe
    under the oversized display type, and separate the two paragraphs.
@@ -1739,9 +1753,13 @@ main {
     radial-gradient(70% 60% at 6% 94%, rgba(255, 255, 255, 0.07), transparent 64%),
     var(--grad-hero);
   /* Clears the fixed header, which is measured from the top of the WINDOW while
-     this padding starts a gutter down — hence the subtraction. */
+     this padding starts a gutter down — hence the subtraction. The trailing
+     clamp is the gap BELOW the header before the first content (the back link).
+     Kept modest so the back link sits a comfortable distance under the nav
+     rather than floating far below it; the back link then carries the space
+     down to the eyebrow with its own margin. */
   padding-top: calc(
-    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(2.5rem, 6vw, 5rem)
+    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(1.4rem, 3vw, 2.25rem)
   );
   padding-bottom: clamp(2.75rem, 6vw, 5rem);
 }
@@ -1763,7 +1781,9 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-bottom: clamp(14px, 1.6vw, 20px);
+  /* Proper separation from the section text below it, balanced against the gap
+     to the nav above (set by the hero's padding-top). */
+  margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--surface-label);
