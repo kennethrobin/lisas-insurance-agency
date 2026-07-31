@@ -43,31 +43,41 @@ const reviewLinks = [
         </div>
       </div>
 
+      {/* Below 768px these two collapse to accordions, so the footer isn't a
+          twelve-link wall at the end of every page. <details open> is the whole
+          mechanism: it works before any JS, it prints expanded, and Ctrl-F
+          still finds the links inside it. At >=768px CSS forces it open and
+          makes the summary inert, so the desktop footer is unchanged — the
+          contact block above is never collapsible at any width. */}
       <nav class="footer-col" aria-label="Quick links">
-        <h3>Quick links</h3>
-        <ul>
-          {footerNav.map((link) => (
-            <li><a href={link.href}>{link.label}</a></li>
-          ))}
-          <li><a href="/medicare/education">Blog</a></li>
-        </ul>
+        <details class="footer-group" open>
+          <summary><h3>Quick links</h3></summary>
+          <ul>
+            {footerNav.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+            <li><a href="/medicare/education">Blog</a></li>
+          </ul>
+        </details>
       </nav>
 
       <nav class="footer-col" aria-label="Existing clients">
-        <h3>Already my client?</h3>
-        <ul>
-          {utilityNav.map((link) => (
-            <li><a href={link.href}>{link.label}</a></li>
-          ))}
-          {/* DEFERRED: no auth/CRM is built. While profileSignup is "#" this
-              points at the contact page, where Lisa can set someone up by hand
-              — a link that goes nowhere would be worse than one extra step. */}
-          <li>
-            <a href={isPending(links.profileSignup) ? '/contact' : links.profileSignup}>
-              Create a profile
-            </a>
-          </li>
-        </ul>
+        <details class="footer-group" open>
+          <summary><h3>Already my client?</h3></summary>
+          <ul>
+            {utilityNav.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+            {/* DEFERRED: no auth/CRM is built. While profileSignup is "#" this
+                points at the contact page, where Lisa can set someone up by hand
+                — a link that goes nowhere would be worse than one extra step. */}
+            <li>
+              <a href={isPending(links.profileSignup) ? '/contact' : links.profileSignup}>
+                Create a profile
+              </a>
+            </li>
+          </ul>
+        </details>
       </nav>
     </div>
 
@@ -105,3 +115,26 @@ const reviewLinks = [
     </div>
   </div>
 </footer>
+
+<script>
+  /* The groups ship `open`, and CSS keeps them open at >=768px. The one case
+     CSS can't cover is someone collapsing a group on a phone and then rotating
+     to a wide layout: the attribute would still be off. Re-open on the way up. */
+  const groups = document.querySelectorAll<HTMLDetailsElement>('.footer-group');
+  const wide = window.matchMedia('(min-width: 768px)');
+  const sync = () => {
+    groups.forEach((group) => {
+      const summary = group.querySelector('summary');
+      if (wide.matches) {
+        group.open = true;
+        // CSS already makes it unclickable up here; this stops a keyboard user
+        // collapsing a group that has no visible way to reopen it.
+        summary?.setAttribute('tabindex', '-1');
+      } else {
+        summary?.removeAttribute('tabindex');
+      }
+    });
+  };
+  wide.addEventListener('change', sync);
+  sync();
+</script>

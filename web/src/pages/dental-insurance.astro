@@ -113,7 +113,11 @@ const faqs = [
         </p>
       </div>
 
-      <div class="table-scroll">
+      {/* `--stack` opts this table out of horizontal scrolling below 768px: it
+          becomes one card per comparison, with each cell labelled by its column
+          via `data-label`. The attributes render nothing above 768px, so the
+          desktop table is untouched. */}
+      <div class="table-scroll table-scroll--stack">
         <table class="compare-table">
           <caption>Enroll online, or with an agent</caption>
           <thead>
@@ -126,33 +130,33 @@ const faqs = [
           <tbody>
             <tr>
               <th scope="row">Carriers on this path</th>
-              <td class="cell-part">Ameritas, Manhattan Life, Allstate</td>
-              <td class="cell-part">Healthspring, Aetna, Mutual of Omaha</td>
+              <td class="cell-part" data-label="Enroll online">Ameritas, Manhattan Life, Allstate</td>
+              <td class="cell-part" data-label="With Lisa">Healthspring, Aetna, Mutual of Omaha</td>
             </tr>
             <tr>
               <th scope="row">Checking your dentist is in network</th>
-              <td class="cell-part">Built into the enrollment link — you check before you commit</td>
-              <td class="cell-part">I check it with you on the call</td>
+              <td class="cell-part" data-label="Enroll online">Built into the enrollment link — you check before you commit</td>
+              <td class="cell-part" data-label="With Lisa">I check it with you on the call</td>
             </tr>
             <tr>
               <th scope="row">How long it takes</th>
-              <td class="cell-part">Minutes, on your own schedule</td>
-              <td class="cell-part">One phone call</td>
+              <td class="cell-part" data-label="Enroll online">Minutes, on your own schedule</td>
+              <td class="cell-part" data-label="With Lisa">One phone call</td>
             </tr>
             <tr>
               <th scope="row">Good fit when</th>
-              <td class="cell-part">You know what you want and your dentist is in the network</td>
-              <td class="cell-part">You want the options weighed up, or your situation has a wrinkle in it</td>
+              <td class="cell-part" data-label="Enroll online">You know what you want and your dentist is in the network</td>
+              <td class="cell-part" data-label="With Lisa">You want the options weighed up, or your situation has a wrinkle in it</td>
             </tr>
             <tr>
               <th scope="row">What it costs you</th>
-              <td class="cell-part">The plan’s premium</td>
-              <td class="cell-part">The plan’s premium — my help is free</td>
+              <td class="cell-part" data-label="Enroll online">The plan’s premium</td>
+              <td class="cell-part" data-label="With Lisa">The plan’s premium — my help is free</td>
             </tr>
             <tr>
               <th scope="row">Who you call afterwards</th>
-              <td class="cell-part">Me — I’m your agent either way</td>
-              <td class="cell-part">Me</td>
+              <td class="cell-part" data-label="Enroll online">Me — I’m your agent either way</td>
+              <td class="cell-part" data-label="With Lisa">Me</td>
             </tr>
           </tbody>
         </table>

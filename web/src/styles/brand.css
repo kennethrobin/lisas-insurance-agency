@@ -706,14 +706,36 @@ main {
   }
 }
 
-/* Very narrow: the phone pill keeps the icon but drops the digits, so the
-   wordmark and the menu control both stay on one row. The number is the first
-   thing in the drawer either way. */
-@media (max-width: 400px) {
+/* Narrow: the phone pill keeps the icon but drops the digits, so the wordmark
+   and the menu control both stay on one row. The number is the first thing in
+   the drawer either way, and the sticky call bar carries it in full.
+
+   THIS THRESHOLD WAS 400px AND IT WAS WRONG. Measured, the row needs ~495px to
+   hold the wordmark (180px, nowrap) plus the pill with digits plus the labelled
+   menu button. So from 401px to 495px everything came back and the row
+   overflowed — worst case +85px at 410px — which `body { overflow-x: clip }`
+   then hid completely. That band is iPhone Plus / Pro Max, i.e. a lot of real
+   phones, and the hamburger was being sliced in half by the panel edge.
+   520px gives the measured requirement a margin for font-swap reflow. */
+@media (max-width: 520px) {
   .header-phone { padding-inline: 0.9rem; }
   .header-phone-number { display: none; }
   .nav-toggle-label { display: none; }
   .nav-toggle { padding-inline: 0.95rem; }
+}
+
+/* Belt and braces, so no future string can reproduce the bug: the row never
+   wraps, the controls never shrink, and the wordmark gives way first. If
+   anything ever does outgrow the row it degrades to an ellipsis on the brand
+   name rather than to a clipped, half-visible control. */
+@media (max-width: 1023px) {
+  .site-header > .container { flex-wrap: nowrap; }
+  .header-right { flex: 0 0 auto; }
+  .wordmark {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* ==========================================================================
@@ -2074,6 +2096,796 @@ main {
   .trust-band ul { grid-template-columns: repeat(4, auto); justify-content: space-between; }
   .cta-grid { grid-template-columns: 1.15fr 1fr; }
   .footer-grid { grid-template-columns: 1.6fr 1fr 1fr; }
+}
+
+/* ==========================================================================
+   THE MOBILE LAYER  (everything below 1024px)
+   ==========================================================================
+   Desktop is frozen. Every rule from here to the reduced-motion block is
+   inside a `max-width` query, so rendering at >=1024px is byte-identical to
+   before — verified by pixel-diffing 1024 and 1440 against a saved baseline
+   (`npm run audit:diff`).
+
+   WHY THIS EXISTS AS A LAYER RATHER THAN EDITS ABOVE
+   The site is authored mobile-first: the base layer of every grid is `1fr` and
+   multi-column arrives additively at 640/900/1024. That means the phone layout
+   was never designed — it is the *absence* of those rules. Editing the base
+   layer to fix mobile would change desktop; adding a layer here cannot.
+
+   Three bands:
+     <=767   phone   — its own type scale and spacing
+     768–1023 tablet — shares the label floor, gets its own display size
+     <=1023  both    — legibility and tap-target floors
+   ========================================================================== */
+
+/* ---------- Both phone and tablet ----------------------------------------
+   THE 13px FLOOR. The audit found 440 instances of rendered text below 13px,
+   every one of them a small-caps label: eyebrows at 11.52px, field labels at
+   11.52px, carrier tags at 10.88px. CLAUDE.md already commits to "Body 18px
+   minimum — the audience skews senior, so legibility rules over density"; the
+   labels simply never got the same rule. Uppercase + letter-spaced at 11.5px is
+   the least readable text on the site for a 66-year-old, and it is used for
+   every section label on every page.
+
+   Tracking loosens as size drops. The display cut runs at -0.035em, which is
+   correct at 80px and looks broken at 30px — tight tracking is a function of
+   size, not of brand. */
+@media (max-width: 1023px) {
+  .eyebrow,
+  .quickstart label,
+  .contact-form label,
+  .subscribe label,
+  .contact-card h3,
+  .footer-col h3,
+  .media-slot p,
+  .carrier-lane-label,
+  .carrier-chip .chip-tag,
+  .card .card-kicker,
+  .def-row .def-tag,
+  .compare-col dt,
+  .compare-table caption,
+  .post-meta,
+  .trust-band li,
+  .review-card footer,
+  .video-placeholder p,
+  .cell-todo,
+  .nav-toggle {
+    font-size: 0.8125rem;   /* 13px — the floor, not a suggestion */
+  }
+
+  /* Uppercase labels need more tracking as they shrink, not less. */
+  .eyebrow,
+  .quickstart label,
+  .contact-form label,
+  .subscribe label,
+  .contact-card h3,
+  .footer-col h3,
+  .carrier-lane-label,
+  .trust-band li,
+  .review-card footer,
+  .post-meta {
+    letter-spacing: 0.12em;
+  }
+
+  /* A 13px label with 0.12em tracking is wider than an 11.5px one, so the
+     eyebrow's trailing hairline needs a real minimum or it disappears. */
+  .eyebrow::after { min-width: 24px; }
+
+  /* Focus: 2px ink at 2px offset. The 3px/3px ring was thick enough to overlap
+     adjacent controls once tap targets grew. */
+  :focus-visible {
+    outline: 2px solid var(--surface-heading);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Tap-target floor ------------------------------------------
+     44x44 minimum, everywhere. Each of these measured under it in the audit;
+     the height is bought with padding rather than with a taller box, so the
+     type keeps its own rhythm and only the hit area grows. */
+  .wordmark { padding-block: 0.8rem; }          /* was 42px tall */
+  .drawer-sublink { min-height: 44px; }         /* was 42px */
+  /* inline-block, not inline-flex: these still have to wrap onto a second line
+     inside their own box, which a flex container would not let them do. */
+  .post-row h3 a {
+    display: inline-block;
+    padding-block: 10px;                         /* 27px content -> 47px */
+  }
+  .def-row dd a,
+  .footer-review-row a {
+    display: inline-block;
+    padding-block: 12px;                         /* 22px content -> 46px */
+  }
+  .footer-legal a { padding-block: 13px; }       /* 21px content -> 47px */
+
+  /* ---------- The menu, as a full-screen overlay -------------------------
+     Above 1024px the drawer stays the small floating panel it has always been.
+     Here it becomes a modal sheet: there is no room on a phone for a panel
+     that hangs off a tab, and a 248px column of 17px links is a poor target
+     for an unsteady hand. The rows go to display size and the one action that
+     matters sits on the floor, above the home indicator. */
+  .nav-drawer {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    z-index: 90;
+    background: var(--navy-black);
+    overflow: hidden;
+  }
+  .nav-drawer > .container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    height: 100svh;
+    /* Clear the header tab, which stays visible and on top so the X is always
+       in the same place as the hamburger that opened it. */
+    padding-top: calc(var(--header-actual, var(--header-h)) + 12px);
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .drawer-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: auto;
+    margin-left: 0;
+    max-height: none;
+    padding-inline: 0;
+    padding-block: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+  }
+
+  .drawer-link {
+    min-height: 60px;
+    padding-block: 0.55rem;
+    font-size: 1.75rem;        /* 28px */
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .drawer-sublist { padding-left: 1.1rem; }
+  .drawer-sublink { font-size: 1.125rem; }   /* 18px, the body floor */
+  .drawer-caret { width: 14px; height: 9px; }
+
+  /* The overlay's floor. `margin-top: auto` pins it down without needing the
+     list above it to be a fixed height. */
+  .drawer-foot {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--surface-line);
+  }
+  .drawer-foot .btn { width: 100%; min-height: 56px; }
+  .drawer-foot .microline { margin-top: 0.6rem; text-align: center; }
+
+  /* The scroll lock. `position: fixed` is the only one iOS Safari honours; the
+     header is already fixed so it is unaffected, and SiteHeader.astro saves and
+     restores the scroll offset either side of it. */
+  body.is-menu-locked {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* ---------- Sticky call bar -------------------------------------------
+     Shown by MobileCallBar.astro once the hero has scrolled away, hidden again
+     over the contact section so it can never cover the form's submit button. */
+  .callbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 70;
+    padding: 8px var(--gutter) calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(12, 24, 38, 0.94);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .callbar[hidden] { display: none; }
+  .callbar-action {
+    width: 100%;
+    min-height: 56px;
+  }
+  /* Reserve the bar's height so the last footer row is never underneath it,
+     and so an anchor jump doesn't land behind it. */
+  body.has-callbar { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  html { scroll-padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* The overlay is a phone and tablet treatment only. */
+@media (min-width: 1024px) {
+  .drawer-foot { display: none; }
+  .callbar { display: none; }
+}
+
+/* The phone-only needs selector and its desktop counterpart are mutually
+   exclusive: exactly one of them is ever rendered, so a screen reader meets
+   one control rather than two, and `display: none` keeps the hidden one out
+   of the flex flow entirely (no stray gap in <main> on desktop). */
+@media (min-width: 768px) {
+  .needs { display: none; }
+  /* The dots are torn down above this width anyway; belt and braces in case a
+     resize handler is ever missed. */
+  .review-dots { display: none; }
+}
+
+/* ---------- Footer groups ------------------------------------------------
+   <details> replaces the bare <h3> so the groups can collapse on a phone. At
+   >=768px the summary is inert and the group is always open, so the desktop
+   footer renders exactly as it did when it was an <h3> — verified by pixel
+   diff, not by assertion. */
+.footer-group > summary {
+  display: block;              /* not list-item: no native marker */
+  list-style: none;
+}
+.footer-group > summary::-webkit-details-marker { display: none; }
+
+@media (min-width: 768px) {
+  /* Nothing to toggle at this width; make the summary unclickable so a stray
+     click can't collapse a group that has no affordance to reopen it. */
+  .footer-group > summary { pointer-events: none; }
+}
+
+/* ---------- Phone: the type scale ----------------------------------------
+   Reconciled against the actual typeface (self-hosted Open Sans variable,
+   weights 300–800) and against what the page measured at.
+
+   BOLDNESS IS SPENT ONCE. The hero keeps one genuinely oversized moment and
+   everything below steps down hard and stays there. Note this moves the hero
+   display *up*: it was rendering at 32px, which is not an oversized grotesque,
+   it is a large paragraph. The identity was missing on mobile, not overblown.
+
+   Body stays at 18px, NOT the 17px originally proposed — CLAUDE.md makes 18px
+   a non-negotiable floor for this audience and that outranks a round number. */
+@media (max-width: 767px) {
+  /* Hero — the one oversized moment. 44/1.04/-0.02em. */
+  .hero .display-xl {
+    font-size: 2.75rem;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+  .hero .display-tail {
+    font-size: 1.1875rem;   /* 19px — lead size; it is a subordinate clause */
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    margin-top: 0.75rem;
+    max-width: 26ch;
+  }
+
+  /* Interior page heroes step down from the homepage's one big moment. */
+  h1 {
+    font-size: 2.375rem;    /* 38px */
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+
+  /* Section headings hold ONE size all the way down the page. */
+  h2,
+  .cta-copy h2 {
+    font-size: 1.875rem;    /* 30px */
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  /* 20ch at 30px in a ~330px column forces a 5-line rag with orphans. Let the
+     heading use the column it actually has. */
+  .section-intro h2,
+  .cta-copy h2 { max-width: none; }
+
+  h3,
+  .card h3,
+  .steps h3,
+  .cards--tiles .card h3,
+  .compare-col h3,
+  .def-row dt,
+  .post-row h3 {
+    font-size: 1.3125rem;   /* 21px */
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+  }
+
+  .lead,
+  .page-hero-intro,
+  .hero-sub {
+    font-size: 1.1875rem;   /* 19px */
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  /* Body copy stays 18px. Card and step copy were running at 1.02rem (16.3px),
+     under the project's own floor. */
+  .card p,
+  .steps p,
+  .compare-col dd,
+  .callout p,
+  .post-row p,
+  .prose li,
+  .embed-slot p {
+    font-size: 1.125rem;    /* 18px */
+    line-height: 1.6;
+  }
+
+  /* Legal and micro copy: 13px floor, comfortable leading. */
+  .microline,
+  .reviews-footnote,
+  .source-note,
+  .table-key,
+  .footer-disclaimers p,
+  .footer-legal,
+  .crumbs {
+    font-size: 0.875rem;    /* 14px — already above the floor; hold it there */
+    line-height: 1.5;
+  }
+
+  /* ---------- Phone: spacing ---------------------------------------------
+     SEPARATION COMES FROM RATIO, NOT MORE PADDING. The rule: the gap BETWEEN
+     two sections must be at least 2.5x the largest gap INSIDE one.
+
+     Measured before: between-section 124px at seven of nine boundaries — dead
+     uniform — with the two boundaries that should be strongest (out of the
+     hero, out of the trust band) the two weakest, at 1.72x and 2.44x.
+
+     After: sections carry 72px, so a boundary is 72+12+72 = 156px, and every
+     authored gap inside a section is capped at 32px. 156/32 = 4.9x. The tight
+     boundaries are lifted past 2.5x by giving the trust band real padding.
+     Verified with `npm run audit:rhythm`, not by eye. */
+  :root {
+    /* 8px panel gutter + 16px container padding = 24px to the text. */
+    --container-pad: 16px;
+    --panel-gap: 12px;
+  }
+
+  .section { padding-block: 72px; }
+
+  /* Major transitions get 88px: the close of the page, and the first content
+     section after the hero. Everything else holds 72 so these two read as
+     genuine chapter breaks rather than one more identical gap. */
+  .cta-band { padding-block: 88px 72px; }
+  .trust-band + .section { padding-top: 88px; }
+
+  /* The trust band is the hero's tail, but it still has to clear the 2.5x
+     rule on both sides. 40px does it without detaching it from the hero. */
+  .trust-band { padding-block: 40px; }
+
+  /* Every authored gap inside a section, capped at 32px. These were 36–40px
+     and set independently, which is what flattened the ratio. */
+  .section-intro { margin-bottom: 32px; max-width: none; }
+  .medicare-cta { margin-top: 32px; }
+  .video-placeholder { margin-top: 32px; }
+  .reviews-actions { margin-top: 32px; }
+  .carrier-strip { margin-top: 24px; }
+  .compare { margin-top: 24px; }
+  .actions--stack { margin-top: 28px; }
+  .embed-slot { margin-top: 32px; }
+  .callout { margin-top: 24px; }
+
+  /* Inside the section head: eyebrow -> heading 16, heading -> lead 16. */
+  .eyebrow { margin-bottom: 16px; }
+  .lead { margin-top: 16px; }
+  .page-hero-intro { margin-top: 16px; }
+}
+
+/* ---------- Tablet (768–1023) --------------------------------------------
+   The band that inherits desktop's type at two-thirds the width. Cards are
+   already 2-up here (>=640), which is right; what is wrong is the hero, which
+   is still pinned to the 32px clamp floor while the interior h1 next to it
+   renders at 46px. Give the hero back its hierarchy without reaching 1024. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero .display-xl {
+    font-size: 3.5rem;      /* 56px */
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .hero .display-tail {
+    font-size: 1.375rem;    /* 22px */
+    line-height: 1.3;
+  }
+  .section { padding-block: 88px; }
+  .section-intro { margin-bottom: 40px; }
+}
+
+/* ==========================================================================
+   PHONE: the blocks
+   ==========================================================================
+   DENSITY IS A DESIGN TOOL, NOT A FAILURE. Every block below was a stack of
+   generous cards, because a stack of generous cards is what a multi-column
+   grid becomes when its `min-width` rule stops applying. Each one is decided
+   on its own terms here — what the content IS decides whether it wants to be
+   a list, a timeline, a pair, or a carousel.
+   ========================================================================== */
+@media (max-width: 767px) {
+  /* `balance` evens out line lengths, which is right for a two-line heading
+     and wrong for a four-line one: it produced a stepped rag with an orphan on
+     "Confused by Medicare? / That's normal — / and it's exactly / what I'm here
+     for." `pretty` fills the measure and only protects the last line, which is
+     what a heading this long actually needs. */
+  h2 { text-wrap: pretty; }
+
+  /* ---------- Hero ------------------------------------------------------
+     Content budget: headline, one subordinate line, one review, and the sub.
+     The quick-start card moves out to NeedsSelector below — at 390x844 the
+     hero cannot hold a form as well without squeezing everything in it.
+
+     The rotating review is already a cross-fade of one visible quote at a
+     time (three stacked in one grid cell), so no change is needed there.
+
+     100vh is dropped rather than kept as a fallback. On the browsers that lack
+     `svh` it is the LARGE viewport, so it is exactly the value that makes an
+     iOS hero overflow and the page jump on first scroll. A hero with no
+     min-height is sized by its content, which is never cropped — a better
+     failure mode than one that is. */
+  .hero {
+    min-height: 0;
+    min-height: min(calc(100svh - var(--gutter) * 2), 940px);
+  }
+  .hero .quickstart { display: none; }
+  .hero-floor { gap: 20px; }
+
+  /* ---------- Needs selector (phone only) -------------------------------
+     Four full-width targets instead of a select. Radios, so it is a real form
+     control with real semantics; the row is the label, so the whole 56px band
+     is the hit area rather than just the dot. */
+  .needs {
+    background: var(--panel);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-panel);
+    padding-block: 32px;
+  }
+  .needs-set { border: 0; padding: 0; margin: 0; }
+  .needs-legend {
+    padding: 0;
+    margin-bottom: 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--surface-label);
+  }
+  .needs-options { display: grid; gap: 8px; }
+  .needs-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 56px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--surface-line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-card);
+    color: var(--surface-body);
+    font-size: 1.125rem;
+    cursor: pointer;
+  }
+  .needs-option input {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    accent-color: var(--navy);
+    margin: 0;
+  }
+  /* The checked row reads as chosen without colour alone carrying it: the
+     border thickens and the ground lifts. */
+  .needs-option:has(input:checked) {
+    border-color: var(--surface-heading);
+    box-shadow: inset 0 0 0 1px var(--surface-heading);
+    background: var(--panel);
+  }
+  .needs-submit { width: 100%; min-height: 56px; margin-top: 16px; }
+
+  /* ---------- Trust bar --------------------------------------------------
+     2x2 with hairline dividers. This is reassurance, not a feature section:
+     four full-width rows gave it the weight of a content block. */
+  .trust-band ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+  .trust-band li {
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 14px 12px;
+    border-top: 1px solid var(--surface-line);
+  }
+  .trust-band li:nth-child(-n + 2) { border-top: 0; }
+  .trust-band li:nth-child(odd) {
+    padding-left: 0;
+    border-right: 1px solid var(--surface-line);
+  }
+  .trust-band li:nth-child(even) { padding-right: 0; }
+  .trust-band .mark { margin-top: 1px; }
+
+  /* ---------- Tiles ------------------------------------------------------
+     `min-height: 320px` plus a floor-anchored button opened a visible void
+     between the copy and the action on every tile whose copy was short. On a
+     phone the tile is already full width, so nothing needs equalising — let
+     each one be as tall as it is. */
+  .cards--tiles .card {
+    min-height: 0;
+    padding: 24px;
+  }
+  .cards--tiles .card:has(.btn) p { margin-bottom: 20px; }
+  .cards--tiles .card .btn { margin-top: 0; align-self: stretch; }
+  .cards--tiles .card .card-link { margin-top: 12px; padding-top: 0; }
+
+  /* Medicare Supplement vs Advantage: keep the pairing legible. Both tiles
+     get the same internal rhythm so they still read as a comparison rather
+     than as two unrelated cards that happen to be adjacent. */
+  #medicare .cards--2 { gap: 12px; }
+
+  /* ---------- Four-up cards become a divided list ------------------------
+     "Why Lisa" and About's "How I work" are four one-line claims each. As
+     cards they ran ~1,200px — a screen and a half of scrolling to read four
+     sentences, and they read as a form. As a ruled list they are about 40% of
+     that and scan in one pass. The icon tiles go: they were decorative
+     (aria-hidden) and they were the single biggest contributor to the height. */
+  .cards--4 { gap: 0; }
+  .cards--4 .card {
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--surface-line);
+    border-radius: 0;
+    padding: 20px 0;
+  }
+  .cards--4 .card:first-child { border-top: 0; padding-top: 0; }
+  .cards--4 .card .check-icon { display: none; }
+  .cards--4 .card h3 { margin-bottom: 6px; }
+
+  /* ---------- How it works: a vertical timeline --------------------------
+     Three steps in a fixed order is a genuine sequence, so the numbering earns
+     its place. The numeral goes to the left with a rule running down through
+     it, which is what makes it read as a progression rather than as three
+     ruled-off paragraphs that happen to be numbered. */
+  .steps li {
+    position: relative;
+    border-top: 0;
+    padding: 0 0 28px 56px;
+  }
+  .steps li:last-child { padding-bottom: 0; }
+  /* The connecting rule. Stops at the last item so the sequence has an end. */
+  .steps li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: 0;
+    width: 1px;
+    background: var(--surface-line);
+  }
+  .steps li::before {
+    position: absolute;
+    left: 0;
+    top: -4px;
+    margin-bottom: 0;
+    font-size: 2.125rem;   /* 34px — the accent numeral */
+    opacity: 0.4;
+  }
+  .steps h3 { margin-bottom: 6px; }
+
+  /* ---------- Reviews: a snap carousel -----------------------------------
+     Homogeneous, optional, read-one-and-move-on content — the one block on the
+     page where a carousel is the right answer rather than a way to hide things.
+     A ~20px peek of the next card is what makes the swipe discoverable; without
+     it a full-width card reads as the only card. */
+  #reviews .cards {
+    grid-template-columns: none;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--container-pad);
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Break the container's gutter so a card can sit against the panel edge
+       and the peek isn't clipped away. */
+    margin-inline: calc(var(--container-pad) * -1);
+    padding-inline: var(--container-pad);
+  }
+  #reviews .cards::-webkit-scrollbar { display: none; }
+  #reviews .review-card {
+    flex: 0 0 calc(100% - 32px);
+    scroll-snap-align: start;
+  }
+
+  .review-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .review-dots button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .review-dots button::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface-label);
+    opacity: 0.45;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .review-dots button[aria-current="true"]::before {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+
+  /* ---------- FAQ / accordions ------------------------------------------
+     All rows collapsed by default (the component ships <details> with no
+     `open`), 56px minimum row, and the +/- affordance kept clear of the text. */
+  .faq-list summary {
+    min-height: 56px;
+    padding: 1.1rem 2.75rem 1.1rem 0;
+    font-size: 1.1875rem;   /* 19px */
+    line-height: 1.35;
+  }
+  .faq-list summary::after { right: 0.25rem; font-size: 1.75rem; }
+  .faq-list details p { padding: 0 0 1.4rem 0; }
+
+  /* ---------- Contact form ----------------------------------------------
+     Single column, every field full width, visible label above each input,
+     and a full-width submit. Inputs stay at 16.8px: anything under 16px makes
+     iOS zoom the page on focus, which then leaves it zoomed. */
+  .contact-form { gap: 18px; }
+  .contact-form input,
+  .contact-form select,
+  .quickstart select {
+    min-height: 52px;
+    font-size: 1.05rem;     /* 16.8px — above the iOS zoom threshold */
+  }
+  .contact-form .btn {
+    justify-self: stretch;
+    width: 100%;
+    min-height: 56px;
+    margin-top: 4px;
+  }
+  .contact-card { padding: 20px; }
+
+  /* ---------- Actions ----------------------------------------------------
+     Primary actions go full width and 56px tall; 12px between adjacent
+     targets clears the 8px minimum with room for a wobble. */
+  .actions,
+  .reviews-actions { gap: 12px; }
+  .actions .btn,
+  .reviews-actions .btn,
+  .medicare-cta .btn,
+  .cta-copy .btn,
+  .embed-slot .btn,
+  .compare-col .btn {
+    width: 100%;
+    min-height: 56px;
+  }
+  .medicare-cta { justify-items: stretch; }
+
+  /* ---------- Carrier marquee -------------------------------------------
+     Kept, but slower: at 38s a phone-width window turns the same strip over
+     roughly three times as fast as a desktop one, because the distance is the
+     same and the window is a third as wide. The wrapper is width-safe (100%
+     of its container, never 100vw, so a scrollbar can't push it out). */
+  .carrier-strip { width: 100%; max-width: 100%; }
+  .carrier-track { animation-duration: 64s; }
+  .carrier-chip { min-height: 56px; padding: 0.65rem 1.15rem; }
+
+  /* ---------- Footer -----------------------------------------------------
+     The two link groups collapse; the contact block above them never does. */
+  .footer-grid { gap: 28px; }
+  .footer-group > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 56px;
+    cursor: pointer;
+  }
+  .footer-group > summary h3 { margin-bottom: 0; }
+  .footer-group > summary::after {
+    content: "";
+    flex: 0 0 auto;
+    width: 11px;
+    height: 7px;
+    background: currentColor;
+    opacity: 0.7;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E") center / contain no-repeat;
+    transition: transform 0.2s;
+  }
+  .footer-group[open] > summary::after { transform: rotate(180deg); }
+  .footer-group > ul { padding-top: 4px; }
+
+  /* ---------- Comparison tables -----------------------------------------
+     A table marked `--stack` stops being a table below 768 and becomes one
+     card per row: the row header is the card's title and each cell carries its
+     column name from `data-label`. Same data, same order, no copy changed —
+     and no horizontal scroll, which for this audience is a cop-out.
+
+     Only the dental table opts in. The Medigap chart does NOT: it is the
+     federal standardised grid of 10 benefits across 10 plan letters, and 100
+     label:value rows is a worse answer than a scroller with a pinned benefit
+     column. See docs/mobile-design-notes.md. */
+  .table-scroll--stack {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .table-scroll--stack .compare-table {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+  .table-scroll--stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .table-scroll--stack tbody,
+  .table-scroll--stack tr,
+  .table-scroll--stack td { display: block; }
+  .table-scroll--stack caption {
+    padding: 0 0 16px;
+    border-bottom: 0;
+  }
+  .table-scroll--stack tr {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-line);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .table-scroll--stack tr + tr { margin-top: 12px; }
+  .table-scroll--stack th[scope="row"] {
+    display: block;
+    position: static;
+    min-width: 0;
+    padding: 0 0 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--surface-line);
+    background: none;
+    font-size: 1.3125rem;   /* 21px — card title */
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .table-scroll--stack td {
+    padding: 14px 0 0;
+    text-align: left;
+    border-bottom: 0;
+  }
+  .table-scroll--stack td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--surface-label);
+  }
+  .table-scroll--stack .cell-part { font-size: 1.125rem; }
+
+  /* The Medigap scroller keeps its box, but the pinned column can't eat half
+     a phone screen. */
+  .table-scroll:not(.table-scroll--stack) .compare-table th[scope="row"] {
+    min-width: 190px;
+  }
+
+  /* ---------- Definition rows and post rows ------------------------------ */
+  .def-row { padding: 20px 0; }
+  .post-row { padding: 20px 0; gap: 6px; }
+
+  /* ---------- Compare switch -------------------------------------------- */
+  .compare-switch { display: flex; width: 100%; }
+  .compare-switch button { flex: 1 1 0; min-height: 52px; }
 }
 
 /* ---------- Reduced motion: nothing moves ---------- */

@@ -172,10 +172,22 @@ const probeTapTargets = () => {
     if (style.display === 'none' || style.visibility === 'hidden') continue;
     if (el.closest('[hidden]')) continue;
     if (el.type === 'hidden') continue;
+    // Not clickable is not a tap target. The footer's <summary> elements are
+    // inert above 768px, where the groups are permanently open.
+    if (style.pointerEvents === 'none') continue;
 
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) continue;
     if (rect.width >= MIN && rect.height >= MIN) continue;
+
+    // A radio or checkbox wrapped in a label is targeted by the whole label,
+    // which is the standard pattern; measuring the 22px dot inside a 56px row
+    // reports a problem that does not exist for anyone actually tapping it.
+    const label = el.closest('label');
+    if (label && label !== el) {
+      const lr = label.getBoundingClientRect();
+      if (lr.width >= MIN && lr.height >= MIN) continue;
+    }
 
     // WCAG 2.5.8 exempts links flowing inline inside a sentence; flag them
     // separately rather than pretending they're the same problem as a button.
