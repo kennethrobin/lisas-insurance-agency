@@ -10,13 +10,11 @@
 import Page from '../layouts/Page.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site } from '../data/site';
-import { links, isPending, externalAttrs } from '../data/links';
+import { links, externalAttrs } from '../data/links';
 
 const title = 'Contact Lisa | Lisa’s Insurance Agency';
 const description =
   'Call, text, schedule a time, or send a note. Free help with Medicare, health, dental and vision coverage from a licensed agent.';
-
-const bookingPending = isPending(links.booking);
 
 const agencySchema = {
   '@context': 'https://schema.org',
@@ -74,26 +72,10 @@ const agencySchema = {
 
         <article class="card">
           <h3>Schedule a call</h3>
-          {bookingPending ? (
-            <>
-              {/* TODO: links.booking — online scheduling isn't set up yet, so
-                  this is the call/text path with wording that matches. */}
-              <p>
-                Schedule a time on my calendar that works best for you.
-              </p>
-              <a class="btn btn--ghost" href={site.smsHref}>Text me a time</a>
-            </>
-          ) : (
-            <>
-              <p>
-                Pick a time that works for you and I’ll call you then. Handy if
-                your days are busy or you want a quiet half hour for it.
-              </p>
-              <a class="btn btn--ghost" href={links.booking} {...externalAttrs}>
-                See available times
-              </a>
-            </>
-          )}
+          <p>
+            Schedule a time on my calendar that works best for you.
+          </p>
+          <a class="btn btn--ghost" href={links.booking} {...externalAttrs}>Schedule</a>
         </article>
       </div>
 

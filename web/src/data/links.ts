@@ -22,14 +22,14 @@ export const links = {
   sunfirePartD: '#',
 
   /**
-   * PLACEHOLDER — awaiting cal.com booking URL.
-   *
-   * While this is "#", the "Book a time" control in CtaBand renders as a
-   * disabled button with a note beside it, rather than an anchor pointing at a
-   * broken destination (HP-33). Fill in the real URL and it becomes a normal
-   * external link everywhere the band appears.
+   * Real. Lisa's public cal.com booking page for the initial consultation. The
+   * two-step contact card uses the cal.com EMBED (see scheduler in
+   * leadForm.ts); this is the plain external link for the standalone
+   * "Schedule" buttons (homepage How-it-works, Contact page). isPending() is
+   * false now, so those controls link straight here rather than falling back to
+   * the call/text path.
    */
-  booking: '#',
+  booking: 'https://cal.com/lisa-business-group/insurance-initial-consultation',
 
   /** TODO: Google review URL */
   reviewGoogle: '#',
