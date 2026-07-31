@@ -1759,7 +1759,7 @@ main {
      rather than floating far below it; the back link then carries the space
      down to the eyebrow with its own margin. */
   padding-top: calc(
-    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(1.4rem, 3vw, 2.25rem)
+    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(0.8rem, 1.8vw, 1.25rem)
   );
   padding-bottom: clamp(2.75rem, 6vw, 5rem);
 }
@@ -1781,6 +1781,12 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  /* Optical alignment: the chevron glyph sits ~5px inside its 16px icon box, so
+     without this the arrow (and the label after it) read as indented from the
+     logo and the eyebrow's dot, which both sit on the container edge. Pulling
+     the whole control back by that inset lands the arrow on the logo/dot edge
+     and the label on the eyebrow's text. */
+  margin-left: -5px;
   /* Proper separation from the section text below it, balanced against the gap
      to the nav above (set by the hero's padding-top). */
   margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
