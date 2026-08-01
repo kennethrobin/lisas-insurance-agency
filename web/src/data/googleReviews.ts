@@ -108,13 +108,26 @@ const FIELD_MASK = [
 const TIMEOUT_MS = 8000;
 
 /**
+ * One fetch per build, however many components ask. The homepage Reviews
+ * section and the trust band both consume this; without the cache each import
+ * site would bill a separate Places API call and, worse, could disagree with
+ * each other if one call failed and the other succeeded.
+ */
+let cached: Promise<GooglePlaceReviews | null> | null = null;
+
+/**
  * Fetches the listing's reviews. Returns null when the integration is not
  * configured or when anything at all goes wrong.
  *
  * This NEVER throws and never fails the build. A deploy that happens while
  * Google is down should ship the site with its written fallback, not break.
  */
-export async function fetchGoogleReviews(): Promise<GooglePlaceReviews | null> {
+export function fetchGoogleReviews(): Promise<GooglePlaceReviews | null> {
+  cached ??= fetchGoogleReviewsUncached();
+  return cached;
+}
+
+async function fetchGoogleReviewsUncached(): Promise<GooglePlaceReviews | null> {
   const key = import.meta.env.GOOGLE_PLACES_API_KEY;
   const placeId = import.meta.env.GOOGLE_PLACE_ID;
 
