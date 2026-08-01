@@ -1,18 +1,42 @@
 ---
 // Reviews — stacked cards (simpler and calmer than a carousel for this audience).
-// Every review below is a placeholder awaiting real, verbatim client reviews.
+//
+// Reviews come from Lisa's Google listing via the Places API, fetched at BUILD
+// TIME (see data/googleReviews.ts). Google returns at most five and chooses
+// them itself; they render verbatim, in Google's order, with author name, photo
+// and a "Powered by Google" mark, which is what Google's display terms require.
+// Do NOT add a filter that hides low ratings and do not re-sort the array.
+//
+// Until GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID are set — and any time Google
+// is unreachable mid-deploy — this falls back to the written cards below, the
+// same way links.ts falls back on a pending URL. The build never fails on it.
 //
 // The review buttons come from links.ts and only render once a real URL exists,
 // so this row can never show a button that goes nowhere. Google, Facebook and X;
 // no Instagram. Room is left for more — add a key to links.ts and a line here.
 import { links, isPending, externalAttrs } from '../../data/links';
+import { fetchGoogleReviews, starsFor } from '../../data/googleReviews';
+
+const google = await fetchGoogleReviews();
+
+// Google's own "write a review" deep link is better than a hand-pasted URL, so
+// it wins when the API supplied one; links.reviewGoogle stays the manual fallback.
+const googleReviewHref = google?.writeReviewUri ?? links.reviewGoogle;
 
 const reviewSites = [
-  { label: 'Google', href: links.reviewGoogle, star: true },
+  { label: 'Google', href: googleReviewHref, star: true },
   { label: 'Facebook', href: links.reviewFacebook },
   { label: 'X', href: links.reviewX },
   // Room for more: add the key to links.ts, then a line here.
 ].filter((entry) => !isPending(entry.href));
+
+// "4.9 out of 5 · 37 reviews on Google" — only when Google gave us both halves.
+const summary =
+  google?.rating != null && google?.total != null
+    ? `${google.rating.toFixed(1)} out of 5 from ${google.total} ${
+        google.total === 1 ? 'review' : 'reviews'
+      } on Google`
+    : null;
 ---
 
 <section class="section section--navy" id="reviews" aria-labelledby="reviews-heading">
@@ -21,39 +45,88 @@ const reviewSites = [
 
     <div class="section-intro">
       <h2 id="reviews-heading">My clients say it better than I can.</h2>
+      {summary && <p class="reviews-summary">{summary}</p>}
     </div>
 
-    <div class="cards cards--3">
-      <!-- REPLACE: real review, verbatim -->
-      <article class="card review-card">
-        <p class="stars" aria-hidden="true">★★★★★</p>
-        <blockquote>
-          “Lisa walked me through every option and never once rushed me. A year
-          later she still answers when I call.”
-        </blockquote>
-        <footer>Margaret, TX</footer>
-      </article>
+    {google ? (
+      <div class="cards cards--3">
+        {google.reviews.map((review) => (
+          <article class="card review-card">
+            <p class="stars" aria-hidden="true">{starsFor(review.rating)}</p>
+            <p class="visually-hidden">Rated {review.rating} out of 5.</p>
 
-      <!-- REPLACE: real review, verbatim -->
-      <article class="card review-card">
-        <p class="stars" aria-hidden="true">★★★★★</p>
-        <blockquote>
-          “We moved states and Lisa handled the whole switch. I didn’t have to
-          call anyone else.”
-        </blockquote>
-        <footer>James, OK</footer>
-      </article>
+            {/* Verbatim. Never trimmed or tidied — see googleReviews.ts. The
+                clamp in brand.css is visual only: the whole review is in the
+                DOM, and this link opens it in full on Google. */}
+            <blockquote>{review.text}</blockquote>
 
-      <!-- REPLACE: real review, verbatim -->
-      <article class="card review-card">
-        <p class="stars" aria-hidden="true">★★★★★</p>
-        <blockquote>
-          “She explained Supplement versus Advantage in ten minutes better than
-          anything I’d read in months.”
-        </blockquote>
-        <footer>Diane, MO</footer>
-      </article>
-    </div>
+            {review.reviewUri && (
+              <a class="review-more" href={review.reviewUri} {...externalAttrs}>
+                Read on Google
+                <span class="visually-hidden"> — review by {review.authorName}</span>
+              </a>
+            )}
+
+            <footer class="review-author">
+              {review.authorPhoto && (
+                <img
+                  class="review-avatar"
+                  src={review.authorPhoto}
+                  alt=""
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              <span class="review-byline">
+                {review.authorUri ? (
+                  <a href={review.authorUri} {...externalAttrs}>{review.authorName}</a>
+                ) : (
+                  review.authorName
+                )}
+                {review.relativeTime && (
+                  <time class="review-when" datetime={review.publishTime}>
+                    {review.relativeTime}
+                  </time>
+                )}
+              </span>
+            </footer>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="cards cards--3">
+        {/* Fallback only — replaced by real Google reviews once the Places API
+            key and Place ID are configured. */}
+        <article class="card review-card">
+          <p class="stars" aria-hidden="true">★★★★★</p>
+          <blockquote>
+            “Lisa walked me through every option and never once rushed me. A year
+            later she still answers when I call.”
+          </blockquote>
+          <footer>Margaret, TX</footer>
+        </article>
+
+        <article class="card review-card">
+          <p class="stars" aria-hidden="true">★★★★★</p>
+          <blockquote>
+            “We moved states and Lisa handled the whole switch. I didn’t have to
+            call anyone else.”
+          </blockquote>
+          <footer>James, OK</footer>
+        </article>
+
+        <article class="card review-card">
+          <p class="stars" aria-hidden="true">★★★★★</p>
+          <blockquote>
+            “She explained Supplement versus Advantage in ten minutes better than
+            anything I’d read in months.”
+          </blockquote>
+          <footer>Diane, MO</footer>
+        </article>
+      </div>
+    )}
 
     {reviewSites.length > 0 ? (
       <div class="reviews-actions">
@@ -71,6 +144,17 @@ const reviewSites = [
       </div>
     )}
 
-    <p class="reviews-footnote">Real Client Experiences</p>
+    {google ? (
+      /* Google's terms require a visible attribution wherever its reviews show. */
+      <p class="reviews-footnote">
+        {google.placeUri ? (
+          <a href={google.placeUri} {...externalAttrs}>Reviews from Google</a>
+        ) : (
+          'Reviews from Google'
+        )} · Powered by Google
+      </p>
+    ) : (
+      <p class="reviews-footnote">Real Client Experiences</p>
+    )}
   </div>
 </section>

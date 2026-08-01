@@ -1228,6 +1228,15 @@ main {
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.015em;
+  /* Google reviews run to whatever length the reviewer wrote, so the quote is
+     clamped to stop one long review stretching its whole row. Visual only —
+     the full text stays in the DOM and .review-more opens it on Google. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 12;
+  line-clamp: 12;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 .review-card footer {
   margin-top: auto;
@@ -1238,6 +1247,44 @@ main {
   text-transform: uppercase;
   color: var(--surface-label);
 }
+
+/* Body colour, not the green — green is reserved for reassurance marks. */
+.review-more {
+  align-self: start;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--surface-body);
+  text-underline-offset: 0.2em;
+}
+
+/* Author block: real names and photos from Google, so it drops the uppercase
+   label treatment the written cards use — a person's name should read as one. */
+.review-card .review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.95rem;
+}
+.review-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.review-byline { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.review-byline a { color: inherit; }
+.review-when {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.reviews-summary { margin-top: 0.75rem; color: var(--surface-body); }
 .reviews-actions {
   margin-top: 2.2rem;
   display: flex;
