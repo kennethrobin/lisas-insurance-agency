@@ -1,0 +1,56 @@
+---
+/**
+ * The hero's quick-start control, rebuilt for a phone and moved out of the hero.
+ *
+ * WHY THIS IS A SECOND COPY RATHER THAN A MOVE
+ * Desktop is frozen: the quick-start card has to stay exactly where it is in the
+ * hero's floor at >=1024px, and CSS cannot move a node from one <section> into
+ * another. So the control exists twice and exactly one of them is ever rendered
+ * — `.quickstart` is `display: none` below 768px and this block is
+ * `display: none` at 768px and above. Because `display: none` also removes a
+ * subtree from the accessibility tree, a screen reader only ever encounters one
+ * of them, and the ids are namespaced so the two never collide.
+ *
+ * WHY FOUR TARGETS INSTEAD OF A <select>
+ * At 390x844 the hero cannot hold a headline, a paragraph, a review and a form
+ * without every one of them being squeezed. Lifting the control out buys the
+ * hero its one oversized moment back. Once it is out, four 56px rows are a
+ * better control than a 54px select for a 66-year-old: the options are all
+ * visible, nothing is hidden behind a tap, and each row is its own large target.
+ *
+ * ZERO NEW COPY: the label, the four option strings and the button text are
+ * character-for-character the ones already in Hero.astro's <select>.
+ */
+const options = [
+  { value: 'medicare', label: 'Medicare' },
+  { value: 'health', label: 'Health insurance (under 65)' },
+  { value: 'dental', label: 'Dental & Vision' },
+  { value: 'other', label: 'Something else' },
+];
+---
+
+<section class="needs" aria-labelledby="needs-heading">
+  <div class="container">
+    <form class="needs-form quickstart-form">
+      <fieldset class="needs-set">
+        <legend class="needs-legend" id="needs-heading">What do you need help with?</legend>
+
+        <div class="needs-options">
+          {options.map((option, i) => (
+            <label class="needs-option">
+              <input
+                type="radio"
+                name="topic"
+                value={option.value}
+                checked={i === 0}
+              />
+              <span class="needs-option-label">{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <button class="btn btn--accent needs-submit" type="submit">Get free help</button>
+    </form>
+  </div>
+</section>

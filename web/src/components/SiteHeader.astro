@@ -103,6 +103,22 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
           )
         }
       </ul>
+
+      {/* The overlay's floor, phones and tablets only (hidden at >=1024, where
+          the drawer is still the small floating panel it always was). The one
+          action that should never be more than a thumb away sits above the
+          home indicator. Both strings already ship verbatim elsewhere on the
+          page — nothing new is written here. */}
+      <div class="drawer-foot">
+        <a
+          class="btn btn--accent"
+          href={site.phoneHref}
+          aria-label={`Call ${site.phone}. Calling connects you with Lisa, a licensed insurance agent.`}
+        >
+          Talk to Lisa · {site.phone}
+        </a>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
     </nav>
   </div>
 </header>
@@ -145,15 +161,58 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
   window.addEventListener('scroll', syncSolid, { passive: true });
   syncSolid();
 
-  /* The drawer. */
+  /* The drawer.
+
+     Below 1024px it is a full-screen overlay and therefore a modal, which
+     brings three obligations the small floating panel never had: the page
+     behind it must not scroll, focus must not escape it, and Escape must close
+     it. Above 1024px it is still the same little dropdown panel as before and
+     none of that applies — which also resolves the objection recorded in
+     brand.css, that locking the body removed the desktop scrollbar and shifted
+     the layout ~15px. The lock is scoped to the widths where the overlay
+     exists, and phones have overlay scrollbars, so nothing shifts. */
+  const overlay = window.matchMedia('(max-width: 1023px)');
+
+  /* `position: fixed` on <body> is the only scroll lock that holds on iOS
+     Safari, and it discards the scroll position unless it is saved and put
+     back by hand. */
+  let savedScroll = 0;
+  const lockScroll = () => {
+    savedScroll = window.scrollY;
+    document.body.style.top = `-${savedScroll}px`;
+    document.body.classList.add('is-menu-locked');
+  };
+  const unlockScroll = () => {
+    if (!document.body.classList.contains('is-menu-locked')) return;
+    document.body.classList.remove('is-menu-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, savedScroll);
+  };
+
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), summary, input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  /** Everything tabbable while the overlay is up: the toggle plus the panel. */
+  const focusables = (): HTMLElement[] => {
+    if (!drawer || !toggle) return [];
+    const inside = [...drawer.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+      (el) => el.offsetWidth > 0 || el.offsetHeight > 0
+    );
+    return [toggle, ...inside];
+  };
+
   const setOpen = (open: boolean) => {
     if (!toggle || !drawer) return;
     toggle.setAttribute('aria-expanded', String(open));
     drawer.hidden = !open;
     // The header tab is deliberately NOT restyled while the menu is open — its
-    // appearance is driven only by scroll. And no body scroll-lock: locking
-    // removed the page scrollbar and shifted the layout ~15px wider on open.
-    if (open) drawer.querySelector<HTMLElement>('a, summary')?.focus();
+    // appearance is driven only by scroll.
+    if (open) {
+      if (overlay.matches) lockScroll();
+      drawer.querySelector<HTMLElement>('a, summary')?.focus();
+    } else {
+      unlockScroll();
+    }
   };
 
   const isOpen = () => toggle?.getAttribute('aria-expanded') === 'true';
@@ -161,9 +220,29 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
   toggle?.addEventListener('click', () => setOpen(!isOpen()));
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && isOpen()) {
+    if (!isOpen()) return;
+
+    if (event.key === 'Escape') {
       setOpen(false);
       toggle?.focus();
+      return;
+    }
+
+    /* Focus trap — only while the overlay is genuinely modal. */
+    if (event.key === 'Tab' && overlay.matches) {
+      const items = focusables();
+      if (items.length < 2) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && (active === first || !drawer?.contains(active) && active !== toggle)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   });
 
@@ -180,8 +259,20 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
   });
 
   /* A drawer left open while the window grows would sit over the page with no
-     obvious way back; close it on any resize past a breakpoint change. */
+     obvious way back; close it on any resize past a breakpoint change. This
+     also guarantees the scroll lock is released if the viewport crosses out of
+     overlay territory while the menu is up. */
   window.addEventListener('resize', () => {
     if (isOpen()) setOpen(false);
+    else unlockScroll();
   }, { passive: true });
+
+  /* Astro ships multi-page navigation, so a real route change reloads the
+     document and the menu is closed by definition. In-page anchors don't, which
+     the link handler above covers. This last guard catches back/forward
+     restores from the bfcache, where the DOM (and the lock) would otherwise
+     come back exactly as it was left. */
+  window.addEventListener('pageshow', () => {
+    if (isOpen()) setOpen(false);
+  });
 </script>

@@ -9,7 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "audit:mobile": "node scripts/mobile-audit.mjs",
+    "audit:diff": "node scripts/mobile-audit.mjs --diff=baseline:after",
+    "audit:rhythm": "node scripts/rhythm.mjs",
+    "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.3",
@@ -17,6 +21,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.62.1",
+    "pngjs": "^7.0.0",
     "typescript": "^6.0.3"
   }
 }

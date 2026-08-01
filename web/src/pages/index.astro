@@ -14,7 +14,9 @@ import '../styles/brand.css';
 
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import MobileCallBar from '../components/MobileCallBar.astro';
 import Hero from '../components/home/Hero.astro';
+import NeedsSelector from '../components/home/NeedsSelector.astro';
 import TrustBand from '../components/home/TrustBand.astro';
 import MedicareSimple from '../components/home/MedicareSimple.astro';
 import WhyMe from '../components/home/WhyMe.astro';
@@ -70,6 +72,10 @@ const agencySchema = {
   <SiteHeader />
   <main id="main">
     <Hero />
+    {/* Phone-only. The hero's own .quickstart is hidden below 768px and this
+        takes its place directly beneath, so the hero keeps one oversized
+        moment instead of carrying a form as well. */}
+    <NeedsSelector />
     <TrustBand />
     <MedicareSimple />
     <WhyMe />
@@ -80,6 +86,7 @@ const agencySchema = {
     <FaqContact />
   </main>
   <SiteFooter />
+  <MobileCallBar />
 </Shell>
 
 <script>
@@ -100,20 +107,29 @@ const agencySchema = {
     }, 6000);
   }
 
-  /* 2 · Quick-start bar: route the visitor to the matching section */
-  const quickstart = document.querySelector<HTMLFormElement>('.quickstart');
-  quickstart?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const select = quickstart.querySelector('select');
-    const targets: Record<string, string> = {
-      medicare: '#medicare',
-      health: '#coverage',
-      dental: '#dental',
-      other: '#contact',
-    };
-    const target = targets[select?.value ?? 'other'] ?? '#contact';
-    document.querySelector(target)?.scrollIntoView({
-      behavior: reducedMotion.matches ? 'auto' : 'smooth',
+  /* 2 · Quick-start: route the visitor to the matching section.
+     Two controls share this handler — the hero's <select> on desktop and the
+     four radio rows below the hero on a phone. Only one is ever rendered, but
+     binding both keeps the routing in one place. */
+  const targets: Record<string, string> = {
+    medicare: '#medicare',
+    health: '#coverage',
+    dental: '#dental',
+    other: '#contact',
+  };
+
+  document
+    .querySelectorAll<HTMLFormElement>('.quickstart, .quickstart-form')
+    .forEach((form) => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const chosen =
+          form.querySelector<HTMLSelectElement>('select')?.value ??
+          form.querySelector<HTMLInputElement>('input[name="topic"]:checked')?.value ??
+          'other';
+        document.querySelector(targets[chosen] ?? '#contact')?.scrollIntoView({
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+      });
     });
-  });
 </script>

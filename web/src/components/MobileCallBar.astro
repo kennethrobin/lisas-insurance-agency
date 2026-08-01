@@ -1,0 +1,88 @@
+---
+/**
+ * Sticky call bar — phones and tablets only (hidden at >=1024 in CSS).
+ *
+ * The primary conversion on this site is a phone call, so on a device that IS a
+ * phone the number gets a permanent home rather than being something you scroll
+ * back up to find. It also carries the number that the header drops below 520px.
+ *
+ * Two rules govern when it shows:
+ *  - It appears only once the hero has left the screen, so it never covers the
+ *    hero's own controls. Driven by IntersectionObserver on the hero, not by a
+ *    scroll-position number — a hardcoded pixel threshold is wrong the moment
+ *    the hero changes height, which it does at every breakpoint.
+ *  - It hides again while the contact section is on screen, so it can never sit
+ *    on top of the form's submit button or compete with the CTA band's own
+ *    actions. That is the one place where a second, redundant call button is
+ *    pure noise.
+ *
+ * No new copy: the label is the same "Talk to Lisa · <phone>" string the CTA
+ * band, the Medicare section and How-it-works already use, and the aria-label
+ * is the header's existing pattern.
+ */
+import { site } from '../data/site';
+---
+
+<div class="callbar" data-callbar hidden>
+  <a
+    class="btn btn--accent callbar-action"
+    href={site.phoneHref}
+    aria-label={`Call ${site.phone}. Calling connects you with Lisa, a licensed insurance agent.`}
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6.6 10.8a15.3 15.3 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+    </svg>
+    Talk to Lisa · {site.phone}
+  </a>
+</div>
+
+<script>
+  /* The bar is [hidden] in the markup so it never flashes before this runs, and
+     so it stays out of the tab order and the a11y tree until it is real. */
+  const bar = document.querySelector<HTMLElement>('[data-callbar]');
+  if (bar) {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    // Either hero: the homepage's full-bleed one or an interior page hero.
+    const hero = document.querySelector('.hero, .page-hero');
+    const contact = document.querySelector('#contact, .cta-band');
+
+    let heroGone = false;
+    let contactVisible = false;
+
+    const sync = () => {
+      const show = !desktop.matches && heroGone && !contactVisible;
+      bar.hidden = !show;
+      // Reserve the bar's height at the foot of the page so the last thing in
+      // the footer is never sitting underneath it.
+      document.body.classList.toggle('has-callbar', show);
+    };
+
+    if (hero) {
+      new IntersectionObserver(
+        ([entry]) => {
+          heroGone = !entry.isIntersecting;
+          sync();
+        },
+        { rootMargin: '0px' }
+      ).observe(hero);
+    } else {
+      // No hero on this page — the bar is useful from the top.
+      heroGone = true;
+    }
+
+    if (contact) {
+      new IntersectionObserver(
+        ([entry]) => {
+          contactVisible = entry.isIntersecting;
+          sync();
+        },
+        // Fire a little early so the bar is already gone by the time the
+        // submit button reaches the bottom of the screen.
+        { rootMargin: '0px 0px -80px 0px' }
+      ).observe(contact);
+    }
+
+    desktop.addEventListener('change', sync);
+    sync();
+  }
+</script>
