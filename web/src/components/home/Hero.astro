@@ -1,50 +1,54 @@
 ---
-// Hero: navy gradient with soft shapes — no stock humans, per imagery rule.
-// Quick-start bar routes to a section; it collects no data.
+// Hero: navy gradient. The headline + subhead sit midway between the header
+// and the hero's bottom row; that bottom row divides the hero's base in half —
+// quick-start bar on the left, rotating review chip on the right (stacked on
+// smaller screens). Everything stays above the fold at every viewport.
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
   <div class="container">
-    <h1 id="hero-heading">Medicare made simple — with a real person in your corner.</h1>
+    <div class="hero-copy">
+      <h1 id="hero-heading">Medicare made <span class="accent">simple</span> — with a real person in your corner.</h1>
 
-    <p class="hero-sub">
-      I’m Lisa. I help people across the country with Medicare, dental, and vision
-      coverage — free — and I stay with you long after you enroll.
-    </p>
-
-    <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
-    <div class="review-chip">
-      <!-- REPLACE: real review -->
-      <blockquote class="is-active">
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“Lisa made Medicare finally make sense to me.”</span>
-        <span class="who">— Margaret, TX</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“She found the right plan and still checks in every year.”</span>
-        <span class="who">— James, OK</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
-        <span class="who">— Diane, MO</span>
-      </blockquote>
+      <p class="hero-sub">
+        I’m Lisa. I help people across the country with Medicare, dental, and vision
+        coverage — free — and I stay with you long after you enroll.
+      </p>
     </div>
 
-    <!-- Quick-start bar: one select + one button, no data collected -->
-    <form class="quickstart">
-      <div class="field">
-        <label for="quickstart-topic">What do you need help with?</label>
+    <div class="hero-bottom">
+      <!-- Quick-start bar: the visible title IS the select's label. No data collected. -->
+      <form class="quickstart">
+        <label class="quickstart-title" for="quickstart-topic">Let’s find your starting point</label>
         <select id="quickstart-topic" name="topic">
           <option value="medicare">Medicare</option>
           <option value="dental">Dental &amp; Vision</option>
           <option value="other">Something else</option>
         </select>
+        <button class="btn btn--gold" type="submit">Get free help</button>
+      </form>
+
+      <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
+      <div class="review-chip">
+        <!-- REPLACE: real review -->
+        <blockquote class="is-active">
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“Lisa made Medicare finally make sense to me.”</span>
+          <span class="who">— Margaret, TX</span>
+        </blockquote>
+        <!-- REPLACE: real review -->
+        <blockquote>
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“She found the right plan and still checks in every year.”</span>
+          <span class="who">— James, OK</span>
+        </blockquote>
+        <!-- REPLACE: real review -->
+        <blockquote>
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
+          <span class="who">— Diane, MO</span>
+        </blockquote>
       </div>
-      <button class="btn btn--gold" type="submit">Get free help</button>
-    </form>
+    </div>
   </div>
 </section>

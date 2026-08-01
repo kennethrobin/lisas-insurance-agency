@@ -1,5 +1,6 @@
 ---
-// How it works with Lisa — 3 steps.
+// How it works with Lisa — dark rounded feature panel, kept calm: media block
+// left, heading + numbered rows (gold discs, hairline dividers) right.
 const steps = [
   {
     title: 'Call or text me',
@@ -18,17 +19,24 @@ const steps = [
 
 <section class="section" id="how-it-works" aria-labelledby="how-heading">
   <div class="container">
-    <div class="section-intro">
-      <h2 id="how-heading">How it works with Lisa.</h2>
-    </div>
+    <div class="how-panel">
+      <div class="how-media" aria-hidden="true"></div>
 
-    <ol class="steps">
-      {steps.map((s) => (
-        <li>
-          <h3>{s.title}</h3>
-          <p>{s.copy}</p>
-        </li>
-      ))}
-    </ol>
+      <div class="how-content">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-heading">How it works with Lisa.</h2>
+
+        <ol class="steps">
+          {steps.map((s) => (
+            <li>
+              <div class="step-text">
+                <h3>{s.title}</h3>
+                <p>{s.copy}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
   </div>
 </section>

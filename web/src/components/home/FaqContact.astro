@@ -25,17 +25,19 @@ import { site } from '../../data/site';
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
   <div class="container">
-    <div class="section-intro">
-      <h2 id="faq-heading">Questions I hear every week.</h2>
-    </div>
+    <p class="eyebrow">FAQ</p>
 
-    <div class="faq-list">
-      {faqs.map((f) => (
-        <details>
-          <summary>{f.q}</summary>
-          <p>{f.a}</p>
-        </details>
-      ))}
+    <div class="faq-grid">
+      <h2 id="faq-heading">Questions I hear every week.</h2>
+
+      <div class="faq-list">
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -44,6 +46,7 @@ import { site } from '../../data/site';
   <div class="container">
     <div class="cta-grid">
       <div class="cta-copy">
+        <p class="eyebrow">Get in touch</p>
         <h2 id="contact-heading">Let’s talk. No pressure, no cost — just answers.</h2>
         <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
