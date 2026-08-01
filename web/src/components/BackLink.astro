@@ -1,0 +1,29 @@
+---
+/**
+ * The back control that sits at the top of every page except the homepage.
+ *
+ * It is a real anchor to the page's logical parent — Medicare Advantage goes
+ * back to Medicare, Medicare goes back to Home — rather than a history.back()
+ * button. `parentOf` in site.ts always resolves an ancestor, so there is no
+ * case where a history fallback is needed, and the destination is predictable
+ * however the visitor arrived (search result, shared link, or the menu).
+ *
+ * One component on purpose: Pass 2 restyles the back control here and nowhere
+ * else.
+ */
+import { parentOf } from '../data/site';
+
+interface Props {
+  /** Defaults to the current route; pass a path to override the parent. */
+  path?: string;
+}
+const { path = Astro.url.pathname } = Astro.props;
+const parent = parentOf(path);
+---
+
+<a class="back-link" href={parent.href} aria-label={`Back to ${parent.label}`}>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4-4.6-4.6z" />
+  </svg>
+  <span>Back to {parent.label}</span>
+</a>

@@ -8,18 +8,27 @@
  * interior page has nothing to pin down there, and a full-height hero would
  * just push the actual answer below the fold.
  */
+import BackLink from './BackLink.astro';
+
 interface Props {
   eyebrow: string;
   heading: string;
+  /** Optional line between the h1 and the intro, for pages whose opening copy
+      is a titled statement rather than a single sentence. */
+  subhead?: string;
   intro?: string;
 }
-const { eyebrow, heading, intro } = Astro.props;
+const { eyebrow, heading, subhead, intro } = Astro.props;
 ---
 
 <section class="page-hero" aria-labelledby="page-heading">
   <div class="container">
+    {/* The back control rides at the top of the hero on every interior page.
+        The homepage renders Shell directly and never reaches this component. */}
+    <BackLink />
     <p class="eyebrow">{eyebrow}</p>
     <h1 id="page-heading">{heading}</h1>
+    {subhead && <h2 class="page-hero-subhead">{subhead}</h2>}
     {intro && <p class="page-hero-intro">{intro}</p>}
     <slot />
   </div>

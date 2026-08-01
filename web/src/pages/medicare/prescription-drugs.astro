@@ -21,16 +21,16 @@ const enrollPending = isPending(links.sunfirePartD);
 
 const steps = [
   {
-    title: 'Your details and your medicines',
-    copy: 'Enter your contact information, then the prescriptions you take — the actual names and doses, not approximations. This is the part that decides everything downstream.',
+    title: 'Start With Your Medications',
+    copy: 'Have your prescription bottles or medication list nearby to help find plan options that include the medications you take.',
   },
   {
-    title: 'Your pharmacy',
-    copy: 'Add where you fill them. Plans price the same medicine differently depending on whether a pharmacy is in their preferred network, so this genuinely changes the answer.',
+    title: 'Pick Your Pharmacy',
+    copy: 'Choose the pharmacy you prefer and see plans that include your pharmacy in their network.',
   },
   {
-    title: 'Your matched plans',
-    copy: 'You get the plans that cover what you take, at the pharmacy you use. Enroll there, or send me what you saw and we’ll go through it together.',
+    title: 'Compare Your Plan Options',
+    copy: 'Review available plans based on your medications, pharmacy, and coverage needs.',
   },
 ];
 
@@ -70,10 +70,10 @@ const faqs = [
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
       <p class="crumbs"><a href="/medicare">Medicare</a> / Prescription Drugs</p>
-      <p class="eyebrow">What it is</p>
+      <p class="eyebrow">What It Covers</p>
 
       <div class="section-intro">
-        <h2 id="what-heading">Coverage for what you pick up at the pharmacy.</h2>
+        <h2 id="what-heading">Prescription medications prescribed by your health care provider.</h2>
         <p class="lead">
           Original Medicare doesn’t cover most prescriptions you fill yourself.
           Part D is the piece that does.
@@ -81,24 +81,27 @@ const faqs = [
       </div>
 
       <div class="prose">
+        <h3>What Is a Medicare Prescription Drug Plan?</h3>
         <p>
-          It comes to you one of two ways: as a standalone plan you add alongside
-          Original Medicare — which is what you do if you have a Medicare Supplement
-          — or built into a Medicare Advantage plan. Either way the coverage is sold
-          by private carriers under Medicare’s rules.
+          A Medicare Prescription Drug Plan (Part D) helps pay for prescription
+          medications and is offered by Medicare-approved private insurance
+          companies. Prescription drug coverage can be purchased as a stand-alone
+          plan to work with Original Medicare and a Medicare Supplement plan, or it
+          can be included as part of a Medicare Advantage plan (Medicare Advantage
+          Prescription Drug plan). Each plan has its own list of covered
+          medications (formulary), costs, and pharmacy network.
         </p>
+
+        <h3>Understanding Pharmacy Networks and Costs</h3>
         <p>
-          <strong>Every plan has its own drug list.</strong> It decides whether a
-          given medicine is covered at all, and which tier it sits on, which is what
-          determines your share of the cost. Two plans that look alike on paper can
-          treat the same prescription completely differently. That’s why the only
-          way to compare Part D plans honestly is with your actual medication list
-          in hand.
-        </p>
-        <p>
-          Pharmacy matters too. Plans have preferred pharmacies, and the same
-          medicine on the same plan can cost a different amount depending on where
-          you fill it.
+          Medicare prescription drug plans use a network of participating
+          pharmacies. Many plans include both preferred pharmacies and standard
+          network pharmacies. Using a preferred pharmacy may provide lower
+          copayments, lower coinsurance, or other cost savings compared to a
+          standard pharmacy. Your prescription costs can vary based on your
+          medications, the plan’s drug tiers, and the pharmacy you choose, so it is
+          important to review your plan’s pharmacy network and prescription
+          coverage each year.
         </p>
       </div>
     </div>
@@ -110,7 +113,7 @@ const faqs = [
       <p class="eyebrow">The penalty</p>
 
       <div class="section-intro">
-        <h2 id="penalty-heading">What skipping Part D costs later.</h2>
+        <h2 id="penalty-heading">Understanding the Medicare Part D Late Enrollment Penalty</h2>
         <p class="lead">
           This is the single most expensive misunderstanding in Medicare, and it’s
           entirely avoidable.
@@ -119,21 +122,12 @@ const faqs = [
 
       <div class="prose">
         <p>
-          If you go without creditable prescription coverage for long enough after
-          you first become eligible, and then enroll in a Part D plan later, Medicare
-          adds a late-enrollment penalty to your premium.
-        </p>
-        <p>
-          <strong>The penalty is permanent.</strong> It isn’t a one-time fee to get
-          in the door — it’s added to your monthly premium for as long as you have
-          Part D coverage. And it scales with how long you went without, so a longer
-          gap means a larger amount, every month, indefinitely.
-        </p>
-        <p>
-          The way to avoid it is simple: either enroll when you’re first eligible, or
-          be certain the coverage you already have counts as creditable. If you’re
-          not sure which of those applies to you, that’s a five-minute phone call and
-          worth making before the window closes.
+          If you do not enroll in Medicare Part D when you are first eligible and go
+          without creditable prescription drug coverage for 63 days or more, you may
+          have to pay a late enrollment penalty if you enroll later. This penalty may
+          be added to your monthly Part D premium and can continue as long as you
+          have Medicare prescription drug coverage. Reviewing your options when you
+          are first eligible can help you avoid potential additional costs.
         </p>
       </div>
 
@@ -160,10 +154,9 @@ const faqs = [
       <p class="eyebrow">Finding your plan</p>
 
       <div class="section-intro">
-        <h2 id="enroll-heading">Match a plan to what you actually take.</h2>
+        <h2 id="enroll-heading">Find a Plan That Fits Your Needs</h2>
         <p class="lead">
-          Three steps, and the second one is the one people skip. Have your
-          prescription bottles nearby.
+          3 Simple Steps to Compare Medicare Prescription Drug Plans
         </p>
       </div>
 
@@ -178,9 +171,9 @@ const faqs = [
 
       <div class="medicare-cta">
         <p>
-          You can run this yourself, or we can do it together on the phone — I do
-          this all day and I know where the traps are. Your premium is the same
-          either way.
+          Have your medications and pharmacy information ready? Compare plans online
+          or contact me for help reviewing your options to enroll by phone. The plan
+          premium and benefits are the same either way.
         </p>
 
         <div class="actions actions--stack">
@@ -215,19 +208,19 @@ const faqs = [
       <Faq items={faqs} schema />
 
       <div class="callout" style="margin-top: clamp(40px, 5vw, 64px)">
-        <h3>Where Part D fits with your other coverage</h3>
+        <h3>How Will Prescription Coverage Work With My Medicare Plan?</h3>
         <p>
-          With a <a href="/medicare/supplement">Medicare Supplement</a> you add a
-          standalone Part D plan. With a
-          <a href="/medicare/advantage">Medicare Advantage plan</a> it’s usually
-          already included — worth confirming rather than assuming.
+          Whether you have Original Medicare with a Medicare Supplement, are
+          considering Medicare Advantage, or are exploring your options, it’s
+          important to understand how prescription drug coverage fits into your
+          plan.
         </p>
       </div>
     </div>
   </section>
 
   <CtaBand
-    heading="Bring your list. I’ll do the comparing."
-    copy="Read me your prescriptions and tell me your pharmacy. That’s everything I need to find the plans that actually cover you."
+    heading="Have questions or need assistance?"
+    copy="I’m easy to reach and ready to help you review your Medicare options."
   />
 </Page>

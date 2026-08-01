@@ -38,6 +38,16 @@ export const links = {
   /** TODO: deferred — client profile signup. No auth/CRM is built yet. */
   profileSignup: '#',
 
+  /**
+   * PLACEHOLDER — awaiting confirmed direct line.
+   *
+   * Lisa's direct number for existing policyholders, as a full tel: href.
+   * Deliberately NOT the (972) 639-7639 in site.ts: that number is under
+   * review and may be an enrolment desk rather than her own line, so the two
+   * must not be assumed to be the same until confirmed.
+   */
+  policyholderDirectLine: '#',
+
   /** Real. Lisa can refine this to the "ask a question" / help page. */
   medicareGov: 'https://www.medicare.gov',
 } as const;

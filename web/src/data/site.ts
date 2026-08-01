@@ -32,16 +32,14 @@ export type NavItem =
 /** Slim utility links — existing clients, kept out of the prospect path. */
 export const utilityNav: NavLink[] = [
   { label: 'Policyholder Service', href: '/policyholders' },
-  { label: 'Agent Login', href: '/agent-login' },
 ];
 
 /**
- * Main nav. Medicare is the only group, and it is FLAT — six sibling pages,
+ * Main nav. Medicare is the only group, and it is FLAT — five sibling pages,
  * no "Plans" hub in between. Contact is both a menu item and the header's
  * standing action, matching how the phone pill already behaves.
  */
 export const mainNav: NavItem[] = [
-  { label: 'Health Insurance', href: '/health-insurance' },
   {
     label: 'Medicare',
     href: '/medicare',
@@ -51,9 +49,9 @@ export const mainNav: NavItem[] = [
       { label: 'Medicare Supplement', href: '/medicare/supplement' },
       { label: 'Prescription Drugs', href: '/medicare/prescription-drugs' },
       { label: 'Education', href: '/medicare/education' },
-      { label: 'Resources', href: '/medicare/resources' },
     ],
   },
+  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Dental & Vision', href: '/dental-insurance' },
   {
     label: 'About',
@@ -68,13 +66,12 @@ export const mainNav: NavItem[] = [
 
 /** Footer quick links — the prospect-facing pages, flattened. */
 export const footerNav: NavLink[] = [
-  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Medicare', href: '/medicare' },
+  { label: 'Health Insurance', href: '/health-insurance' },
   { label: 'Medicare Advantage', href: '/medicare/advantage' },
   { label: 'Medicare Supplement', href: '/medicare/supplement' },
   { label: 'Prescription Drugs', href: '/medicare/prescription-drugs' },
   { label: 'Dental & Vision', href: '/dental-insurance' },
-  { label: 'Meet Lisa', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -92,14 +89,12 @@ export const legalNav: NavLink[] = [
 export type PageStub = { path: string; title: string; note: string };
 
 export const pageStubs: PageStub[] = [
-  { path: '/policyholders', title: 'Policyholder Service', note: 'Existing-client hub. Lives in the footer, out of the prospect conversion path.' },
   { path: '/policyholders/proof-of-insurance', title: 'Proof of Insurance', note: '' },
   { path: '/policyholders/policy-changes', title: 'Policy Changes', note: '' },
   { path: '/policyholders/policy-review', title: 'Policy Review', note: '' },
   { path: '/policyholders/update-info', title: 'Update My Info', note: '' },
   { path: '/policyholders/documents', title: 'Online Documents', note: '' },
   { path: '/policyholders/contact-carrier', title: 'Contact My Carrier', note: '' },
-  { path: '/agent-login', title: 'Agent Login', note: 'Footer link. Likely an external carrier/agency portal rather than a real page.' },
 
   { path: '/accessibility', title: 'Accessibility Statement', note: 'Keep — legal.' },
   { path: '/privacy', title: 'Privacy Policy', note: 'New page. Missing on the current site; needed for trust + compliance.' },
@@ -119,5 +114,35 @@ export const canonicalRoutes: string[] = [
   '/dental-insurance',
   '/about',
   '/contact',
+  '/policyholders',
   ...pageStubs.map((stub) => stub.path),
 ];
+
+/**
+ * Human label for a route, for the back control. Built from the IA above so a
+ * renamed nav item renames the back link with it. Top-level nav wins over a
+ * child of the same href: /medicare is "Medicare" in the menu and "Overview"
+ * inside its own dropdown, and the back link wants the former.
+ */
+const routeLabels = new Map<string, string>([['/', 'Home']]);
+for (const stub of pageStubs) routeLabels.set(stub.path, stub.title);
+for (const link of footerNav) routeLabels.set(link.href, link.label);
+for (const item of mainNav) {
+  if (item.children) {
+    for (const child of item.children) routeLabels.set(child.href, child.label);
+  }
+}
+for (const item of mainNav) routeLabels.set(item.href, item.label);
+
+export type ParentPage = { href: string; label: string };
+
+/**
+ * The logical parent of a route: one path segment up, bottoming out at Home.
+ * Every page has a real ancestor this way, so the back control is always a
+ * plain anchor and never has to fall back to session history.
+ */
+export function parentOf(path: string): ParentPage {
+  const segments = path.replace(/\/+$/, '').split('/').filter(Boolean);
+  const href = segments.length > 1 ? '/' + segments.slice(0, -1).join('/') : '/';
+  return { href, label: routeLabels.get(href) ?? 'Home' };
+}

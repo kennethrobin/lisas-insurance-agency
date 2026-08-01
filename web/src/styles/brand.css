@@ -1063,6 +1063,23 @@ main {
 .cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, #E2EDE6, #F3F7F4); }
 .cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, #E8EDF2, #F5F7F9); }
 
+/* Medicare Overview's three plan cards, joined by OR / + connectors. The
+   connectors are grid items, so the cards land on children 1, 3 and 5 and the
+   row needs its own track list — both are handled here and in the breakpoints
+   at the foot of this file, never by changing the shared .cards rules. */
+.card-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--surface-label);
+}
+.cards--tiles.cards--connected .card:nth-child(3) { background: linear-gradient(160deg, #E2EDE6, #F3F7F4); }
+.cards--tiles.cards--connected .card:nth-child(5) { background: linear-gradient(160deg, #E8EDF2, #F5F7F9); }
+
 .section--navy .cards--tiles .card:nth-child(1),
 .cta-band .cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--navy-soft), rgba(255, 255, 255, 0.04)); }
 .section--navy .cards--tiles .card:nth-child(2),
@@ -1489,6 +1506,33 @@ main {
 }
 .page-hero .container { position: relative; z-index: 1; }
 .page-hero h1 { max-width: 16ch; }
+
+/* Back control. Sits above the eyebrow on every interior page, in the same
+   small-label register as the eyebrow so the hero opens on one voice. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: clamp(14px, 1.6vw, 20px);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--surface-label);
+  text-decoration: none;
+}
+.back-link svg { flex: 0 0 auto; transition: transform 0.15s ease; }
+.back-link:hover { color: var(--surface-heading); text-decoration: underline; }
+.back-link:hover svg { transform: translateX(-2px); }
+@media (prefers-reduced-motion: reduce) {
+  .back-link svg { transition: none; }
+}
+/* Sits between the h1 and the intro on pages whose opening copy is a titled
+   statement. Deliberately quieter than the h1 it follows. */
+.page-hero-subhead {
+  margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  color: var(--surface-heading);
+}
+.page-hero-subhead + .page-hero-intro { margin-top: clamp(0.6rem, 1.2vw, 0.9rem); }
 .page-hero-intro {
   margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
   max-width: 54ch;
@@ -1744,6 +1788,51 @@ main {
 }
 .compare-table tbody tr:last-child th,
 .compare-table tbody tr:last-child td { border-bottom: 0; }
+
+/* ---------- Dental & vision carrier comparison ----------
+   Two renderings of one dataset: the table below the phone breakpoint is
+   display:none and the cards take over, so only one of the two is ever in the
+   accessibility tree. Four columns of prose cannot be read on a 375px screen,
+   and a side-scrolling table is the wrong answer for this audience. */
+.carrier-cards { display: grid; gap: clamp(0.75rem, 1.2vw, 1rem); list-style: none; padding: 0; }
+.carrier-table-wrap { display: none; }
+
+.carrier-card {
+  padding: clamp(1.25rem, 4vw, 1.6rem);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+}
+.carrier-card h3 { margin-bottom: 0.9rem; }
+.carrier-card p { color: var(--surface-body); font-size: 0.95rem; }
+.carrier-card-label {
+  margin-top: 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.carrier-card .btn { margin-top: 1.3rem; }
+
+@media (min-width: 768px) {
+  .carrier-cards { display: none; }
+  .carrier-table-wrap { display: block; }
+}
+
+/* This table is prose, not a grid of ticks: cells read left-aligned and the
+   carrier column does not need to be as wide as a benefit name. */
+.carrier-table th,
+.carrier-table td { text-align: left; vertical-align: top; }
+.carrier-table th[scope="row"],
+.carrier-table thead th:first-child { min-width: 0; width: 12ch; }
+.carrier-table thead th { white-space: normal; }
+.carrier-table .btn {
+  min-height: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
 
 /* Cell values. Green is the reassurance mark, exactly as everywhere else; the
    other states are neutral type, never red — nothing here is a warning. */
@@ -2031,6 +2120,9 @@ main {
 @media (min-width: 640px) {
   .trust-band ul { grid-template-columns: repeat(2, 1fr); }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: repeat(2, 1fr); }
+  /* A connected row has five children, so it keeps stacking here rather than
+     splitting two-up and stranding a connector at the end of a row. */
+  .cards--3.cards--connected { grid-template-columns: 1fr; }
   .media-grid--2 { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -2070,6 +2162,7 @@ main {
 
 @media (min-width: 1024px) {
   .cards--3 { grid-template-columns: repeat(3, 1fr); }
+  .cards--3.cards--connected { grid-template-columns: 1fr auto 1fr auto 1fr; }
   .cards--4 { grid-template-columns: repeat(4, 1fr); }
   .trust-band ul { grid-template-columns: repeat(4, auto); justify-content: space-between; }
   .cta-grid { grid-template-columns: 1.15fr 1fr; }

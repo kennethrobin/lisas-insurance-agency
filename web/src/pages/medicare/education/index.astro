@@ -30,8 +30,8 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
   description={description}
   rawTitle
   eyebrow="Medicare · Education"
-  heading="Guides worth reading before you decide."
-  intro="Short, plain-language explanations of the parts people find confusing. No jargon, no sales pitch — just the things I end up explaining on the phone most often."
+  heading="Helpful Guides Before You Choose a Plan"
+  intro="Clear, easy to understand information about Medicare topics, coverage options, and questions you should consider before making a decision."
 >
   <section class="section" id="guides" aria-labelledby="guides-heading">
     <div class="container">
@@ -72,13 +72,14 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
 
   <section class="section section--navy" id="subscribe" aria-labelledby="subscribe-heading">
     <div class="container">
-      <p class="eyebrow">Stay in the loop</p>
-
+      {/* ED-03 replaced this block's eyebrow, heading and note with a single
+          heading and paragraph. The eyebrow is dropped rather than repeated:
+          "Stay Informed" above "Stay Informed" reads as a bug. */}
       <div class="section-intro">
-        <h2 id="subscribe-heading">New guides, when there are new guides.</h2>
+        <h2 id="subscribe-heading">Stay Informed</h2>
         <p class="lead">
-          A note when something worth reading goes up — around enrollment season
-          especially. Nothing else, and no passing your details on.
+          Get notified when new resources and helpful information become available.
+          Your information stays private and is only used for updates.
         </p>
       </div>
 
