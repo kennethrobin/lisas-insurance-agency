@@ -41,7 +41,11 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
   <section class="git-step git-step--form" data-git-step="form" aria-labelledby={`${id}-form-heading`}>
     <h3 id={`${id}-form-heading`} tabindex="-1">Send me your details</h3>
 
-    <form class="git-form" data-git-form novalidate>
+    {/* autocomplete="off" at the form level, exactly as the vendor's own embed
+        ships it. Chrome mostly ignores it for saved-profile autofill, which is
+        why the honeypot is ALSO cleared in JS before anything is sent — see the
+        submit handler. */}
+    <form class="git-form" data-git-form novalidate autocomplete="off">
       <div class="git-field">
         <label for={`${id}-firstName`}>First name</label>
         <input id={`${id}-firstName`} name={f.firstName} type="text" autocomplete="given-name"
@@ -119,8 +123,8 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
   <section class="git-step git-step--book" data-git-step="book" aria-labelledby={`${id}-book-heading`} hidden>
     <h3 id={`${id}-book-heading`} tabindex="-1">Want to grab a time to talk?</h3>
     <p class="git-book-intro">
-      Your details are already with me, so this part’s optional — but if you’d
-      like, pick a time that works for you below.
+      Your details are already with me, so this part’s optional. If you’d like,
+      pick a time that works for you below.
     </p>
 
     {/* cal.com injects its iframe here once Step 2 is first shown. The loading
@@ -132,12 +136,12 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
 
     {/* Shown only if the embed fails or never loads — never a blank box. */}
     <p class="git-cal-fallback" data-git-cal-fallback hidden>
-      The booking calendar couldn’t load. Your details are already with me — I’ll
-      be in touch. You can also call to set up a time.
+      The booking calendar couldn’t load. Your details are already with me, and
+      I’ll be in touch. You can also call to set up a time.
     </p>
 
     <button class="btn btn--ghost git-dismiss" type="button" data-git-dismiss>
-      No thanks — I’ll wait to hear from you
+      No thanks, I’ll wait to hear from you
     </button>
   </section>
 
@@ -148,8 +152,8 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
         <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
       </svg>
     </span>
-    <h3 id={`${id}-done-heading`} tabindex="-1">Thank you — I’ve got your details.</h3>
-    <p data-git-done-message>I’ll be in touch. — Lisa</p>
+    <h3 id={`${id}-done-heading`} tabindex="-1">Thank you. I’ve got your details.</h3>
+    <p data-git-done-message>I’ll be in touch soon.</p>
   </section>
 </div>
 
@@ -385,7 +389,7 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
             window.clearInterval(poll);
             const doneMsg = root.querySelector<HTMLElement>('[data-git-done-message]');
             if (doneMsg)
-              doneMsg.textContent = "You're booked — I'll see you then. A confirmation is on its way. — Lisa";
+              doneMsg.textContent = "You're booked. I'll see you then, and a confirmation is on its way.";
             show('done', 'Your booking is confirmed.');
           },
         });
@@ -397,7 +401,7 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
 
     /* ── dismiss ─────────────────────────────────────────────────────── */
     root.querySelector<HTMLButtonElement>('[data-git-dismiss]')?.addEventListener('click', () => {
-      show('done', 'Thanks — your details are with me and I’ll be in touch.');
+      show('done', 'Thanks. Your details are with me and I’ll be in touch.');
     });
 
     /* ── submit ──────────────────────────────────────────────────────── */
@@ -409,7 +413,7 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
     };
 
     const advance = (prefill: { name: string; email: string; notes: string }) => {
-      show('book', 'Step 2 of 2. Optionally pick a time to talk — your details are already with me.');
+      show('book', 'Step 2 of 2. Optionally pick a time to talk. Your details are already with me.');
       startScheduler(prefill);
     };
 
@@ -418,12 +422,19 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
       if (busy) return;
       if (formError) formError.hidden = true;
 
-      // Honeypot filled → a bot. Discard client-side, show the normal success
-      // path so it learns nothing. (The server drops it too.)
-      if (honeypot && honeypot.value.trim() !== '') {
-        advance({ name: '', email: '', notes: '' });
-        return;
-      }
+      /* THE HONEYPOT IS CLEARED, NOT CHECKED, HERE — this was silently eating
+         real leads. Chrome's saved-profile autofill fills hidden fields named
+         `_Website` even at display:none, so a visitor who autofilled their name
+         and phone also "filled" the trap. The old code then treated them as a
+         bot and showed the success path WITHOUT SENDING ANYTHING: the calendar
+         step worked, and the CRM never heard about the lead.
+
+         A human driving this visible form can never legitimately fill the
+         honeypot, so it is zeroed just before the payload is built. The trap
+         still does its job on the server: any request that arrives at /api/lead
+         with `_Website` non-empty cannot have come from this code, which is
+         precisely what marks out a direct-POST bot. */
+      if (honeypot) honeypot.value = '';
 
       // Validate everything; focus the first failure.
       let firstBad: HTMLElement | null = null;
@@ -467,7 +478,7 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
             'Something went wrong sending your details. Please call instead.';
           formError.hidden = false;
         }
-        announce('Something went wrong. Your details were not sent — please call instead.');
+        announce('Something went wrong. Your details were not sent. Please call instead.');
       } finally {
         setBusy(false);
       }
