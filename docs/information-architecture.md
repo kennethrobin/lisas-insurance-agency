@@ -4,6 +4,18 @@ Planning doc for the Astro rebuild. Replaces the current Weebly/InsuranceSplash 
 Baseline audit: PFD Overall 59/100. This doc addresses the L0 (navigation load) and SEO
 findings. Source data: live `sitemap.xml` = **61 URLs** (audited 2026-07-10).
 
+> **Update (2026-07-22, `feat/full-site-buildout`).** The full-site buildout narrowed the live
+> nav to the pages actually being sold: **Health Insurance** (set apart as the under-65 / ACA
+> path), a **flat Medicare** group (Overview · Advantage · Supplement · Prescription Drugs ·
+> Education · Resources — no "Plans" hub), **Dental & Vision**, **About** (Meet Lisa · Contact),
+> and **Contact**. Retired from the tree: the generic *Insurance* mega-menu, *Short-Term Medical*,
+> *Long-Term Care*, *Vision* as its own route, *Critical Illness / Cancer / Heart Attack & Stroke*,
+> *Accident*, *Life & Final Expense*, *Carriers*, *Refer a Friend*, *Reviews* (top-level), *Blog*
+> (now `/medicare/education`), and the standalone `/get-a-quote` hub. Part D lives at
+> `/medicare/prescription-drugs`. **`web/src/data/site.ts` is the current source of truth** — the
+> tree below is the original plan and is kept for its research and 301 rationale. Reconcile the two
+> before a formal launch.
+
 ---
 
 ## 1. The core problem: one product = many competing URLs

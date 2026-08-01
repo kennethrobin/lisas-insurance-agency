@@ -1,0 +1,40 @@
+---
+/**
+ * The closing panel. Repeats the hero's warm field so a page opens and shuts on
+ * the same note, exactly as the homepage does.
+ *
+ * The left column is the heading and copy; the right is the unified two-step
+ * GetInTouch card (capture the lead into the CRM, then offer booking in place).
+ * The old "Talk to Lisa" tel: block and its microline were removed at the
+ * owner's request — the phone still lives in the site header and footer.
+ */
+import GetInTouch from './GetInTouch.astro';
+
+interface Props {
+  heading: string;
+  /** One sentence under the heading. */
+  copy?: string;
+  /** Optional second paragraph, under `copy`. */
+  note?: string;
+  id?: string;
+}
+const { heading, copy, note, id = 'contact' } = Astro.props;
+---
+
+<section class="section cta-band" id={id} aria-labelledby={`${id}-heading`}>
+  <div class="container">
+    <p class="eyebrow">Get in touch</p>
+
+    <div class="cta-grid">
+      <div class="cta-copy">
+        <h2 id={`${id}-heading`}>{heading}</h2>
+        {copy && <p class="lead">{copy}</p>}
+        {note && <p class="lead">{note}</p>}
+      </div>
+
+      <div class="contact-card">
+        <GetInTouch id={id} />
+      </div>
+    </div>
+  </div>
+</section>

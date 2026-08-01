@@ -1,0 +1,147 @@
+---
+/**
+ * The standardized Medigap plans, A through N.
+ *
+ * WHERE THIS COMES FROM — read before editing a cell.
+ * Medigap plans are standardized by law: a Plan G covers the same benefits
+ * whoever sells it, and the benefit grid below is the published federal one
+ * (Medicare.gov, "How to compare Medigap policies"). It is reproduced here, not
+ * authored. The visible source note says so, because a benefits table on an
+ * agent's site that looks authored is a compliance problem.
+ *
+ * Two things are deliberately NOT in the grid:
+ *  - Dollar amounts that change every year (the K and L out-of-pocket limits).
+ *  - Plan N's office and emergency-room copays.
+ * Both are real published figures, but they are year- and situation-specific,
+ * and a stale number on this page would be worse than no number. They render as
+ * marked confirm slots. Fill them from the current-year official chart.
+ *
+ * Massachusetts, Minnesota and Wisconsin standardize Medigap differently. The
+ * note below says so rather than quietly showing the wrong grid to someone
+ * there.
+ */
+import { links, externalAttrs } from '../data/links';
+
+/** '' = not covered · 'yes' = covered in full · anything else prints verbatim. */
+type Cell = 'yes' | 'no' | 'todo' | string;
+
+const plans = ['A', 'B', 'C', 'D', 'F', 'G', 'K', 'L', 'M', 'N'] as const;
+
+const rows: { benefit: string; cells: Cell[]; foot?: string }[] = [
+  {
+    benefit: 'Part A coinsurance and hospital costs (up to an extra 365 days after Medicare benefits are used up)',
+    cells: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes'],
+  },
+  {
+    benefit: 'Part B coinsurance or copayment',
+    cells: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', '50%', '75%', 'yes', 'yes*'],
+    foot: '*Plan N pays the Part B coinsurance in full, except for a small copay on some office visits and on emergency room visits that don’t lead to an inpatient admission.',
+  },
+  {
+    benefit: 'First three pints of blood',
+    cells: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', '50%', '75%', 'yes', 'yes'],
+  },
+  {
+    benefit: 'Part A hospice care coinsurance or copayment',
+    cells: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', '50%', '75%', 'yes', 'yes'],
+  },
+  {
+    benefit: 'Skilled nursing facility care coinsurance',
+    cells: ['no', 'no', 'yes', 'yes', 'yes', 'yes', '50%', '75%', 'yes', 'yes'],
+  },
+  {
+    benefit: 'Part A deductible',
+    cells: ['no', 'yes', 'yes', 'yes', 'yes', 'yes', '50%', '75%', '50%', 'yes'],
+  },
+  {
+    benefit: 'Part B deductible',
+    cells: ['no', 'no', 'yes', 'no', 'yes', 'no', 'no', 'no', 'no', 'no'],
+  },
+  {
+    benefit: 'Part B excess charges',
+    cells: ['no', 'no', 'no', 'no', 'yes', 'yes', 'no', 'no', 'no', 'no'],
+  },
+  {
+    benefit: 'Foreign travel emergency (up to the plan’s limits)',
+    cells: ['no', 'no', '80%', '80%', '80%', '80%', 'no', 'no', '80%', '80%'],
+  },
+  {
+    benefit: 'Yearly out-of-pocket limit',
+    cells: ['no', 'no', 'no', 'no', 'no', 'no', 'todo', 'todo', 'no', 'no'],
+    foot: 'Plans K and L are the only two with a yearly out-of-pocket limit. Once you reach it, the plan pays 100% of covered services for the rest of the year. The limit is set federally and changes each year — [CONFIRM: current-year amounts for K and L].',
+  },
+];
+
+const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
+---
+
+<div class="table-scroll">
+  <table class="compare-table">
+    <caption>What each standardized Medigap plan covers</caption>
+    <thead>
+      <tr>
+        <th scope="col">Benefit</th>
+        {plans.map((plan) => <th scope="col">Plan {plan}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <th scope="row">{row.benefit}</th>
+          {row.cells.map((cell, i) => (
+            <td>
+              {cell === 'yes' || cell === 'yes*' ? (
+                <>
+                  <span class="cell-yes" aria-hidden="true">●</span>
+                  <span class="visually-hidden">Covered in full</span>
+                  {cell === 'yes*' && <span class="cell-part" aria-hidden="true">*</span>}
+                </>
+              ) : cell === 'no' ? (
+                <>
+                  <span class="cell-no" aria-hidden="true">—</span>
+                  <span class="visually-hidden">Not covered</span>
+                </>
+              ) : cell === 'todo' ? (
+                <span class="cell-todo">CONFIRM</span>
+              ) : (
+                <span class="cell-part">{cell}<span class="visually-hidden"> covered</span></span>
+              )}
+              <span class="visually-hidden"> — Plan {plans[i]}</span>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<p class="table-key">
+  <span><span class="cell-yes" aria-hidden="true">●</span> Covered in full</span>
+  <span><span class="cell-no" aria-hidden="true">—</span> Not covered</span>
+  <span>50% / 75% / 80% — the share the plan pays</span>
+  <span><span class="cell-todo">CONFIRM</span> — figure pending</span>
+</p>
+
+{footnotes.map((note) => <p class="source-note">{note}</p>)}
+
+<p class="source-note">
+  <strong>Source:</strong> Medigap benefits are standardized by federal law, and
+  this grid reproduces the official one published at
+  <a href={links.medicareGov} {...externalAttrs}>Medicare.gov</a>. Every insurance
+  company must offer the same benefits under the same plan letter — what differs
+  between companies is the price and the service. Plans C and F are not available
+  to people who became eligible for Medicare on or after January 1, 2020.
+  Massachusetts, Minnesota and Wisconsin standardize their plans differently, so
+  this grid does not describe coverage in those three states.
+</p>
+
+<div class="embed-slot">
+  <h3>Official Medicare.gov comparison chart</h3>
+  <p>
+    Compare what every standardized Medigap plan covers, side by side, on the
+    official Medicare.gov chart.
+  </p>
+  <a class="btn btn--ghost" href={links.medigapCompareChart} {...externalAttrs}>
+    Compare plans on Medicare.gov
+  </a>
+</div>

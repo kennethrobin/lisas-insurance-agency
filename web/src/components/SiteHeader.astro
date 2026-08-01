@@ -1,0 +1,187 @@
+---
+/**
+ * Sitewide header — used by every page, homepage included.
+ *
+ * The bar keeps only what must never be hidden: the wordmark and the tap-to-call
+ * pill. Everything else collapses behind the hamburger, which keeps the tab a
+ * single slim row at every width. That matters beyond tidiness: the old inline
+ * nav wrapped to three rows on a phone and ate ~200px of an ~810px screen, and
+ * the hero is sized off the header's measured height, so the hamburger is what
+ * lets the hero breathe on small screens.
+ *
+ * Medicare's sub-items open as an in-drawer disclosure (native <details>, so it
+ * works before the JS lands) rather than a second floating menu — a submenu that
+ * floats over a drawer is a hard target for anyone with an unsteady hand.
+ *
+ * Driven entirely by `mainNav` in src/data/site.ts.
+ */
+import { site, mainNav } from '../data/site';
+
+const path = Astro.url.pathname;
+/** Trailing slashes vary between dev and the built output; normalise once. */
+const here = path.length > 1 ? path.replace(/\/$/, '') : path;
+
+/** A link is current when it matches exactly. A group is current when any
+ *  child does, so "Medicare" stays marked on all six of its pages. */
+const isCurrent = (href: string) => here === href;
+const groupCurrent = (item: (typeof mainNav)[number]) =>
+  isCurrent(item.href) || (item.children?.some((child) => isCurrent(child.href)) ?? false);
+---
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="/">{site.name}</a>
+
+    <div class="header-right">
+      <a
+        class="header-phone"
+        href={site.phoneHref}
+        aria-label={`Call ${site.phone}. Calling connects you with Lisa, a licensed insurance agent.`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M6.6 10.8a15.3 15.3 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+        </svg>
+        <span class="header-phone-number">{site.phone}</span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        data-nav-toggle
+      >
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+    </div>
+  </div>
+
+  {/* The drawer. Hidden with [hidden] rather than display:none in CSS so it is
+      out of the a11y tree and out of the tab order while closed, with no JS
+      required to put it there. */}
+  <div class="nav-drawer" id="site-menu" data-nav-drawer hidden>
+    <nav class="container" aria-label="Main menu">
+      <ul class="drawer-list">
+        {
+          mainNav.map((item) =>
+            item.children ? (
+              <li class:list={['drawer-item', { 'is-current': groupCurrent(item) }]}>
+                <details class="drawer-group" open={groupCurrent(item)}>
+                  <summary class="drawer-link drawer-summary">
+                    {item.label}
+                    <svg class="drawer-caret" viewBox="0 0 10 6" aria-hidden="true">
+                      <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" />
+                    </svg>
+                  </summary>
+                  <ul class="drawer-sublist">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          class="drawer-sublink"
+                          href={child.href}
+                          aria-current={isCurrent(child.href) ? 'page' : undefined}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            ) : (
+              <li class="drawer-item">
+                <a
+                  class="drawer-link"
+                  href={item.href}
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            )
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  /* Header behavior. Lives with the component so every page gets it; Astro
+     bundles a component's script once no matter how many pages import it. */
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const drawer = document.querySelector<HTMLElement>('[data-nav-drawer]');
+
+  /* Publish the header's real height. The hero's top offset is calculated from
+     it, and --header-h is only a pre-JS fallback: the tab grows a little once
+     the webfont swaps in, and the hero must follow rather than slide under it. */
+  const syncHeaderHeight = () => {
+    if (!header) return;
+    // The bar only — never the open drawer, which would double-count.
+    const bar = header.querySelector<HTMLElement>('.container');
+    const height = (bar?.offsetHeight ?? 0) + getBarPadding();
+    document.documentElement.style.setProperty('--header-actual', `${height}px`);
+  };
+
+  const getBarPadding = () => {
+    if (!header) return 0;
+    const styles = getComputedStyle(header);
+    return parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+  };
+
+  syncHeaderHeight();
+  window.addEventListener('resize', syncHeaderHeight, { passive: true });
+  window.addEventListener('orientationchange', syncHeaderHeight);
+  window.addEventListener('load', syncHeaderHeight);
+  if (document.fonts?.ready) document.fonts.ready.then(syncHeaderHeight);
+
+  /* Transparent-ish over the hero, frosted once the page scrolls under it. */
+  const syncSolid = () => {
+    if (!header) return;
+    header.classList.toggle('is-solid', window.scrollY > 40);
+  };
+  window.addEventListener('scroll', syncSolid, { passive: true });
+  syncSolid();
+
+  /* The drawer. */
+  const setOpen = (open: boolean) => {
+    if (!toggle || !drawer) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    drawer.hidden = !open;
+    // The header tab is deliberately NOT restyled while the menu is open — its
+    // appearance is driven only by scroll. And no body scroll-lock: locking
+    // removed the page scrollbar and shifted the layout ~15px wider on open.
+    if (open) drawer.querySelector<HTMLElement>('a, summary')?.focus();
+  };
+
+  const isOpen = () => toggle?.getAttribute('aria-expanded') === 'true';
+
+  toggle?.addEventListener('click', () => setOpen(!isOpen()));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isOpen()) {
+      setOpen(false);
+      toggle?.focus();
+    }
+  });
+
+  /* Click outside closes. The header contains both the toggle and the drawer,
+     so one containment check covers the whole control. */
+  document.addEventListener('click', (event) => {
+    if (!isOpen()) return;
+    if (!header?.contains(event.target as Node)) setOpen(false);
+  });
+
+  /* Navigating to an in-page anchor doesn't reload, so close on any link tap. */
+  drawer?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setOpen(false);
+  });
+
+  /* A drawer left open while the window grows would sit over the page with no
+     obvious way back; close it on any resize past a breakpoint change. */
+  window.addEventListener('resize', () => {
+    if (isOpen()) setOpen(false);
+  }, { passive: true });
+</script>

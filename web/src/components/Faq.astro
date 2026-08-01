@@ -1,0 +1,39 @@
+---
+/**
+ * Q&A accordion — native <details>, exactly as the homepage FAQ does it.
+ * No JS: it opens before any script runs, it prints, and Ctrl-F finds the
+ * answers inside it.
+ *
+ * Pass `schema` to also emit FAQPage structured data. Only do that where the
+ * questions are genuinely the page's FAQ — Google penalises marking up
+ * arbitrary accordions.
+ */
+export type Qa = { q: string; a: string };
+
+interface Props {
+  items: Qa[];
+  schema?: boolean;
+}
+const { items, schema = false } = Astro.props;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<div class="faq-list">
+  {items.map((item) => (
+    <details>
+      <summary>{item.q}</summary>
+      <p>{item.a}</p>
+    </details>
+  ))}
+</div>
+
+{schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}

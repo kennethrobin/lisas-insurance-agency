@@ -1,0 +1,180 @@
+---
+/**
+ * Medicare Resources.
+ *
+ * Points at the official help path, NOT at enrollment. The distinction is the
+ * whole point of the page: Medicare.gov is where you go for neutral answers,
+ * and sending people there is a trust move, not a lost sale.
+ *
+ * The question box deep-links into Medicare.gov's own search rather than
+ * pretending to answer anything. It degrades to a plain link without JS.
+ */
+import Page from '../../layouts/Page.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site } from '../../data/site';
+import { links, externalAttrs } from '../../data/links';
+
+const title = 'Medicare Resources — Official Help & Contacts | Lisa’s Insurance Agency';
+const description =
+  'Where to get official, neutral answers about Medicare: Medicare.gov, 1-800-MEDICARE, your State Health Insurance Assistance Program, and Social Security.';
+
+const resources = [
+  {
+    tag: 'Start here',
+    name: 'Medicare.gov',
+    copy: 'The official U.S. government site for Medicare. Coverage rules, what each part pays, your account, and the tools for looking up plans and providers. If you want an answer that isn’t coming from someone who sells insurance, this is where to get it.',
+    href: links.medicareGov,
+    cta: 'Go to Medicare.gov',
+  },
+  {
+    tag: 'By phone',
+    name: '1-800-MEDICARE',
+    copy: 'Medicare’s own helpline, open 24 hours a day, seven days a week. Good for questions about your own enrollment, claims and coverage that only Medicare can answer.',
+    href: 'tel:+18006334227',
+    cta: 'Call 1-800-633-4227',
+  },
+  {
+    tag: 'Free local help',
+    name: 'State Health Insurance Assistance Program (SHIP)',
+    copy: 'Every state runs a program offering free, unbiased Medicare counselling — funded to help you, with nothing to sell. Genuinely worth knowing about, and I say so to clients regularly.',
+    href: links.medicareGov,
+    cta: 'Find your state’s program',
+  },
+  {
+    tag: 'Enrollment & premiums',
+    name: 'Social Security',
+    copy: 'Signing up for Medicare, questions about your Part B premium, and anything to do with your Social Security record itself go through Social Security rather than Medicare.',
+    href: 'https://www.ssa.gov',
+    cta: 'Go to SSA.gov',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Medicare · Resources"
+  heading="Where to get the official answer."
+  intro="I'm happy to explain anything on this site. But some questions deserve a source with nothing to sell — so here's exactly where to find one."
+>
+  <!-- ─── Ask Medicare directly ───────────────────────────────────────── -->
+  <section class="section" id="ask" aria-labelledby="ask-heading">
+    <div class="container">
+      <p class="crumbs"><a href="/medicare">Medicare</a> / Resources</p>
+      <p class="eyebrow">Ask Medicare</p>
+
+      <div class="section-intro">
+        <h2 id="ask-heading">Type your question, and go straight to the source.</h2>
+        <p class="lead">
+          This takes you to Medicare’s own site with your question already
+          entered. It doesn’t send anything to me, and it isn’t an enrollment
+          form.
+        </p>
+      </div>
+
+      {/* Deep-links into Medicare.gov's search. Without JS the button still
+          works — it just lands on Medicare.gov's front page, which is a
+          perfectly good outcome. */}
+      <form class="subscribe" data-medicare-search action={links.medicareGov} method="get" target="_blank">
+        <div class="field">
+          <label for="medicare-question">Your Medicare question</label>
+          <input
+            id="medicare-question"
+            name="q"
+            type="search"
+            placeholder="e.g. what does Part B cover"
+            autocomplete="off"
+          />
+        </div>
+        <button class="btn btn--accent" type="submit">Search Medicare.gov</button>
+      </form>
+
+      <p class="microline">
+        Opens Medicare.gov in a new tab. Nothing you type here is sent to me or
+        stored.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── The official contacts ───────────────────────────────────────── -->
+  <section class="section section--navy" id="official" aria-labelledby="official-heading">
+    <div class="container">
+      <p class="eyebrow">Official sources</p>
+
+      <div class="section-intro">
+        <h2 id="official-heading">Four places worth having the number for.</h2>
+      </div>
+
+      <dl class="def-list">
+        {resources.map((resource) => (
+          <div class="def-row">
+            <dt>
+              <span class="def-tag">{resource.tag}</span>
+              {resource.name}
+            </dt>
+            <dd>
+              <p>{resource.copy}</p>
+              <a
+                class="card-link"
+                href={resource.href}
+                {...(resource.href.startsWith('http') ? externalAttrs : {})}
+              >
+                {resource.cta}
+              </a>
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <p class="source-note">
+        Lisa’s Insurance Agency is not affiliated with or endorsed by the U.S.
+        government or the federal Medicare program. The links above go to official
+        sources so you can check anything you read here.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── Or ask me ───────────────────────────────────────────────────── -->
+  <section class="section" id="or-ask-me" aria-labelledby="ask-me-heading">
+    <div class="container">
+      <p class="eyebrow">Or just ask me</p>
+
+      <div class="section-intro">
+        <h2 id="ask-me-heading">You can also skip all of that and call.</h2>
+        <p class="lead">
+          I’ll answer what I can, tell you plainly when a question belongs with
+          Medicare or Social Security instead, and point you at the right number.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Still not sure who to ask?"
+    copy="Start with me. If it's not mine to answer, I'll tell you whose it is."
+  />
+</Page>
+
+<script>
+  /* Sends the question into Medicare.gov's own search. The form's plain action
+     already lands on Medicare.gov, so this only upgrades the destination —
+     without JS the button still goes somewhere sensible. */
+  const form = document.querySelector<HTMLFormElement>('[data-medicare-search]');
+  form?.addEventListener('submit', (event) => {
+    const input = form.querySelector<HTMLInputElement>('input[name="q"]');
+    const question = input?.value.trim();
+    if (!question) return; // let the plain action take them to the front page
+
+    event.preventDefault();
+    const url = new URL('https://www.medicare.gov/search');
+    url.searchParams.set('query', question);
+    window.open(url.href, '_blank', 'noopener');
+  });
+</script>

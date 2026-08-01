@@ -18,6 +18,12 @@ perception-first-design/
 # Local-only editor + agent settings
 .claude/settings.local.json
 
+# Raw video masters dropped in the repo root. The web-ready encodes in
+# web/public/media/ ARE tracked; these originals are tens of MB each and belong
+# in asset storage rather than git history.
+/*.mp4
+/*.mov
+
 # OS / WSL cruft
 .DS_Store
 *:Zone.Identifier

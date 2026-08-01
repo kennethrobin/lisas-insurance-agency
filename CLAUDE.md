@@ -14,18 +14,30 @@ Rebuild of lisasinsuranceagency.com. Research + planning in `docs/`, the Astro s
 
 ## Site status
 
-Homepage is designed and built; every other route is still a placeholder.
-`web/src/pages/[...slug].astro` generates a placeholder for each remaining route in `site.ts`. Build a
-page for real by adding it as its own file under `src/pages/` — real files take precedence over the
-catch-all, so pages can land one at a time.
+Every prospect-facing page is designed and built (homepage + the pages in the nav tree). What
+remains as an IA placeholder is only the existing-client tail (`/policyholders/*`, `/agent-login`)
+and the legal pages (`/accessibility`, `/privacy`, `/thank-you`) — `web/src/pages/[...slug].astro`
+renders those on the brand shell too, so an unbuilt route still looks like the rest of the site.
+Build one for real by adding its own file under `src/pages/`; real files win over the catch-all.
+
+## Architecture
+
+- **One layout for interior pages: `layouts/Page.astro`** (Shell + brand.css + `SiteHeader` +
+  `SiteFooter` + the standard `PageHero`). The homepage uses Shell directly because it ships a
+  bespoke hero. Nothing uses a scaffold layout — `Base.astro` and `global.css` were **deleted**:
+  they defined the same class names as brand.css, so any page that reached for them silently lost
+  its styling. Don't reintroduce them.
+- **`data/site.ts`** is the IA source of truth (nav tree, footer, routes). Header and footer both
+  render from it. **`data/links.ts`** centralises every outbound URL; unset ones are `"#"` and each
+  control checks `isPending()` for a graceful fallback rather than rendering dead.
+- **Reusable in-brand components:** `Faq`, `CompareMaMedigap`, `CarrierStrip`, `MedigapChart`,
+  `CtaBand`, `MediaSlot`, `Subscribe`, `PageHero`. Build new pieces in the same visual language.
+- **Blog** is an Astro content collection (`content.config.ts`, posts in `content/blog/`).
 
 ## Design system
 
-- `web/src/styles/brand.css` is the real visual design (tokens, type scale, components). Designed
-  pages import it. `web/src/styles/global.css` is still the placeholder scaffold's styling — brand.css
-  is intended to replace it once every page is designed.
-- Designed pages pass `bare` to `Base.astro`: they ship their own chrome and full-bleed sections, so
-  Base skips the scaffold Header/Footer and the `.wrap` + `main` padding. Scaffold routes are unchanged.
+- `web/src/styles/brand.css` is the whole visual design (tokens, type scale, components) — the
+  "clean" direction. It is the only stylesheet; import it, never anything else.
 - Type: self-hosted Open Sans (variable, latin) at `web/public/fonts/`. Body 18px minimum — the
   audience skews senior, so legibility rules over density.
 - Colour: navy `#20344F`, gold `#C68A3C` **on primary action buttons only**, green `#34704F` for
@@ -36,4 +48,5 @@ catch-all, so pages can land one at a time.
 - No superlatives ("best", "#1"), no premium/price figures, no plan-specific benefit promises, and
   never promise an instant quote.
 - Every phone display carries: "Calling connects you with Lisa, a licensed insurance agent."
-- The three footer disclaimers in `components/home/HomeFooter.astro` ship verbatim.
+- The generic (no-numbers) TPMO footer disclaimers in `components/SiteFooter.astro` ship verbatim
+  sitewide.

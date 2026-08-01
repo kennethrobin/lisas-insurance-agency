@@ -1,0 +1,51 @@
+---
+/**
+ * Newsletter signup.
+ *
+ * There is no email service wired up yet, so while `newsletterEndpoint` is "#"
+ * this renders as a disabled field with an honest explanation rather than a form
+ * that swallows an address and does nothing with it. Taking an email you can't
+ * store is worse than not asking for it.
+ *
+ * Once the endpoint is filled in, the same component becomes a real form posting
+ * to it — no other change needed.
+ */
+import { links, isPending } from '../data/links';
+import { site } from '../data/site';
+
+const pending = isPending(links.newsletterEndpoint);
+---
+
+{pending ? (
+  <div class="callout callout--note">
+    <h3>Sign-ups aren’t open yet</h3>
+    <p>
+      The mailing list is still being set up. Until it is, call or text and I’ll
+      add you by hand — or just check back here.
+    </p>
+    <div class="actions" style="margin-top: 0.75rem">
+      <a class="btn btn--ghost" href={site.phoneHref}>Call · {site.phone}</a>
+      <a class="btn btn--ghost" href={site.smsHref}>Text me</a>
+    </div>
+  </div>
+) : (
+  <>
+    <form class="subscribe" action={links.newsletterEndpoint} method="post">
+      <div class="field">
+        <label for="subscribe-email">Your email address</label>
+        <input
+          id="subscribe-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+        />
+      </div>
+      <button class="btn btn--accent" type="submit">Sign me up</button>
+    </form>
+    <p class="microline">
+      Occasional emails about Medicare. Unsubscribe any time; I don’t share your
+      address.
+    </p>
+  </>
+)}

@@ -1,90 +1,76 @@
 ---
-// FAQ (native <details>, mirrored by FAQPage schema in Layout) + navy CTA band
-// with the contact form. Form posts nowhere yet — WIRE LATER.
+// The homepage FAQ, plus the closing CTA band.
+//
+// Both are now the shared components — Faq emits the FAQPage schema alongside
+// the visible copy, which is what keeps the two from drifting apart (they used
+// to be maintained as two separate lists in two files). CtaBand carries the
+// call, text and schedule actions and the note form.
+import Faq from '../Faq.astro';
+import CtaBand from '../CtaBand.astro';
+
 const faqs = [
   {
-    q: 'Does it cost extra to use an agent?',
-    a: 'No. Premiums are set by the carriers — you pay the same with or without me. Carriers pay me, so my help is free to you.',
+    q: 'What’s the difference between a Medicare Supplement and a Medicare Advantage plan?',
+    a: 'A Medicare Supplement (Medigap) policy works alongside Original Medicare and helps cover costs that Parts A and B don’t. You keep Original Medicare and can see any provider nationwide who accepts it, and you’d add a separate Part D plan for prescriptions. A Medicare Advantage plan delivers your Part A and Part B benefits through a private Medicare-approved company instead, usually with prescription coverage built in and care coordinated through the plan’s network. Which one fits comes down to your doctors, your prescriptions, how much you travel, and how you’d rather handle costs.',
   },
   {
-    q: 'Do I have to meet you in person?',
-    a: 'Not at all. Most of my clients I’ve never met in person — we handle everything by phone, and many have been with me for years.',
+    q: 'Can I keep my own doctors?',
+    a: 'With Original Medicare and a Medicare Supplement, you can see any provider in the country who accepts Medicare. With a Medicare Advantage plan, care runs through the plan’s network, so it’s important to check that your doctors participate before you enroll. Reviewing your provider list is one of the first things I do with anyone considering Advantage.',
   },
   {
-    q: 'What’s the difference between Supplement and Advantage?',
-    a: 'Supplement works alongside Original Medicare with freedom to see any Medicare doctor; Advantage is an all-in-one alternative with networks and often lower premiums. Which fits depends on your doctors, prescriptions, and budget — that’s what we’d talk through.',
+    q: 'When can I enroll or make a change?',
+    a: 'Your first opportunity is the seven-month window around your 65th birthday. After that, the Annual Enrollment Period each fall is when most changes to Medicare Advantage and Part D plans are made. If you’re already in a Medicare Advantage plan, the Medicare Advantage Open Enrollment Period from January 1 through March 31 gives you another opportunity to switch. Medicare Supplement plans work differently — you may qualify to make a change at any time of year, though acceptance can depend on health questions once your initial window has passed. Certain life events can also open a Special Enrollment Period.',
   },
   {
-    q: 'Can you help in my state?',
-    a: 'I’m licensed in 43 states. Ask me — if I can’t help, I’ll say so.',
+    q: 'Do I need a Part D plan if I don’t take any prescriptions right now?',
+    a: 'It’s worth considering. If you go 63 days or more without creditable prescription drug coverage after becoming eligible, a late enrollment penalty may be added to your premium if you sign up later, and it can stay with you for as long as you have Medicare drug coverage. Many people enroll in a low-cost plan simply to avoid that.',
+  },
+  {
+    q: 'What happens if I travel or move?',
+    a: 'Original Medicare with a Supplement travels well, since any provider nationwide who accepts Medicare will see you. Medicare Advantage plans are built around regional networks, so travel and relocation are worth talking through before you choose. If you move out of your plan’s service area, that generally opens a Special Enrollment Period.',
+  },
+  {
+    q: 'Do I have to be on Medicare to get dental or vision coverage?',
+    a: 'No. The dental, vision, and hearing plans I offer are standalone. You can start one at any time of year, on Medicare or not.',
+  },
+  {
+    q: 'I just lost my dental coverage. Do I have to wait to use a new plan?',
+    a: 'Not always. Several carriers waive their usual waiting periods if you enroll shortly after losing prior coverage, typically within 30 to 60 days. If you’ve recently lost a plan, it’s worth moving sooner rather than later.',
+  },
+  {
+    /* The only permitted "no cost" on the site — a deliberate client decision.
+       Do not replicate this phrasing anywhere else. */
+    q: 'Does it cost extra to work with an agent?',
+    a: 'No. Plan premiums are set by the carrier and filed with the state, they’re the same whether you enroll on your own or with my help. Consultation is provided at no cost.',
   },
 ];
-import { site } from '../../data/site';
-
 ---
 
 <section class="section" id="faq" aria-labelledby="faq-heading">
   <div class="container">
-    <div class="section-intro">
-      <h2 id="faq-heading">Questions I hear every week.</h2>
-    </div>
+    {/* Two columns on desktop — heading and links on the left, the accordion on
+        the right — so the questions sit in half the width instead of running
+        the full page. Same split as the Dental & Vision section. */}
+    <div class="faq-split">
+      <div class="faq-lede">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
 
-    <div class="faq-list">
-      {faqs.map((f) => (
-        <details>
-          <summary>{f.q}</summary>
-          <p>{f.a}</p>
-        </details>
-      ))}
-    </div>
-  </div>
-</section>
-
-<section class="section section--navy cta-band" id="contact" aria-labelledby="contact-heading">
-  <div class="container">
-    <div class="cta-grid">
-      <div class="cta-copy">
-        <h2 id="contact-heading">Let’s talk. No pressure, no cost — just answers.</h2>
-        <a class="btn btn--gold" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
-        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
-      </div>
-
-      <div class="contact-card">
-        <h3>Or send me a note</h3>
-
-        <!-- WIRE LATER: form posts nowhere yet — hook up backend/email service -->
-        <form class="contact-form" novalidate>
-          <div>
-            <label for="contact-name">Name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required />
-          </div>
-          <div>
-            <label for="contact-phone">Phone</label>
-            <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required />
-          </div>
-          <div>
-            <label for="contact-topic">What can I help with?</label>
-            <select id="contact-topic" name="topic">
-              <option value="medicare">Medicare</option>
-              <option value="dental">Dental &amp; Vision</option>
-              <option value="other">Something else</option>
-            </select>
-          </div>
-          <button class="btn btn--gold" type="submit">Send</button>
-        </form>
-
-        <div class="form-success" tabindex="-1" role="status">
-          <span class="check-icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
-            </svg>
-          </span>
-          <p>
-            Thank you — I got your note. I’ll call you back within one business
-            day. — Lisa
-          </p>
+        <div class="actions actions--stack">
+          <a class="btn btn--ghost" href="/medicare/education">Read the guides</a>
+          <a class="btn btn--ghost" href="/medicare/resources">Official Medicare resources</a>
         </div>
       </div>
+
+      <div class="faq-aside">
+        <Faq items={faqs} schema />
+      </div>
     </div>
   </div>
 </section>
+
+<CtaBand
+  heading="Let’s talk"
+  copy="Let’s start with a conversation. I’ll listen to what matters most to you, explain your options clearly, and help you compare them so you can make a decision that feels right for you."
+  note="Reach out when the time is right for you. You can call, leave a message, or choose an available time on my calendar that fits your schedule. Our first conversation is simply about understanding your needs and exploring your options."
+/>

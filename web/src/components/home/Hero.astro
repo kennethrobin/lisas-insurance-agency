@@ -1,50 +1,128 @@
 ---
-// Hero: navy gradient with soft shapes — no stock humans, per imagery rule.
+// Hero: a warm field of colour with the headline set very large and very light
+// — no stock humans, per the imagery rule.
+//
+// The H1 carries the same sentence as before, typeset in two parts: the opening
+// phrase runs at display scale across the panel, the rest sits under it small
+// and quiet. The split is presentational only — the sentence is unchanged.
 // Quick-start bar routes to a section; it collects no data.
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
+  {/* Background footage under the navy wash. Decorative, so it is hidden from
+      assistive tech and carries no controls. The poster is a CSS background on
+      the wrapper rather than the video's `poster` attribute, so the still frame
+      is what shows whenever the video doesn't play at all — reduced motion,
+      Save-Data, autoplay blocked, or a browser that can't decode either file. */}
+  <div class="hero-media" aria-hidden="true">
+    <video
+      class="hero-video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      tabindex="-1"
+      disablepictureinpicture
+    ></video>
+  </div>
+
   <div class="container">
-    <h1 id="hero-heading">Medicare made simple — with a real person in your corner.</h1>
+    <h1 id="hero-heading">
+      {/* Stacked deliberately — the break is part of the composition, not a
+          wrap, so it holds at every width. */}
+      <span class="display-xl">Medicare<br />made simple</span>
+      <span class="display-tail">— with a real person in your corner.</span>
+    </h1>
 
-    <p class="hero-sub">
-      I’m Lisa. I help people across the country with Medicare, dental, and vision
-      coverage — free — and I stay with you long after you enroll.
-    </p>
+    <!-- The working controls sit on the hero's baseline, under the display line -->
+    <div class="hero-floor">
+      <div>
+        <p class="hero-sub">
+          I’m Lisa. I help people across the country with Medicare, health, dental
+          and vision coverage — free — and I stay with you long after you enroll.
+        </p>
 
-    <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
-    <div class="review-chip">
-      <!-- REPLACE: real review -->
-      <blockquote class="is-active">
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“Lisa made Medicare finally make sense to me.”</span>
-        <span class="who">— Margaret, TX</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“She found the right plan and still checks in every year.”</span>
-        <span class="who">— James, OK</span>
-      </blockquote>
-      <!-- REPLACE: real review -->
-      <blockquote>
-        <span class="stars" aria-hidden="true">★★★★★</span>
-        <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
-        <span class="who">— Diane, MO</span>
-      </blockquote>
-    </div>
-
-    <!-- Quick-start bar: one select + one button, no data collected -->
-    <form class="quickstart">
-      <div class="field">
-        <label for="quickstart-topic">What do you need help with?</label>
-        <select id="quickstart-topic" name="topic">
-          <option value="medicare">Medicare</option>
-          <option value="dental">Dental &amp; Vision</option>
-          <option value="other">Something else</option>
-        </select>
+        <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
+        <div class="review-chip">
+          <!-- REPLACE: real review -->
+          <blockquote class="is-active">
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <span>“Lisa made Medicare finally make sense to me.”</span>
+            <span class="who">— Margaret, TX</span>
+          </blockquote>
+          <!-- REPLACE: real review -->
+          <blockquote>
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <span>“She found the right plan and still checks in every year.”</span>
+            <span class="who">— James, OK</span>
+          </blockquote>
+          <!-- REPLACE: real review -->
+          <blockquote>
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
+            <span class="who">— Diane, MO</span>
+          </blockquote>
+        </div>
       </div>
-      <button class="btn btn--gold" type="submit">Get free help</button>
-    </form>
+
+      <!-- Quick-start bar: one select + one button, no data collected -->
+      <form class="quickstart">
+        <div class="field">
+          <label for="quickstart-topic">What do you need help with?</label>
+          <select id="quickstart-topic" name="topic">
+            <option value="medicare">Medicare</option>
+            <option value="health">Health insurance (under 65)</option>
+            <option value="dental">Dental &amp; Vision</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+        <button class="btn btn--accent" type="submit">Get free help</button>
+      </form>
+    </div>
   </div>
 </section>
+
+<script is:inline>
+  /* Hero background video loader.
+     The <video> ships with NO sources, so nothing downloads until this decides
+     it should. That is the whole point: on a phone with Save-Data, or for a
+     visitor who asked for reduced motion, the page costs one 27KB still instead
+     of a video file.
+
+     It also waits for `load`, so the footage never competes with the hero's own
+     paint — the poster and the navy wash are on screen first either way. */
+  (function () {
+    var video = document.querySelector('.hero-video');
+    if (!video) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var saveData = navigator.connection && navigator.connection.saveData;
+    if (reduceMotion || saveData) return; // poster only — nothing is fetched
+
+    function start() {
+      // Phones get the 854px encode: a third of the bytes, and indistinguishable
+      // under a ~90% navy wash at that size.
+      var small = window.matchMedia('(max-width: 899px)').matches;
+      var base = small ? '/media/hero-sm' : '/media/hero';
+
+      [['video/webm', base + '.webm'], ['video/mp4', base + '.mp4']].forEach(function (pair) {
+        var source = document.createElement('source');
+        source.type = pair[0];
+        source.src = pair[1];
+        video.appendChild(source);
+      });
+
+      video.addEventListener('playing', function () {
+        video.dataset.ready = 'true'; // fades it in over the poster
+      });
+
+      video.load();
+      // Autoplay can still be refused; the poster simply stays put if so.
+      var attempt = video.play();
+      if (attempt && attempt.catch) attempt.catch(function () {});
+    }
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+  })();
+</script>

@@ -1,54 +1,179 @@
 /* ==========================================================================
    Lisa's Insurance Agency — brand design system
+   "Clean" direction (branch: feat/homepage-style-clean)
    ---------------------------------------------------------------------------
-   The real visual design, imported by pages that have been designed for real
-   (currently the homepage). `global.css` remains the navigation scaffold's
-   styling for the [...slug] placeholder routes; this file is intended to
-   replace it once every page is designed.
+   A modern, minimal LAYOUT in the site's own brand colours:
+   - light cream page; every section a rounded panel floating on it
+   - panels alternate WHITE and NAVY down the page, so the blue arrives in
+     bands: hero + trust band, alternating middle, closing CTA and footer
+   - HUGE light-weight display type with tight tracking
+   - gold reserved for primary pill actions, exactly as elsewhere on the site
 
-   One file, token-driven. Senior-UX rules baked in:
-   - body text 18px / line-height 1.65, always --ink on light backgrounds
-   - gold ONLY on primary action buttons; green only on reassurance marks
-   - tap targets >= 44px, visible focus states, reduced-motion respected
+   HOW THE TWO SURFACES WORK — read this before changing a colour.
+   Colour is not written per section. A small set of --surface-* variables holds
+   "the right colour for whatever panel I am on"; :root defines the LIGHT set,
+   and one block re-points them for the dark panels. Because custom properties
+   inherit, every rule below is written once, against the variables, and each
+   instance recolours itself from its context. The quick-start bar and contact
+   card flip the same variables back to light, which is the whole reason they
+   can sit on a navy panel and still be dark-on-light inside.
+   To add a dark section: add its selector to the dark-surface block. That is all.
+
+   The palette is the site's own; only the structure and typography are new.
+   The brand rules hold on both surfaces —
+   - gold ONLY on primary action buttons, never as decoration
+   - green ONLY on reassurance marks (checks, stars); --green on light panels,
+     --green-on-navy on dark ones
+   - navy headings / ink body on light; white headings / --on-navy-body on dark.
+     Labels are steel on light, --on-navy-soft on dark. No grey text anywhere
+   - body text 18px / line-height 1.6
+   - tap targets >= 44px, visible focus states, reduced motion respected
    ========================================================================== */
 
-/* ---------- Fonts (self-hosted variable font, latin subset) ----------
-   Single-family system: Open Sans carries both display and body — a warm,
-   humanist sans. Hierarchy comes from weight + size, not a second typeface. */
+/* ---------- Font (self-hosted variable font, latin subset) ----------
+   Weight range opened down to 300: the display sizes need a genuinely light
+   cut to read as an airy grotesque rather than a heavy marketing headline. */
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 300 800;
   font-display: swap;
   src: url('/fonts/OpenSans-var-latin.woff2') format('woff2');
 }
 
-/* ---------- Design tokens ---------- */
+/* ==========================================================================
+   TWEAKABLE PARAMS — the whole look is driven from this block
+   ========================================================================== */
 :root {
-  --navy:   #20344F;  /* headers, header bar, footer, trust anchor */
-  --navy-deep: #16273D; /* gradient partner for hero */
-  --navy-soft: #2C4666; /* gradient partner for hero (lighter end) */
-  --steel:  #4A6D8C;  /* links, secondary accents */
-  --gold:   #C68A3C;  /* PRIMARY ACTION ONLY — buttons */
-  --gold-hover: #B0762C;
-  --gold-ink: #3A2708; /* dark text on gold buttons */
-  --green:  #34704F;  /* reassurance accents: checkmarks, badges. Never a button */
-  --green-on-navy: #8FD0A8; /* readable green tint for marks on navy */
-  --ink:    #22303D;  /* ALL body text */
-  --mist:   #F4F7FA;  /* alternating section backgrounds */
-  --paper:  #FFFFFF;
-  --hairline: #D9E2EA;      /* the only allowed gray — borders */
-  --on-navy-body: #E4ECF4;  /* body text on navy backgrounds */
-  --on-navy-soft: #C9D6E2;  /* small print on navy backgrounds */
+  /* --- Brand colour (the site's real palette, shared with the other branches) --
+     Semantic values are the canonical ones from CLAUDE.md / main; the warm
+     neutral surfaces are the editorial branch's cream family, which is what
+     this airy layout needs underneath it. Nothing here is invented. */
+  --navy:      #20344F;  /* the dominant surface — panels, header, bands */
+  --navy-deep: #16273D;  /* darker gradient partner / alternating panels */
+  --navy-soft: #2C4666;  /* lighter gradient partner */
+  --navy-black:#0C1826;  /* the page itself, behind and darker than every panel */
+  --on-navy-body: #E4ECF4;  /* body text on navy */
+  --on-navy-soft: #C9D6E2;  /* small print and labels on navy */
+  --green-on-navy: #8FD0A8; /* reassurance marks, readable on navy */
+  /* The editorial branch's deeper steel, not main's #4A6D8C: at label size
+     (11.5px) the lighter one only reaches 4.3:1 on the mist panels and 3.6:1 on
+     the CTA band. This one clears 4.5:1 on every surface here. */
+  --steel:     #3F5C7A;  /* small uppercase labels, link hovers */
+  --gold:      #C68A3C;  /* PRIMARY ACTION ONLY — never decoration */
+  --gold-hover:#B0762C;
+  --gold-ink:  #3A2708;  /* text on gold */
+  --gold-soft: #E3B978;
+  --green:     #34704F;  /* reassurance marks on LIGHT cards only */
+  --ink:       #22303D;  /* body text on the light form cards */
 
+  --cream:     #F3EADA;
+  --paper:     #FBF6EC;  /* the light form cards — the only light surfaces left */
+  --hairline:  #E2D7C4;  /* borders inside those light cards */
+
+  /* --- The page ---------------------------------------------------------
+     Light page, panels alternating light and navy down its length. */
+  --bg:    var(--cream);   /* behind the panels — light, so white panels float */
+  --panel: #FFFFFF;        /* the light panels */
+  --accent:       var(--gold);      /* primary pill actions */
+  --accent-hover: var(--gold-hover);
+  --accent-ink:   var(--gold-ink);
+
+  /* --- SURFACE VARIABLES ------------------------------------------------
+     The one mechanism that lets any panel be light or dark. These are the
+     LIGHT defaults; the dark-surface block further down re-points the same
+     names, and because custom properties inherit, every rule written against
+     them recolours itself for whichever panel it happens to sit in. Nothing
+     in the layout needs to know which surface it is on. */
+  --surface-heading: var(--navy);      /* headings, links, display type */
+  --surface-body:    var(--ink);       /* body copy */
+  --surface-label:   var(--steel);     /* small uppercase labels, small print */
+  --surface-line:    var(--hairline);  /* hairlines and card borders */
+  --surface-card:    #F7F3EA;          /* cards sitting on this surface */
+  --surface-mark:    var(--green);     /* reassurance marks */
+  --surface-mark-bg: rgba(52, 112, 79, 0.10);
+  --surface-mark-line: rgba(52, 112, 79, 0.28);
+  --surface-outline: var(--navy);      /* the secondary button's edge */
+  --surface-invert:  #FFFFFF;          /* text on that button once filled */
+  --surface-hover:   rgba(32, 52, 79, 0.09);  /* subtle hover wash */
+
+  /* Navy gradients, for the panels that go dark. Lit from one corner rather
+     than flat, so a dark panel has some depth to it. */
+  --grad-panel-navy: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%);
+  --grad-hero:   linear-gradient(168deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
+  --grad-cta:    linear-gradient(200deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-soft) 100%);
+  --grad-footer: linear-gradient(165deg, var(--navy-deep) 0%, #1A2E49 100%);
+
+  /* --- Shape --- */
+  --gutter:     12px;   /* space between the panels and the window edge */
+  --panel-gap:  12px;   /* vertical space between panels */
+  --radius-panel: 30px; /* the big section cards */
+  --radius:       20px; /* cards inside a panel */
+  --radius-sm:    14px; /* inputs, dropdowns, small chips */
+
+  /* --- Rhythm --- */
+  --container: 1280px;
+  --container-pad: clamp(20px, 3.5vw, 56px); /* inner padding of every container */
+  --header-h:  72px;    /* pre-JS fallback; JS measures --header-actual */
+  /* Equal top and bottom, so the row sits midway in the tab. Raise this to give
+     the tab more air; the hero's offset follows automatically. */
+  --header-pad: calc(var(--gutter) + 0.6rem);
+
+  /* --- Type --- */
   --font-display: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-body: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --display-weight: 300;      /* the light cut used by h1 / h2 */
+  --display-track: -0.035em;  /* tight letter-spacing for display sizes */
 
-  --radius: 16px;
-  --radius-sm: 12px;
-  --header-h: 76px;
-  --container: 1120px;
-  --shadow-card: 0 2px 6px rgba(32, 52, 79, 0.06), 0 12px 32px rgba(32, 52, 79, 0.07);
+  /* Navy-tinted rather than neutral black: on the light page a black shadow
+     greys the cream down, and the navy panels carry their own weight anyway. */
+  --shadow-panel: 0 1px 2px rgba(32, 52, 79, 0.06), 0 10px 26px rgba(32, 52, 79, 0.07);
+  --shadow-float: 0 18px 44px rgba(22, 39, 61, 0.28);
+}
+
+/* ==========================================================================
+   DARK SURFACES
+   Every panel that goes navy re-points the surface variables once, here. Each
+   one also sets its own background. Nothing else in the file needs a dark
+   variant — the rules below all read the variables and follow along.
+   ========================================================================== */
+.hero,
+.page-hero,
+.trust-band,
+.section--navy,
+.cta-band,
+.video-placeholder,
+.media-slot,
+.site-header,
+.site-footer {
+  --surface-heading: #FFFFFF;
+  --surface-body:    var(--on-navy-body);
+  --surface-label:   var(--on-navy-soft);
+  --surface-line:    rgba(255, 255, 255, 0.16);
+  --surface-card:    rgba(255, 255, 255, 0.06);
+  --surface-mark:    var(--green-on-navy);
+  --surface-mark-bg: rgba(143, 208, 168, 0.14);
+  --surface-mark-line: rgba(143, 208, 168, 0.32);
+  --surface-outline: rgba(255, 255, 255, 0.55);
+  --surface-invert:  var(--navy);
+  --surface-hover:   rgba(255, 255, 255, 0.13);
+  color: var(--surface-body);
+}
+
+/* ...and the two light cards flip the same variables back, so their contents
+   are dark-on-light again wherever they land. */
+.quickstart,
+.contact-card {
+  --surface-heading: var(--navy);
+  --surface-body:    var(--ink);
+  --surface-label:   var(--steel);
+  --surface-line:    var(--hairline);
+  --surface-mark:    var(--green);
+  --surface-mark-bg: rgba(52, 112, 79, 0.10);
+  --surface-mark-line: rgba(52, 112, 79, 0.28);
+  --surface-outline: var(--navy);
+  --surface-invert:  #FFFFFF;
+  color: var(--surface-body);
 }
 
 /* ---------- Reset / base ---------- */
@@ -58,80 +183,175 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  background: var(--bg);
 }
 
 body {
   font-family: var(--font-body);
   font-size: 1.125rem;            /* 18px base — non-negotiable */
-  line-height: 1.65;
-  color: var(--ink);
-  background: var(--paper);
-  overflow-x: clip;               /* guard against any accidental horizontal scroll */
+  line-height: 1.6;
+  color: var(--surface-body);
+  background: var(--bg);
+  overflow-x: clip;
+  /* Panels sit on the dark page with an even gutter all the way round. */
+  padding: var(--gutter);
 }
 
 img, svg, video { max-width: 100%; display: block; }
 
+/* ---------- Type scale ----------
+   Hierarchy is size + tracking, not weight: display sizes stay light (300)
+   and only small UI text goes semibold. */
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.18;
-  color: var(--navy);
+  color: var(--surface-heading);
   text-wrap: balance;
 }
 
-/* Large sans headlines: heavier weight + slight negative tracking reads
-   more polished and holds together at display sizes. */
 h1 {
-  font-size: clamp(2.15rem, 4.2vw + 1rem, 3.4rem);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.012em;
+  font-weight: var(--display-weight);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: var(--display-track);
 }
-h2 { font-size: clamp(1.8rem, 2.2vw + 1rem, 2.4rem); letter-spacing: -0.008em; }
-h3 { font-size: 1.3rem; }
 
-p { max-width: 65ch; }
+/* Section headlines sit at medium — enough weight to lead the page without the
+   density of bold at this size. Tracking eases off from the light cut's
+   -0.035em, since the heavier letterforms are wider. */
+h2 {
+  font-weight: 500;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+}
 
-a { color: var(--steel); text-underline-offset: 3px; }
-a:hover { color: var(--navy); }
+h3 {
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  letter-spacing: -0.008em;
+}
 
-/* Visible keyboard focus everywhere */
+/* No hanging words anywhere.
+   `pretty` is the default because it is the one that actually prevents a lone
+   last word, and it works at any length. `balance` is reserved for blocks that
+   stay short: browsers stop balancing past ~6 lines and silently fall back to
+   normal wrapping, which is exactly how a 7-line card paragraph ended up with
+   an orphan on mobile. Both degrade to normal wrapping where unsupported. */
+p, li, blockquote, figcaption, summary { text-wrap: pretty; }
+h3 { text-wrap: pretty; }   /* short headings: avoiding the orphan beats balancing */
+p { max-width: 68ch; }
+.lead,
+.hero-sub,
+.microline,
+.reviews-footnote { text-wrap: balance; }
+
+a { color: var(--surface-heading); text-underline-offset: 3px; }
+a:hover { color: var(--surface-label); }
+
 :focus-visible {
-  outline: 3px solid var(--steel);
+  outline: 3px solid var(--surface-heading);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* In-body scroll links land clear of the sticky header. Uses the runtime-measured
-   --header-actual (JS) so it stays correct when the nav wraps to extra rows. */
-section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 20px); }
+/* In-body scroll links land clear of the floating header (JS measures the real
+   height into --header-actual, so extra nav rows are accounted for). */
+section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 28px); }
 
 .container {
   max-width: var(--container);
   margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 32px);
+  padding-inline: var(--container-pad);
 }
 
-.section { padding-block: clamp(64px, 9vw, 104px); }
-.section--mist { background: var(--mist); }
-.section--navy { background: var(--navy); color: var(--on-navy-body); }
-.section--navy h2 { color: #fff; }
+/* ---------- The panel system ----------
+   Every <section> is a rounded card on the warm page. Stacking them with a
+   small gap is the signature of this direction. */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+}
 
-.section-intro { margin-bottom: clamp(32px, 5vw, 48px); }
-.lead { font-size: 1.2rem; margin-top: 0.9rem; }
+.section {
+  background: var(--panel);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding-block: clamp(56px, 7vw, 112px);
+}
+/* Every other panel goes navy. The page reads light overall, with the blue
+   arriving in bands: hero + trust band, then alternating down the page, then
+   the closing CTA and footer. */
+.section--navy { background: var(--grad-panel-navy); }
+
+/* Section head: micro-label + display heading, left aligned. */
+.section-intro { margin-bottom: clamp(36px, 4.5vw, 64px); max-width: 34ch; }
+.section-intro h2 { max-width: 20ch; }
+.lead {
+  font-size: 1.15rem;
+  color: var(--surface-body);
+  margin-top: 1.1rem;
+  max-width: 52ch;
+}
+
+/* Small uppercase eyebrow with a dot — labels the section. The text always
+   restates the section's own name; it never introduces new claims. */
+/* Tight to the heading it labels: at the old 52px it sat almost as far from the
+   heading as the heading sat from the content, so it read as floating loose
+   rather than belonging to the section head. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: clamp(20px, 2vw, 28px);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--surface-label);   /* never gold — gold is reserved for actions */
+  flex: 0 0 auto;
+}
+/* Hairline running out to the right edge of the panel. */
+.eyebrow::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--surface-line);
+}
 
 .skip-link {
   position: absolute;
   left: 1rem; top: -100px;
   z-index: 100;
-  background: var(--paper);
+  background: #fff;
   color: var(--navy);
   padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  font-weight: 700;
+  border-radius: 999px;
+  font-weight: 600;
   transition: top 0.2s;
 }
 .skip-link:focus-visible { top: 1rem; }
+
+/* Text for screen readers only. The comparison table leans on this: a dot in a
+   cell is readable at a glance but says nothing out loud, so each cell carries
+   its meaning and its column name in text no one sees. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -139,355 +359,637 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  min-height: 52px;
-  padding: 0.85rem 1.8rem;
+  min-height: 54px;
+  /* A capsule needs more side padding than a rectangle: the curve eats into the
+     usable width at both ends, so 1.75rem here reads like ~1.4rem would on a
+     square button. The extra 1px of top padding optically centres the label,
+     which otherwise sits high because of the font's descender space. */
+  padding: 0.9rem 1.75rem 0.85rem;
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.2;
+  letter-spacing: -0.005em;
   text-decoration: none;
   text-align: center;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 
-  /* Safari gives <button> a native look with its own metrics, which ignores the
-     padding/centring below and floats the label high in the pill. Resetting the
-     appearance makes buttons and links render identically on every platform. */
+  /* Safari gives <button> native metrics that ignore the padding above. */
   appearance: none;
   -webkit-appearance: none;
-  /* Safari also inherits neither of these into <button> from the body. */
-  font-family: var(--font-body);
   margin: 0;
 }
 
-/* Gold capsule = primary action. Nothing else on the page is gold. */
-.btn--gold { background: var(--gold); color: var(--gold-ink); }
-.btn--gold:hover { background: var(--gold-hover); color: var(--gold-ink); }
+/* Lime capsule = primary action. Nothing else on the page is lime. */
+.btn--accent { background: var(--accent); color: var(--accent-ink); }
+.btn--accent:hover { background: var(--accent-hover); color: var(--accent-ink); }
 
-/* White capsule with a navy outline = secondary action. */
-.btn--outline { border-color: var(--navy); color: var(--navy); background: var(--paper); }
-.btn--outline:hover { background: var(--navy); color: #fff; }
-
-/* On navy backgrounds the secondary button goes transparent with a light edge,
-   so it doesn't read as a second primary. */
-.section--navy .btn--outline,
-.hero .btn--outline {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.6);
-  color: #fff;
+/* The little arrow inside primary pills. Drawn as a masked shape rather than
+   text so screen readers never announce it. */
+.btn--accent::after {
+  content: "";
+  width: 0.85em;
+  height: 0.85em;
+  flex: 0 0 auto;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.section--navy .btn--outline:hover,
-.hero .btn--outline:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
-/* "Calling connects you with Lisa…" — rides along with every phone display */
-.microline { font-size: 0.9rem; margin-top: 0.6rem; }
-.section--navy .microline, .hero .microline, .site-footer .microline { color: var(--on-navy-soft); }
+/* Light outline capsule = secondary action, on the navy panels. Deliberately
+   not a second solid fill — gold stays the only filled action. */
+.btn--ghost {
+  border-color: var(--surface-outline);
+  color: var(--surface-heading);
+  background: transparent;
+}
+.btn--ghost:hover { background: var(--surface-heading); color: var(--surface-invert); border-color: var(--surface-heading); }
 
-/* ---------- Header ---------- */
+/* "Calling connects you with Lisa…" — rides along with every phone display.
+   One line: the 44ch cap used to break it after "licensed". Below 620px there
+   isn't room for the sentence at 14px, and 14px is the floor for this audience,
+   so there it wraps — balanced, so it never drops a lone word. */
+.microline {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--surface-label);
+  margin-top: 0.7rem;
+  max-width: none;
+  white-space: nowrap;
+}
+@media (max-width: 620px) {
+  .microline { white-space: normal; text-wrap: balance; }
+}
+
+/* ---------- Header ----------
+   An upside-down tab: flush to the very top of the window with square top
+   corners, rounded off at the bottom only — a capsule cut in half. It reads as
+   hanging from the top edge rather than floating like the panels below.
+   Transparent over the hero; on scroll it picks up a frosted background so it
+   keeps working over the white panels. One slim row at every width — the links
+   live behind the hamburger, and the drawer hangs off the tab's bottom edge. */
 .site-header {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  /* Same width as every panel below it — inset by the page gutter on both
+     sides — while staying flush to the top of the window. */
+  left: var(--gutter);
+  right: var(--gutter);
   z-index: 60;
-  padding-block: 0.65rem;
-  background: transparent;
+  /* Symmetric: the tab used to carry 20px above the row and 11px below, which
+     sat the wordmark and pills low in the shape. */
+  padding-block: var(--header-pad);
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+  /* Solid deep navy at rest, not transparent: the tab is darker than the top of
+     the hero gradient behind it, so the shape reads at first paint. */
+  background: var(--navy-deep);
   transition: background-color 0.25s, box-shadow 0.25s;
 }
 
-.site-header .container {
+/* Direct child only. The drawer nested inside the header ALSO uses .container
+   (so its menu column lines up with this row), and a descendant selector here
+   would turn that one into a flex box too — which made the menu panel shrink to
+   its text instead of filling to the content line. */
+.site-header > .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  /* No width compensation needed: the header is now inset exactly like the
+     panels, so the plain .container rule already lines its content up with
+     theirs. */
 }
 
 .wordmark {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
-  color: #fff;
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  letter-spacing: 0.02em;
+  color: var(--surface-heading);
   text-decoration: none;
   line-height: 1.25;
-  padding-block: 0.4rem;
-  text-wrap: balance;
+  padding-block: 0.72rem;   /* 44px tap target without changing header height */
+  /* One line at every width now that the nav is behind the hamburger: the tab
+     only ever carries wordmark + phone + menu, which fits on one row down to
+     the narrowest phone (the pill drops its digits below 400px). */
+  white-space: nowrap;
 }
-
-/* Keep the wordmark to two tidy lines next to the phone pill on small screens */
-@media (max-width: 560px) {
-  .wordmark { font-size: 0.95rem; }
-  .header-phone { font-size: 0.95rem; padding: 0.35rem 0.85rem; }
-}
-.wordmark:hover { color: #fff; }
+.wordmark:hover { color: var(--surface-heading); }
 
 .header-right { display: flex; align-items: center; gap: 0.6rem; }
 
-/* Phone: white outline pill over hero -> gold tap-to-call pill on white header */
+/* Phone: always the lime pill — the one action that is never hidden. */
 .header-phone {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0.4rem 1.1rem;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.45rem 1.35rem;   /* capsule side padding, as on .btn */
   border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.55);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  font-size: 0.95rem;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+  transition: background-color 0.25s;
 }
-.header-phone:hover { color: #fff; border-color: #fff; }
+.header-phone:hover { background: var(--accent-hover); color: var(--accent-ink); }
 
-/* Primary nav — always visible, no hamburger. Driven by site.ts `mainNav`. */
-.site-nav { display: flex; min-width: 0; }
-.site-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.15rem 0.35rem;
-}
-.nav-item { position: relative; }
-
-/* Top-level link/button: white over the hero, navy on the solid header. */
-.nav-top {
+/* ---------- Hamburger toggle ----------
+   An outline capsule beside the phone pill, so the tab reads as two controls of
+   the same family rather than a pill next to a bare icon. Two bars, not three:
+   at this size the third reads as noise, and the word "Menu" is doing the
+   labelling anyway — which this audience needs more than a glyph. */
+.nav-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  min-height: 44px;
-  padding: 0.4rem 0.7rem;
-  border: 0;
-  border-radius: 10px;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0.45rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-outline);
   background: transparent;
-  color: #fff;
+  color: var(--surface-heading);
   font-family: var(--font-body);
-  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.05rem);
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   line-height: 1.2;
-  text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
-.nav-top:hover { color: #fff; background: rgba(255, 255, 255, 0.14); }
-.nav-caret { width: 10px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
-[data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
+.nav-toggle:hover {
+  background: var(--surface-heading);
+  color: var(--surface-invert);
+  border-color: var(--surface-heading);
+}
 
-/* Solid (scrolled) state */
-.site-header.is-solid {
-  background: var(--paper);
-  box-shadow: 0 1px 0 var(--hairline), 0 8px 24px rgba(32, 52, 79, 0.08);
+.nav-toggle-bars {
+  position: relative;
+  width: 18px;
+  height: 14px;
+  flex: 0 0 auto;
 }
-.site-header.is-solid .wordmark { color: var(--navy); }
-.site-header.is-solid .nav-top { color: var(--navy); }
-.site-header.is-solid .nav-top:hover { background: var(--mist); color: var(--navy); }
-.site-header.is-solid .header-phone {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--gold-ink);
-}
-.site-header.is-solid .header-phone:hover { background: var(--gold-hover); border-color: var(--gold-hover); }
-
-/* Sub-item dropdown — lightweight disclosure (hover/click/focus). The panel is
-   always white with navy text, independent of the header's transparent/solid
-   state. `.align-right` is toggled in JS when a panel would spill off-screen. */
-.nav-dropdown {
+/* Both bars sit centred on the box's midline; the closed state parts them
+   evenly above and below it. Centring them here (rather than at top/bottom) is
+   what lets the open state be a true X: each bar only has to rotate about its
+   own centre, so both strokes cross at exactly one point. */
+.nav-toggle-bars span {
   position: absolute;
-  top: calc(100% + 6px);
   left: 0;
-  z-index: 70;
-  display: none;
-  min-width: 260px;
-  max-width: min(92vw, 360px);
-  padding: 0.6rem 0.4rem;
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 24px 40px rgba(32, 52, 79, 0.14);
+  right: 0;
+  top: 50%;
+  height: 2px;              /* one thickness, both bars */
+  margin-top: -1px;         /* centre the 2px stroke on the midline */
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.22s ease;
 }
-.nav-dropdown[data-open] { display: block; }
-.nav-dropdown.align-right { left: auto; right: 0; }
+.nav-toggle-bars span:first-child { transform: translateY(-4px); }
+.nav-toggle-bars span:last-child  { transform: translateY(4px); }
+/* Open: drop the offset and rotate about the centre — symmetrical X. */
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:first-child { transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:last-child  { transform: rotate(-45deg); }
 
-.nav-dd-group + .nav-dd-group {
-  margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid var(--hairline);
+/* Solid (scrolled) state — frosted, so it reads over any panel. Note this is
+   driven ONLY by scroll, never by the menu: opening the drawer must not touch
+   the header tab's appearance. The header stays solid navy over the hero and
+   frosted once scrolled, open or closed. */
+.site-header.is-solid {
+  background: rgba(12, 24, 38, 0.92);   /* --navy-black, translucent */
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: var(--shadow-float);
 }
-.nav-dd-heading {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--steel);
+
+/* ---------- The drawer ----------
+   Its own floating panel, in the site's panel language: it sits just below the
+   header tab with a small gap, fully rounded on all four corners, and a hairline
+   edge so it reads crisply on the hero rather than bleeding into it. The gap is
+   deliberate — the header tab keeps its own shape and the menu is clearly a
+   separate object dropping beneath it. Scrolls internally if the menu outgrows
+   the window, which keeps it usable on a landscape phone. */
+/* The drawer is a full-width positioning layer spanning the header, holding an
+   ordinary .container inside — the SAME container geometry as the header row and
+   the page. The visible panel (.drawer-list) is right-aligned inside that
+   container, so its right edge lands exactly on the site's content line: flush
+   with the menu button above it and the hero's quick-start box, at every
+   viewport width (the container centres identically here and there). The panel,
+   not this layer, carries the background, rounding and shadow. */
+.nav-drawer {
+  --drawer-gap: 5px;   /* the small gap between the header tab and the panel */
+  position: absolute;
+  top: calc(100% + var(--drawer-gap));
+  left: 0;
+  right: 0;
+  z-index: 70;
 }
-.nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
-.nav-dropdown a {
+/* [hidden] is set in the markup so the drawer starts closed and out of the tab
+   order with no JS. It needs the !important because .nav-drawer's own `display`
+   would otherwise win on specificity. */
+.nav-drawer[hidden] { display: none !important; }
+
+/* The header sits above its own drawer, so the tab's shadow doesn't land on it. */
+.site-header { isolation: isolate; }
+.site-header > .container { position: relative; z-index: 2; }
+
+/* Deliberately NO body scroll-lock here. The drawer is a dropdown pinned to the
+   fixed header, not a full-screen modal — and locking the body meant removing
+   the page's scrollbar, which reflowed the whole layout ~15px wider every time
+   the menu opened (and the fixed header jumped with it). Letting the page keep
+   its scrollbar means opening the menu shifts nothing. The drawer's own
+   overscroll-behavior keeps its internal scroll from chaining to the page. */
+
+/* The visible panel: its own rounded card with a shadow and no outline, sized to
+   its content. Right-aligned to the content line on desktop (see the media query
+   below), full content width on phones. It is the scroll container if the menu
+   ever outgrows the screen. */
+.drawer-list {
+  list-style: none;
+  margin: 0;
+  padding-block: clamp(0.8rem, 1.6vw, 1.1rem);
+  padding-inline: 1.6rem;
+  background: var(--navy-deep);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-float);
+  max-height: calc(
+    100svh - var(--header-actual, var(--header-h)) - var(--drawer-gap) - var(--gutter) * 2
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.drawer-item + .drawer-item { border-top: 1px solid var(--surface-line); }
+
+/* Menu rows: comfortable tap targets for a senior audience, but sized so the
+   whole menu — including Medicare's six sub-items expanded — fits a phone
+   screen without turning into a wall of oversized type. Fixed size, not a vw
+   clamp: the clamp ballooned the text past 30px on a wide window. */
+.drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.38rem 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--surface-heading);
+  text-decoration: none;
+  cursor: pointer;
+}
+.drawer-link:hover { color: var(--surface-heading); opacity: 0.7; }
+
+/* Current page: a bullet in the left margin, matching the eyebrow's marker. */
+.drawer-link[aria-current="page"]::before,
+.is-current > .drawer-group > .drawer-summary::before {
+  content: "";
+  width: 7px; height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--surface-mark);
+}
+
+/* Medicare's sub-items: a native <details> disclosure inside the drawer. No
+   floating submenu — a panel that overlays a panel is a hard target. */
+.drawer-group { width: 100%; }
+.drawer-summary { list-style: none; justify-content: flex-start; }
+.drawer-summary::-webkit-details-marker { display: none; }
+/* The caret sits right beside its label, not shoved to the far edge — the row
+   is just text, so nothing splits it into a left half and a right half. */
+.drawer-caret {
+  width: 11px; height: 7px;
+  flex: 0 0 auto;
+  margin-left: 0.1rem;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.drawer-group[open] .drawer-caret { transform: rotate(180deg); }
+
+.drawer-sublist {
+  list-style: none;
+  margin: 0 0 0.35rem;
+  padding: 0 0 0 0.9rem;   /* a small indent still reads as "child of", no rule needed */
+  display: grid;
+}
+.drawer-sublink {
   display: block;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  color: var(--navy);
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.3;
+  min-height: 42px;
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+  font-weight: 300;        /* lighter than the main items, so subs read as secondary */
+  color: var(--surface-body);
   text-decoration: none;
 }
-.nav-dropdown a:hover { background: var(--mist); color: var(--navy); }
+.drawer-sublink:hover { color: var(--surface-heading); }
+.drawer-sublink[aria-current="page"] { color: var(--surface-heading); font-weight: 700; }
 
-/* Narrow screens: the nav drops to its own full-width row under the wordmark and
-   phone, shrinking slightly instead of hiding behind a toggle. The header's real
-   height is measured into --header-actual (JS), which the hero's top offset uses,
-   so the first view never crops however many rows the nav wraps to. */
-@media (max-width: 720px) {
-  .site-header .container { flex-wrap: wrap; row-gap: 0.35rem; }
-  .site-nav { flex: 1 0 100%; order: 3; }
-  .site-nav-list { justify-content: flex-start; }
-  .nav-top { padding: 0.35rem 0.55rem; font-size: 0.95rem; }
-  .nav-dropdown { min-width: 220px; }
+/* Desktop: the panel is a fixed-width column pinned to the RIGHT of the
+   container content box (margin-left: auto), so its right edge sits on the
+   content line — flush under the menu button, no gap. On phones (below this) it
+   drops the fixed width and fills the content box, from under the wordmark to
+   under the menu button. Sized to the content: the longest label is short. */
+@media (min-width: 720px) {
+  .drawer-list {
+    width: 248px;
+    margin-left: auto;
+  }
 }
 
-/* ---------- Hero ---------- */
-/* The hero is a self-contained section: it fills the viewport and its contents
-   fit inside it at any browser size, so the quick-start bar is never cut off.
+/* Very narrow: the phone pill keeps the icon but drops the digits, so the
+   wordmark and the menu control both stay on one row. The number is the first
+   thing in the drawer either way. */
+@media (max-width: 400px) {
+  .header-phone { padding-inline: 0.9rem; }
+  .header-phone-number { display: none; }
+  .nav-toggle-label { display: none; }
+  .nav-toggle { padding-inline: 0.95rem; }
+}
 
-   `--hero-gap` drives BOTH the space above the headline and the space under the
-   subhead, so those two gaps stay visually matched at every size. It's keyed to
-   viewport *height* (vh), so on a short laptop window the whole hero compresses
-   instead of pushing the quick-start bar below the fold. */
+/* ==========================================================================
+   HERO
+   The signature view: a warm field of colour filling the first screen, a very
+   large light headline across the top, and the working controls on the
+   baseline. Contents fit inside the viewport at any size — the quick-start bar
+   is never cut off.
+
+   `--hero-gap` drives both the space under the header and the space above the
+   controls, keyed to viewport HEIGHT so a short laptop window compresses the
+   whole hero instead of pushing the bar below the fold.
+   ========================================================================== */
 .hero {
-  --hero-gap: clamp(0.75rem, 5.5vh, 5rem);
-  /* Distance from the wordmark's bottom edge to the bottom of the header, so
-     the gap under the subhead renders visually equal to the logo->H1 gap.
-     Smaller on mobile, where the wordmark wraps to two lines. */
-  --hero-gap-offset: 22px;
+  --hero-gap: clamp(0.75rem, 4.5vh, 3.5rem);
 
   position: relative;
   overflow: hidden;
-  background: linear-gradient(158deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
-  color: var(--on-navy-body);
+  border-radius: var(--radius-panel);
+  background:
+    radial-gradient(80% 60% at 78% 8%, rgba(122, 158, 190, 0.30), transparent 62%),
+    radial-gradient(70% 55% at 8% 92%, rgba(255, 255, 255, 0.07), transparent 64%),
+    var(--grad-hero);
+  color: var(--surface-body);
 
-  /* Fills the viewport, capped so a tall monitor doesn't leave a large empty
-     band under the quick-start bar. Deliberately NOT flex-centred: centring
-     adds slack above the headline, which would break the gap match below. */
-  min-height: 100vh;                 /* fallback for browsers without svh */
-  min-height: min(100svh, 860px);    /* svh = viewport minus mobile browser UI */
+  display: flex;
+  flex-direction: column;
 
-  /* Offset from the real header height (measured into --header-actual by JS) so
-     the first view clears the header even when the inline nav wraps to a second
-     row on narrow screens; --header-h is the pre-JS fallback. */
-  padding-top: calc(var(--header-actual, var(--header-h)) + var(--hero-gap));
-  padding-bottom: clamp(1rem, 4vh, 6rem);
+  /* Fills the first screen (minus the page gutter), capped so a tall monitor
+     doesn't leave a dead band under the controls. */
+  min-height: calc(100vh - var(--gutter) * 2);              /* fallback */
+  min-height: min(calc(100svh - var(--gutter) * 2), 940px);
+
+  /* The header is measured from the top of the WINDOW but this padding starts
+     at the top of the hero panel, which already sits a gutter down — hence the
+     subtraction, or the first line would clear the header by a gutter too much. */
+  padding-top: calc(var(--header-actual, var(--header-h)) - var(--gutter) + var(--hero-gap));
+  /* Small screens keep the tight value: there the nav wraps to three rows, and
+     mirroring a ~200px tab at the bottom would push the controls off the fold.
+     The wide-screen rule below does the mirroring. */
+  padding-bottom: clamp(1rem, 3.5vh, 3rem);
 }
 
-/* Soft decorative shapes — steel/white tints only (never gold) */
-.hero::before,
+/* ---------- Hero background footage ----------
+   The video sits under a navy wash rather than beside it: the gradient IS the
+   hero's colour, the footage just gives it movement. The wash is deliberately
+   heavy (86% to 95%) — at that strength even a pure-white frame composites to
+   ~#3B4C64, which holds white text at 8.6:1 and the light body tone at 5.8:1.
+   Contrast therefore never depends on what the footage is doing. */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;   /* stays inside the panel's rounded corners */
+  /* The still frame. Also the entire background whenever the video doesn't
+     play, which is why it lives here rather than on the video's poster attr. */
+  background: url('/media/hero-poster.jpg') center / cover no-repeat;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+/* Set by the loader on `playing`, so the cut from still to motion is a fade
+   rather than a flash. */
+.hero-video[data-ready] { opacity: 1; }
+
+/* The blue wash over the footage, on a single dial.
+   --hero-wash: 0 = raw footage, nothing over it (current)
+                0.4 = footage reads clearly, text still comfortable
+                0.9 = the original heavy navy
+   NOTE: at 0 the footage carries the contrast on its own, so light text can
+   fall below AA wherever a frame is bright. See the measurements in the commit. */
+.hero { --hero-wash: 0; }
+
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: var(--hero-wash);
+  background: linear-gradient(
+    168deg,
+    rgb(44, 70, 102) 0%,
+    rgb(32, 52, 79) 46%,
+    rgb(22, 39, 61) 100%
+  );
+}
+
+/* Fine grain over the gradient — keeps the warm field from looking plasticky. */
 .hero::after {
   content: "";
   position: absolute;
-  border-radius: 50%;
+  inset: 0;
   pointer-events: none;
-}
-.hero::before {
-  width: 560px; height: 560px;
-  right: -180px; top: -140px;
-  background: radial-gradient(circle at center, rgba(122, 158, 190, 0.28), rgba(122, 158, 190, 0) 68%);
-}
-.hero::after {
-  width: 640px; height: 640px;
-  left: -240px; bottom: -320px;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 66%);
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
-.hero .container { position: relative; z-index: 1; }
+.hero .container {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Makes the container the sizing reference for the giant line below. */
+  container-type: inline-size;
+  /* Required: .container centres itself with `margin-inline: auto`, and a flex
+     item with auto cross-axis margins does NOT stretch. Without an explicit
+     width it would fall back to its content width — and inline-size containment
+     means "no content", collapsing the box to its padding. */
+  width: 100%;
+}
 
-/* Wider cap lets the headline flow further right and balance into 3 lines
-   instead of 4 (text-wrap: balance evens the line lengths). The 9vh ceiling
-   only bites on very short windows (e.g. a landscape phone), where it keeps
-   the headline from crowding out the quick-start bar. */
+/* The headline block sits midway between the header and the hero's floor:
+   `margin-block: auto` splits the leftover space evenly above and below it,
+   the floor already being pinned to the bottom by its own auto margin. */
 .hero h1 {
-  color: #fff;
-  max-width: 24ch;
-  font-size: min(clamp(2.15rem, 4.2vw + 1rem, 3.4rem), 8vh);
+  max-width: none;
+  margin-block: auto;
+}
+/* Stacked over two lines (the break is in the markup) and back to the light
+   cut — the airy display weight this direction was built on. No `nowrap`: the
+   explicit break does the work, so nothing has to be kept on one line. */
+.hero .display-xl {
+  display: block;
+  /* A step up from the old clamp(2rem, 4vw, 3.4rem) — a bit more presence over
+     the video without tipping into the full-size h1 display scale. */
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: var(--display-weight);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+/* The rest of the same sentence, set small and quiet under the giant line. */
+.hero .display-tail {
+  display: block;
+  margin-top: clamp(0.5rem, 1.4vh, 1.1rem);
+  max-width: 30ch;
+  font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--surface-heading);
+}
+
+/* Everything below the headline sits on the hero's baseline. It needs no auto
+   margin of its own: the headline's auto margins already absorb all the free
+   space, half above it and half below, which lands the floor on the bottom
+   edge. With an auto margin here too, three autos shared the space and the
+   headline sat a third of the way down instead of centred. */
+.hero-floor {
+  padding-top: var(--hero-gap);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2.5vh, 2rem);
+  align-items: end;
 }
 
 .hero-sub {
-  font-size: 1.2rem;
-  max-width: 62ch;        /* more room so the last line isn't a lone word */
-  margin-top: clamp(0.5rem, 1.5vh, 1.2rem);
-  text-wrap: pretty;      /* avoids orphans / hanging single words */
+  font-size: 1.05rem;
+  max-width: 42ch;
+  color: var(--surface-body);
+  text-wrap: pretty;
 }
 
-/* Rotating review chip. Both this gap and the logo->H1 gap above are driven by
-   --hero-gap, so they stay visually matched as the hero compresses to fit. */
+/* Rotating review chip — one visible at a time (JS), frosted over the field.
+   A pill only reads as a pill on ONE line: at two-plus lines the 999px radius
+   becomes a huge curve that eats the first and last lines. So the chip is a
+   single nowrap line here, and drops to a rounded rectangle at the width where
+   it can no longer fit (see the narrow-screen rule below).
+
+   All three quotes are STACKED in one grid cell rather than swapped in and out
+   of the flow. They are different lengths, and the hero's floor is a `1fr auto`
+   grid: a chip that changes width changes what the first column asks for, which
+   resized the quick-start card next to it every six seconds. Stacked, the cell
+   is always as wide and tall as the longest quote, so nothing moves. */
 .review-chip {
   position: relative;
-  margin-top: calc(var(--hero-gap) + var(--hero-gap-offset));
-  max-width: 560px;
-  min-height: 3.4rem;
+  display: grid;
+  margin-top: 1.1rem;
 }
 .review-chip blockquote {
-  display: none;
+  grid-area: 1 / 1;          /* every quote occupies the same cell */
+  display: flex;
   align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: 1rem;
-  color: #fff;
+  gap: 0.55rem;
+  width: max-content;
+  max-width: 100%;
+  /* Hidden rather than removed, so the cell keeps the widest quote's size.
+     `visibility` (not just opacity) also keeps them out of the a11y tree. */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  padding: 0.7rem 1.4rem;   /* capsule side padding clears the curve */
+  border-radius: 999px;
+  /* A DARK frosted pill, not a light one: a white wash lifts the navy behind it
+     far enough that the green stars fall to 3.8:1. Tinting with the deep navy
+     keeps the chip legible and the reassurance mark at ~7:1. */
+  background: rgba(22, 39, 61, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--surface-heading);
+  white-space: nowrap;
 }
-.review-chip blockquote.is-active { display: flex; flex-wrap: wrap; }
-.review-chip .stars { color: var(--green-on-navy); letter-spacing: 0.1em; white-space: nowrap; }
-.review-chip .who { color: #BFD3E4; white-space: nowrap; }
+.review-chip blockquote.is-active { visibility: visible; opacity: 1; }
+.review-chip .stars { letter-spacing: 0.08em; color: var(--surface-mark); }
+.review-chip .who { color: var(--surface-label); }
 
-/* Quick-start bar */
+/* Below this width the quote can't hold one line: wrap it and square off the
+   radius so the text keeps an even inset on every line. */
+@media (max-width: 1100px) {
+  .review-chip blockquote {
+    width: auto;
+    flex-wrap: wrap;
+    white-space: normal;
+    border-radius: 18px;
+    padding: 0.8rem 1.15rem;
+  }
+}
+
+/* Quick-start bar — a light card, deliberately the one bright object in the
+   hero. Form fields read better dark-on-light, and it draws the eye to the
+   primary action. See the light-card block near the end for its text colours. */
 .quickstart {
-  margin-top: clamp(0.75rem, 2.5vh, 2rem);
   background: var(--paper);
-  border-radius: 18px;
-  padding: clamp(0.8rem, 2vh, 1.1rem);
-  box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
+  border-radius: var(--radius);
+  padding: clamp(0.9rem, 2vh, 1.15rem);
+  box-shadow: var(--shadow-float);
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 0.9rem;
-  max-width: 640px;
+  gap: 0.8rem;
+  max-width: 560px;
 }
-.quickstart .field { flex: 1 1 260px; }
+.quickstart .field { flex: 1 1 220px; }
 .quickstart label {
   display: block;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
   margin-bottom: 0.45rem;
 }
 .quickstart select {
   width: 100%;
-  min-height: 52px;
+  min-height: 54px;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  color: var(--ink);
-  background: var(--paper);
-  border: 2px solid var(--hairline);
-  border-radius: 10px;
-  padding: 0.55rem 0.8rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;   /* clears the 14px corner radius */
 }
-.quickstart select:focus-visible { outline-offset: 1px; }
 .quickstart .btn { flex: 0 0 auto; }
 
-/* ---------- Trust band ---------- */
+/* Hidden for now, at the client's request: the rotating reviews capsule and the
+   quick-start ("what do you need help with") box in the hero. The markup is
+   kept in place so either can be switched back on by removing this rule. With
+   both gone, the "I'm Lisa" line is the only thing on the hero floor, so it
+   settles onto the baseline where the capsule used to sit. */
+.hero .review-chip,
+.hero .quickstart { display: none; }
+
+/* ---------- Trust band ----------
+   A thin strip of small uppercase credentials under the hero. */
 .trust-band {
-  background: var(--navy);
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-  color: #fff;
-  padding-block: clamp(28px, 4vw, 40px);
+  background: var(--grad-panel-navy);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding-block: clamp(20px, 2.5vw, 30px);
 }
 .trust-band ul {
   list-style: none;
@@ -495,90 +997,195 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.9rem 2rem;
+  gap: 0.75rem 2rem;
 }
 .trust-band li {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-heading);
 }
-.trust-band .mark { color: var(--green-on-navy); flex: 0 0 auto; }
+/* Reassurance marks — green, the one place green belongs. The lighter tint is
+   the readable version of it on navy. */
+.trust-band .mark { color: var(--surface-mark); flex: 0 0 auto; }
 
-/* ---------- Generic cards ---------- */
+/* ---------- Cards ---------- */
 .cards {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
 }
+/* Cards read as a lift off whichever panel they sit on: a warm off-white on the
+   light panels, a translucent white wash on the navy ones. */
 .card {
-  background: var(--paper);
-  border: 1px solid var(--hairline);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-line);
   border-radius: var(--radius);
-  padding: clamp(1.5rem, 3vw, 2rem);
-  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 2.4vw, 2.1rem);
 }
-.section:not(.section--mist) .card { background: var(--mist); box-shadow: none; }
-.card h3 { margin-bottom: 0.6rem; }
+.card h3 { margin-bottom: 0.7rem; }
+.card p { color: var(--surface-body); font-size: 1.02rem; }
 .card .card-kicker {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--steel);
-  margin-bottom: 0.5rem;
+  color: var(--surface-label);
+  margin-bottom: 0.6rem;
 }
+/* The 44px minimum tap target is padding, not box height: an underline drawn on
+   the box edge would float ~10px under the text. Underlining the text itself
+   keeps the rule tight to the words while the target stays finger-sized. */
 .card-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   min-height: 44px;
   margin-top: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--surface-heading);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  align-self: flex-start;
+}
+.card-link:hover { color: var(--surface-label); text-decoration-color: var(--surface-label); }
+
+/* The Medicare explainer + coverage cards read as tall tinted tiles. */
+.cards--tiles .card {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  padding: clamp(1.6rem, 2.6vw, 2.4rem);
+  border: 0;
+}
+/* Tiles carry a little more colour than a plain card. On the light panels they
+   are brand tints over white — navy, green, then a paler blue; on a navy panel
+   they become white washes at three strengths. No gold: a tinted surface would
+   be decoration, and gold belongs to the actions. */
+.cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, #DDE2E8, #F2F4F6); }
+.cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, #E2EDE6, #F3F7F4); }
+.cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, #E8EDF2, #F5F7F9); }
+
+/* Medicare Overview's three plan cards, joined by OR / + connectors. The
+   connectors are grid items, so the cards land on children 1, 3 and 5 and the
+   row needs its own track list — both are handled here and in the breakpoints
+   at the foot of this file, never by changing the shared .cards rules. */
+.card-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--steel);
+  letter-spacing: 0.06em;
+  color: var(--surface-label);
+}
+.cards--tiles.cards--connected .card:nth-child(3) { background: linear-gradient(160deg, #E2EDE6, #F3F7F4); }
+.cards--tiles.cards--connected .card:nth-child(5) { background: linear-gradient(160deg, #E8EDF2, #F5F7F9); }
+
+.section--navy .cards--tiles .card:nth-child(1),
+.cta-band .cards--tiles .card:nth-child(1) { background: linear-gradient(160deg, var(--navy-soft), rgba(255, 255, 255, 0.04)); }
+.section--navy .cards--tiles .card:nth-child(2),
+.cta-band .cards--tiles .card:nth-child(2) { background: linear-gradient(160deg, rgba(122, 158, 190, 0.30), rgba(255, 255, 255, 0.04)); }
+.section--navy .cards--tiles .card:nth-child(3),
+.cta-band .cards--tiles .card:nth-child(3) { background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)); }
+/* The big tile titles sit at medium, like the section headlines they sit under
+   — at this size bold reads as a second, competing headline. The small card
+   titles elsewhere (Why Lisa, the process steps) stay bold: at 1.2rem the extra
+   weight is what separates them from the copy underneath. */
+.cards--tiles .card h3 {
+  font-size: clamp(1.35rem, 1.9vw, 1.8rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.9rem;
+}
+/* Copy sits under its title; only the action is pushed to the tile's floor.
+   (Pushing the paragraph down instead left a ~100px hole under the title.) */
+.cards--tiles .card p { color: var(--surface-body); }
+/* Only the tiles that end in a button need the guaranteed gap — adding it to
+   every tile pushed the button-less ones off centre by exactly this much. */
+.cards--tiles .card:has(.btn) p { margin-bottom: 1.4rem; }
+.cards--tiles .card .card-link { margin-top: auto; padding-top: 0.9rem; }
+/* Button CTAs sit on the same floor line. `align-self` keeps each at its own
+   width — a flex column would otherwise stretch them across the whole tile.
+   The paragraph's margin-bottom guarantees a gap even when the tile is full and
+   `margin-top: auto` has no slack left to give. */
+.cards--tiles .card .btn {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
-/* Green check marks — reassurance only */
+/* A tile with no bottom-anchored action has nothing holding its floor, so the
+   min-height's slack would all pile up under the last line. Centring shares it
+   evenly top and bottom. Browsers without :has() just top-align, as before. */
+.cards--tiles .card:not(:has(.card-link, .btn)) { justify-content: center; }
+
+/* Small icon tile on the "why me" cards. Green, per the brand rule: check marks
+   are reassurance marks, and reassurance is the only thing green is used for. */
 .check-icon {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   border-radius: 12px;
-  background: rgba(52, 112, 79, 0.12);
-  color: var(--green);
+  border: 1px solid var(--surface-mark-line);
+  background: var(--surface-mark-bg);
+  color: var(--surface-mark);
   display: grid;
   place-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.4rem;
 }
 
 /* ---------- Medicare section ---------- */
-.medicare-cta { margin-top: clamp(32px, 5vw, 44px); }
-.medicare-cta .btn { margin-top: 1.2rem; }
+/* Explicit margins rather than a grid gap: the microline is a caption bound to
+   the button above it, so the two need different spacing — a single gap value
+   can't do both without a negative margin to undo it. */
+.medicare-cta {
+  margin-top: clamp(36px, 4vw, 56px);
+  display: grid;
+  justify-items: start;
+  max-width: 62ch;
+}
+.medicare-cta p { color: var(--surface-body); }
+.medicare-cta .btn { margin-top: 1.6rem; }
+.medicare-cta .microline { color: var(--surface-label); }
 
 .video-placeholder {
-  margin-top: clamp(36px, 5vw, 52px);
-  border: 2px dashed var(--hairline);
+  margin-top: clamp(36px, 4.5vw, 64px);
   border-radius: var(--radius);
-  background: var(--mist);
+  background:
+    radial-gradient(60% 80% at 70% 20%, rgba(122, 158, 190, 0.35), transparent 65%),
+    linear-gradient(150deg, var(--navy-soft), var(--navy-deep));
   aspect-ratio: 16 / 7;
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 0.75rem;
+  gap: 0.9rem;
   text-align: center;
   padding: 1.5rem;
 }
 .video-placeholder .play-ring {
   width: 64px; height: 64px;
   border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
+  background: #fff;
+  color: var(--navy);
   display: grid;
   place-items: center;
 }
-.video-placeholder p { font-weight: 600; color: var(--navy); }
+.video-placeholder p {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-heading);
+}
 
-/* ---------- How it works ---------- */
+/* ---------- How it works ----------
+   A numbered row: big light numerals over hairline rules, like a process bar. */
 .steps {
   list-style: none;
   counter-reset: step;
@@ -586,132 +1193,350 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 0;
 }
 .steps li {
   counter-increment: step;
-  background: var(--mist);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--surface-line);
+  padding: clamp(1.4rem, 2.4vw, 2rem) 0;
 }
 .steps li::before {
-  content: counter(step);
-  display: grid;
-  place-items: center;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
+  content: "0" counter(step);
+  display: block;
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: var(--display-weight);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--surface-heading);
+  opacity: 0.28;
+  margin-bottom: clamp(1.2rem, 2.5vw, 2.4rem);
 }
-.steps h3 { margin-bottom: 0.5rem; }
+.steps h3 { margin-bottom: 0.6rem; }
+.steps p { color: var(--surface-body); font-size: 1.02rem; }
 
 /* ---------- Reviews ---------- */
+.review-card { display: flex; flex-direction: column; }
 .review-card .stars {
-  color: var(--green);
-  letter-spacing: 0.12em;
-  font-size: 1.05rem;
-  margin-bottom: 0.8rem;
+  letter-spacing: 0.14em;
+  font-size: 0.95rem;
+  color: var(--surface-mark);   /* reassurance mark */
+  margin-bottom: 1.2rem;
 }
-.review-card blockquote { font-size: 1.05rem; }
-.review-card footer { margin-top: 0.9rem; font-weight: 700; color: var(--navy); }
+.review-card blockquote {
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  /* Google reviews run to whatever length the reviewer wrote, so the quote is
+     clamped to stop one long review stretching its whole row. Visual only —
+     the full text stays in the DOM and .review-more opens it on Google. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 12;
+  line-clamp: 12;
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+.review-card footer {
+  margin-top: auto;
+  padding-top: 1.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+
+/* Body colour, not the green — green is reserved for reassurance marks. */
+.review-more {
+  align-self: start;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--surface-body);
+  text-underline-offset: 0.2em;
+}
+
+/* Author block: real names and photos from Google, so it drops the uppercase
+   label treatment the written cards use — a person's name should read as one. */
+.review-card .review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.95rem;
+}
+.review-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.review-byline { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.review-byline a { color: inherit; }
+.review-when {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.reviews-summary { margin-top: 0.75rem; color: var(--surface-body); }
 .reviews-actions {
-  margin-top: 2rem;
+  margin-top: 2.2rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  gap: 0.75rem;
 }
-.reviews-footnote { margin-top: 1.2rem; font-size: 0.95rem; }
+.reviews-footnote { margin-top: 1.4rem; font-size: 0.9rem; color: var(--surface-label); }
 
 /* ---------- FAQ ---------- */
-.faq-list { display: grid; gap: 0.9rem; max-width: 820px; }
-.faq-list details {
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-}
+.faq-list { display: grid; max-width: 900px; border-top: 1px solid var(--surface-line); }
+.faq-list details { border-bottom: 1px solid var(--surface-line); }
 .faq-list summary {
   list-style: none;
   cursor: pointer;
   position: relative;
-  padding: 1.1rem 3.2rem 1.1rem 1.3rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--navy);
+  padding: clamp(1.15rem, 2vw, 1.5rem) 3.2rem clamp(1.15rem, 2vw, 1.5rem) 0;
+  font-family: var(--font-display);
+  /* Same question treatment as the dental list and the interior .def-list:
+     mid weight (500), sized by scale not weight, tight tracking. Was 400. */
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--surface-heading);
   min-height: 44px;
-  border-radius: var(--radius-sm);
 }
 .faq-list summary::-webkit-details-marker { display: none; }
 .faq-list summary::after {
   content: "+";
   position: absolute;
-  right: 1.2rem;
+  right: 0.4rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.7rem;
-  font-weight: 400;
-  color: var(--steel);
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--surface-label);
   line-height: 1;
-  transition: transform 0.2s;
 }
 .faq-list details[open] summary::after { content: "–"; }
-.faq-list details p { padding: 0 1.3rem 1.2rem; }
+.faq-list details p { padding: 0 3.2rem 1.6rem 0; color: var(--surface-body); }
 
-/* ---------- CTA band + contact form ---------- */
-.cta-band { position: relative; overflow: hidden; }
-.cta-band::before {
+/* ---------- CTA band + contact form ----------
+   The closing panel mirrors the hero's warm field, so the page opens and shuts
+   on the same note. */
+.cta-band {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 82% 10%, rgba(122, 158, 190, 0.28), transparent 62%),
+    var(--grad-cta);
+}
+.cta-band::after {
   content: "";
   position: absolute;
-  width: 520px; height: 520px;
-  border-radius: 50%;
-  right: -200px; top: -220px;
-  background: radial-gradient(circle at center, rgba(122, 158, 190, 0.25), rgba(122, 158, 190, 0) 68%);
+  inset: 0;
   pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 .cta-band .container { position: relative; z-index: 1; }
 
 .cta-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
+  gap: clamp(2rem, 4vw, 3.5rem);
   align-items: start;
 }
-.cta-copy h2 { max-width: 18ch; }
-.cta-copy .btn { margin-top: 1.6rem; }
+/* Match the site's section headings exactly — same size, weight and tracking as
+   every other statement heading (the base h2), not the oversized display scale
+   this used before. */
+.cta-copy h2 {
+  max-width: 20ch;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+}
+/* The heading sets tight to nothing by default; give the copy room to breathe
+   under the oversized display type, and separate the two paragraphs.
+   text-wrap: pretty (the site default for body paragraphs) rather than the
+   .lead default of balance — balance is for SHORT blocks, and on these two
+   longer paragraphs it left uneven rags that read as mismatched widths. With
+   pretty they both fill the same measure, so their edges line up. The measure
+   is a touch narrower than the 52ch default so the column keeps clear air
+   between it and the form card on its right. */
+.cta-copy .lead {
+  margin-top: clamp(1.1rem, 2.4vw, 1.75rem);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.cta-copy .lead + .lead { margin-top: clamp(0.75rem, 1.4vw, 1rem); }
+.cta-copy .btn { margin-top: 2rem; }
+
+/* ---------- Dental & Vision homepage section ----------
+   Two columns on desktop: the pitch + actions on the left, the eligibility
+   list on the right, so the section reads wide rather than tall. The carrier
+   strip is a full-width band below both, with clear separation. */
+.dental-split, .faq-split { display: grid; grid-template-columns: 1fr; gap: clamp(1.75rem, 4vw, 3rem); align-items: start; }
+.dental-lede, .faq-lede { align-self: start; }
+/* Restore the heading cap the section-intro wrapper used to give it. */
+.dental-lede h2, .faq-lede h2 { max-width: 20ch; }
+.dental-lede .reviews-actions, .faq-lede .actions { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+@media (min-width: 900px) {
+  .dental-split, .faq-split { grid-template-columns: 1.05fr 0.95fr; gap: clamp(2.5rem, 5vw, 4.5rem); }
+  /* On its own column the list/accordion aligns to the top of the copy. */
+  .dental-aside .eligibility { margin-top: 0; }
+}
+/* Clear the carrier band off the columns above it — this was flush before. */
+.dental-carriers {
+  margin-top: clamp(2.75rem, 5vw, 4rem);
+  padding-top: clamp(2.25rem, 4vw, 3rem);
+  border-top: 1px solid var(--surface-line);
+}
+
+/* ---------- Dental eligibility disclosure list (homepage) ----------
+   Same typographic system as the FAQ and the interior-page .def-list: hairline
+   rows (no card chrome), question text at the site's mid weight (500) sized by
+   scale not weight, and a light +/- marker. The last row is an anchor, not a
+   disclosure — it keeps an underline + arrow so the two affordances differ. */
+.eligibility { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+.eligibility-heading {
+  margin-bottom: clamp(1rem, 1.8vw, 1.35rem);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
+  letter-spacing: -0.02em;
+  color: var(--surface-heading);
+}
+.eligibility-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  border-top: 1px solid var(--surface-line);
+}
+.eligibility-item { border-bottom: 1px solid var(--surface-line); }
+
+/* summary keeps display:list-item — giving it display:flex drops its native
+   button semantics in some engines. The flex row is a span inside it. */
+.eligibility-item summary {
+  display: list-item;
+  list-style: none;
+  cursor: pointer;
+}
+.eligibility-item summary::-webkit-details-marker { display: none; }
+.eligibility-item summary::marker { content: ''; }
+
+.eligibility-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  padding: clamp(1.15rem, 2vw, 1.5rem) 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--surface-heading);
+}
+
+/* The +/- marker, matching the FAQ list. A flex child at the row's end. */
+.eligibility-row::after {
+  content: "+";
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--surface-label);
+}
+.eligibility-item[open] .eligibility-row::after { content: "\2013"; }
+
+.eligibility-item summary:hover .eligibility-row { color: var(--surface-label); }
+
+/* Focus ring hugs the row. */
+.eligibility-item summary:focus-visible { outline: none; }
+.eligibility-item summary:focus-visible .eligibility-row {
+  outline: 3px solid var(--surface-heading);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+
+.eligibility-item > p {
+  margin: 0;
+  padding: 0 2rem 1.5rem 0;
+  color: var(--surface-body);
+  max-width: 62ch;
+}
+
+/* A pending action is disabled, not hidden and not a dead link: it stays
+   readable and announces itself as unavailable, with the chip beside it saying
+   why and what to do instead. */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 .contact-card {
   background: var(--paper);
   border-radius: var(--radius);
-  padding: clamp(1.5rem, 3vw, 2.25rem);
-  box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
-  color: var(--ink);
+  padding: clamp(1.5rem, 2.6vw, 2.25rem);
+  box-shadow: var(--shadow-float);
+  color: var(--surface-body);
 }
-.contact-card h3 { margin-bottom: 1.2rem; }
-.contact-form { display: grid; gap: 1.1rem; }
+.contact-card h3 {
+  margin-bottom: 1.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.contact-form { display: grid; gap: 1rem; }
 .contact-form label {
   display: block;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
   margin-bottom: 0.4rem;
 }
 .contact-form input,
 .contact-form select {
   width: 100%;
-  min-height: 52px;
+  min-height: 54px;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  color: var(--ink);
-  background: var(--paper);
-  border: 2px solid var(--hairline);
-  border-radius: 10px;
-  padding: 0.55rem 0.85rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;   /* clears the 14px corner radius */
 }
-.contact-form .btn { justify-self: start; }
+.contact-form .btn { justify-self: start; margin-top: 0.5rem; }
+
+/* Both dropdowns draw their own chevron. The native control paints its arrow
+   hard against the right border and ignores padding-right, so the label sat
+   16px inside the field while the arrow hugged the edge. This puts the chevron
+   on the same 16px inset as the text, and the extra padding-right keeps a long
+   option from running underneath it. Declared after the fields' `background`
+   shorthand so it isn't reset by it. */
+.quickstart select,
+.contact-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.9rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.6 6 6.4l5-4.8' fill='none' stroke='%2320344F' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+}
 
 .form-success {
   display: none;
@@ -721,132 +1546,950 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 }
 .form-success.is-visible { display: flex; }
 .form-success .check-icon { margin-bottom: 0; flex: 0 0 auto; }
-.form-success p { font-weight: 600; }
+.form-success p { color: var(--surface-body); }
 
-/* ---------- Footer ---------- */
-.site-footer {
-  background: var(--navy);
-  color: var(--on-navy-body);
-  padding-block: clamp(56px, 7vw, 80px) 2rem;
-  font-size: 1rem;
+/* ---------- Unified "Get in Touch" card (GetInTouch.astro) ----------
+   Two steps in one footprint: the lead form, then the cal.com booking view,
+   then a confirmation. One step visible at a time; the hidden ones use the
+   [hidden] attribute so they leave the accessibility tree entirely. Lives
+   inside .contact-card, which supplies the paper surface and shadow. */
+.get-in-touch { --form-error: #B3261E; }
+.git-step { color: var(--surface-body); }
+.git-step[hidden] { display: none; }
+.git-step > h3 {
+  margin-bottom: 1.2rem;
+  font-size: 1.15rem;
+  color: var(--surface-heading);
+  outline: none; /* it's a focus target on step change; ring would be noise */
 }
-.site-footer a { color: #fff; }
-.site-footer a:hover { color: var(--on-navy-soft); }
+
+.git-form { display: grid; gap: 1rem; }
+.git-field { display: grid; }
+.git-field label,
+.git-consent label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.4rem;
+}
+.git-field input,
+.git-field textarea {
+  width: 100%;
+  min-height: 54px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+}
+.git-field textarea { min-height: 7rem; resize: vertical; line-height: 1.5; }
+.git-field input:focus-visible,
+.git-field textarea:focus-visible,
+.git-consent input:focus-visible {
+  outline: 3px solid var(--surface-heading);
+  outline-offset: 1px;
+  border-color: var(--surface-heading);
+}
+.git-field input[aria-invalid='true'],
+.git-field textarea[aria-invalid='true'] { border-color: var(--form-error); }
+
+.git-error {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--form-error);
+}
+
+/* Honeypot: gone for humans AND assistive tech. display:none, never opacity. */
+.git-honeypot { display: none; }
+
+/* Consent: checkbox variant, a generous target, easy to downgrade to a plain
+   statement by dropping the input. */
+.git-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 0.7rem;
+  align-items: start;
+}
+.git-consent input {
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin-top: 0.1rem;
+  align-self: start;
+}
+.git-consent label {
+  grid-column: 2;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--surface-body);
+  line-height: 1.45;
+}
+.git-consent .git-error { grid-column: 2; }
+
+.git-submit-row { display: grid; gap: 0.75rem; justify-items: start; }
+.git-form-error {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--form-error);
+}
+
+/* The cal.com mount. min-heights come from leadForm.ts via custom properties;
+   overflow:auto replaces the vendor's forced scrollbars. */
+.git-cal {
+  min-height: var(--git-cal-min, 640px);
+  overflow: auto;
+}
+/* Shown until the cal iframe paints, so the tall mount is never a blank void. */
+.git-cal-loading {
+  margin: 0;
+  padding: 1.5rem 0;
+  color: var(--surface-label);
+  font-size: 0.95rem;
+}
+.git-book-intro { margin: 0 0 1.25rem; color: var(--surface-body); }
+.git-cal-fallback { color: var(--surface-body); }
+.git-dismiss { margin-top: 1.25rem; }
+
+/* Confirmation step. */
+.git-step--done { display: grid; justify-items: start; gap: 0.6rem; }
+.git-step--done[hidden] { display: none; }
+.git-step--done .check-icon { color: var(--surface-mark); }
+
+/* Cross-fade on step change; stripped under reduced motion. */
+.git-step.is-entering { animation: git-fade 0.25s ease both; }
+@keyframes git-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 640px) {
+  .git-cal { min-height: var(--git-cal-min-mobile, 520px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .git-step.is-entering { animation: none; }
+}
+
+/* ---------- Footer ----------
+   Light like everything else, closing on the oversized wordmark clipped by the
+   panel's bottom edge. */
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  background: var(--grad-footer);
+  border-radius: var(--radius-panel);
+  margin-top: var(--panel-gap);
+  /* Even top and bottom now that the oversized closing wordmark is gone — it
+     used to fill the bottom, so this was `... 0`. */
+  padding-block: clamp(56px, 6vw, 88px);
+  font-size: 1rem;
+  color: var(--surface-body);
+}
+.site-footer a { color: var(--surface-heading); }
+.site-footer a:hover { color: var(--surface-label); }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
 }
-.footer-brand .wordmark { color: #fff; font-size: 1.35rem; padding: 0; }
-.footer-brand .mission { margin-top: 0.8rem; max-width: 34ch; }
-.footer-contact { margin-top: 1.2rem; display: grid; gap: 0.35rem; }
-.footer-contact a { text-decoration: none; font-weight: 600; }
+.footer-brand .wordmark {
+  color: var(--surface-heading);
+  font-size: 1.15rem;
+  font-weight: 700;   /* heavier than the header's, it anchors the footer */
+  max-width: none;
+  padding: 0;
+}
+.footer-brand .mission { margin-top: 1rem; max-width: 32ch; color: var(--surface-body); }
+/* Footer links carry their tap target in padding, not in row gaps: at 26–37px
+   tall they were under the 44px minimum this audience needs. */
+.footer-contact { margin-top: 1.1rem; display: grid; gap: 0; justify-items: start; }
+.footer-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  padding-block: 0.6rem;
+}
 .footer-contact a:hover { text-decoration: underline; }
+.footer-contact span { color: var(--surface-label); padding-block: 0.6rem; }
+.footer-contact .microline { margin-top: 0.5rem; }
 
 .footer-col h3 {
-  color: #fff;
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  color: var(--surface-label);
+  margin-bottom: 1.2rem;
 }
-.footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; }
 .footer-col a {
   display: inline-block;
-  padding-block: 0.35rem;
+  padding-block: 0.6rem;   /* carries the 44px tap target */
   text-decoration: none;
+  color: var(--surface-heading);
 }
 .footer-col a:hover { text-decoration: underline; }
 
-.footer-social { display: flex; gap: 0.75rem; margin-top: 1.4rem; }
+.footer-social { display: flex; gap: 0.6rem; margin-top: 1.6rem; }
 .footer-social a {
   display: grid;
   place-items: center;
   width: 44px; height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--surface-line);
 }
-.footer-social a:hover { background: rgba(255, 255, 255, 0.12); }
+.footer-social a:hover { background: var(--surface-hover); }
 
-.footer-review-row { margin-top: 2.5rem; font-weight: 600; }
-.footer-review-row .mark { color: var(--green-on-navy); }
+.footer-review-row { margin-top: 2.5rem; font-size: 0.95rem; }
+/* Inline links inside a sentence: block padding doesn't move the line but does
+   enlarge the hit area, which is all these can take without breaking the flow. */
+.footer-review-row a { padding: 0.75rem 0.15rem; }
 
 .footer-disclaimers {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--surface-line);
   display: grid;
   gap: 0.9rem;
 }
 .footer-disclaimers p {
-  font-size: 0.875rem; /* 14px — small but readable, AA on navy */
-  color: var(--on-navy-soft);
+  font-size: 0.875rem; /* 14px — small but readable */
+  color: var(--surface-label);
   max-width: 90ch;
 }
 
 .footer-legal {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--surface-label);
+}
+.footer-legal a { color: var(--surface-label); padding-block: 0.7rem; }
+
+/* ==========================================================================
+   INTERIOR PAGES
+   Everything below is shared by the pages behind the homepage. It is written
+   against the same surface variables and the same shapes — nothing here is a
+   new visual language, it is the homepage's parts used in more places.
+   ========================================================================== */
+
+/* ---------- Page hero ----------
+   The homepage hero sized to its content. Same field, same grain; no min-height,
+   because an interior page has no controls to pin to the fold and a full screen
+   of hero would only push the answer down. */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-panel);
+  background:
+    radial-gradient(80% 70% at 80% 6%, rgba(122, 158, 190, 0.30), transparent 62%),
+    radial-gradient(70% 60% at 6% 94%, rgba(255, 255, 255, 0.07), transparent 64%),
+    var(--grad-hero);
+  /* Clears the fixed header, which is measured from the top of the WINDOW while
+     this padding starts a gutter down — hence the subtraction. The trailing
+     clamp is the gap BELOW the header before the first content (the back link).
+     Kept modest so the back link sits a comfortable distance under the nav
+     rather than floating far below it; the back link then carries the space
+     down to the eyebrow with its own margin. */
+  padding-top: calc(
+    var(--header-actual, var(--header-h)) - var(--gutter) + clamp(0.8rem, 1.8vw, 1.25rem)
+  );
+  padding-bottom: clamp(2.75rem, 6vw, 5rem);
+}
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+.page-hero .container { position: relative; z-index: 1; }
+.page-hero h1 { max-width: 16ch; }
+
+/* Back control. Sits above the eyebrow on every interior page, in the same
+   small-label register as the eyebrow so the hero opens on one voice. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  /* Optical alignment: the chevron glyph sits ~5px inside its 16px icon box, so
+     without this the arrow (and the label after it) read as indented from the
+     logo and the eyebrow's dot, which both sit on the container edge. Pulling
+     the whole control back by that inset lands the arrow on the logo/dot edge
+     and the label on the eyebrow's text. */
+  margin-left: -5px;
+  /* Proper separation from the section text below it, balanced against the gap
+     to the nav above (set by the hero's padding-top). */
+  margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--surface-label);
+  text-decoration: none;
+}
+.back-link svg { flex: 0 0 auto; transition: transform 0.15s ease; }
+.back-link:hover { color: var(--surface-heading); text-decoration: underline; }
+.back-link:hover svg { transform: translateX(-2px); }
+@media (prefers-reduced-motion: reduce) {
+  .back-link svg { transition: none; }
+}
+/* Sits between the h1 and the intro on pages whose opening copy is a titled
+   statement. Deliberately quieter than the h1 it follows. */
+.page-hero-subhead {
+  margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  color: var(--surface-heading);
+}
+.page-hero-subhead + .page-hero-intro { margin-top: clamp(0.6rem, 1.2vw, 0.9rem); }
+.page-hero-intro {
+  margin-top: clamp(1.25rem, 2.5vw, 1.9rem);
+  max-width: 54ch;
+  font-size: 1.15rem;
+  color: var(--surface-body);
+  text-wrap: pretty;
+}
+.page-hero .hero-actions { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+/* A row of actions. Used under a hero and at the foot of a section. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.actions--stack { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+/* ---------- Prose ----------
+   Long-form copy inside a panel. The body size is inherited (18px floor); this
+   only handles rhythm and the small type details the homepage never needed. */
+.prose { max-width: 68ch; }
+.prose > * + * { margin-top: 1.15rem; }
+.prose h3 { margin-top: 2.25rem; }
+.prose ul, .prose ol { padding-left: 1.3rem; display: grid; gap: 0.6rem; }
+.prose li { color: var(--surface-body); }
+.prose a { color: var(--surface-heading); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.prose strong { font-weight: 700; color: var(--surface-heading); }
+
+/* Two-column body: copy left, a card or media panel right. */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+/* ---------- Definition rows ----------
+   The numbered stepper's quieter sibling: a term and its explanation, ruled off
+   from each other. Used for Medicare's parts and the plan types. */
+.def-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--surface-line);
+}
+.def-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2.5rem;
+  padding: clamp(1.4rem, 2.4vw, 1.9rem) 0;
+  border-bottom: 1px solid var(--surface-line);
+}
+.def-row dt {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--surface-heading);
+}
+.def-row dd { margin: 0; color: var(--surface-body); }
+.def-row .def-tag {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.35rem;
+}
+
+/* ---------- Media slot ----------
+   A gradient panel standing in for a photo that doesn't exist yet. It is
+   deliberately a designed object rather than a grey box: these ship to a real
+   preview, and a grey box reads as broken. The caption says what belongs here. */
+.media-slot {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(60% 80% at 70% 20%, rgba(122, 158, 190, 0.35), transparent 65%),
+    linear-gradient(150deg, var(--navy-soft), var(--navy-deep));
+  aspect-ratio: var(--slot-ratio, 4 / 3);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 1.5rem;
+}
+.media-slot p {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  max-width: 26ch;
+}
+.media-slot .slot-mark {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--surface-line);
+  display: grid;
+  place-items: center;
+  color: var(--surface-heading);
+  opacity: 0.85;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+}
+
+/* ---------- Compare: Advantage vs Supplement ----------
+   Two columns that a single control can collapse to one, so the same component
+   works as a side-by-side on a desktop and as "show me one at a time" on a
+   phone — or for anyone who finds two columns of text hard to track. */
+.compare { margin-top: clamp(1.75rem, 3vw, 2.5rem); }
+
+.compare-switch {
+  display: inline-flex;
+  padding: 5px;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+}
+.compare-switch button {
+  min-height: 46px;
+  padding: 0.5rem 1.15rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--surface-body);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+.compare-switch button:hover { background: var(--surface-hover); }
+/* The selected tab is a filled capsule in the surface's own heading colour, not
+   gold: gold is the action, and choosing a view is not one. */
+.compare-switch button[aria-selected="true"] {
+  background: var(--surface-heading);
+  color: var(--surface-invert);
+}
+
+.compare-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+}
+.compare-col {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 2.4vw, 2.1rem);
+  display: flex;
+  flex-direction: column;
+}
+.compare-col h3 {
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.compare-col dl { display: grid; gap: 0; margin: 0; }
+.compare-col dt {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  padding-top: 1rem;
+}
+.compare-col dd {
+  margin: 0.3rem 0 0;
+  color: var(--surface-body);
+  font-size: 1.02rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--surface-line);
+}
+.compare-col dl > dd:last-of-type { border-bottom: 0; padding-bottom: 0; }
+.compare-col .btn { margin-top: auto; align-self: flex-start; }
+.compare-col .actions { margin-top: auto; padding-top: 1.6rem; }
+
+/* Single-view mode, set by the switch. Without JS both columns simply show,
+   which is the correct fallback for a comparison. */
+.compare[data-view="advantage"] .compare-col[data-plan="supplement"],
+.compare[data-view="supplement"] .compare-col[data-plan="advantage"] {
+  display: none;
+}
+
+/* ---------- Comparison table ----------
+   The lettered Medigap plans. A table is the honest structure for this; the
+   work is making it readable on a phone, which it does by scrolling inside its
+   own box with the first column pinned. */
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+  -webkit-overflow-scrolling: touch;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  min-width: 720px;   /* below this the cells stop being readable — scroll instead */
+}
+.compare-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  border-bottom: 1px solid var(--surface-line);
+}
+.compare-table th,
+.compare-table td {
+  padding: 0.85rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--surface-line);
+  color: var(--surface-body);
+}
+.compare-table thead th {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--surface-heading);
+  white-space: nowrap;
+}
+/* The benefit name column: pinned, left-aligned, and the widest thing here. */
+.compare-table th[scope="row"],
+.compare-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  min-width: 240px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--surface-heading);
+  background: var(--surface-card);
+  border-right: 1px solid var(--surface-line);
+  white-space: normal;
+}
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td { border-bottom: 0; }
+
+/* ---------- Dental & vision carrier comparison ----------
+   Two renderings of one dataset: the table below the phone breakpoint is
+   display:none and the cards take over, so only one of the two is ever in the
+   accessibility tree. Four columns of prose cannot be read on a 375px screen,
+   and a side-scrolling table is the wrong answer for this audience. */
+.carrier-cards { display: grid; gap: clamp(0.75rem, 1.2vw, 1rem); list-style: none; padding: 0; }
+.carrier-table-wrap { display: none; }
+
+.carrier-card {
+  padding: clamp(1.25rem, 4vw, 1.6rem);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+}
+.carrier-card h3 { margin-bottom: 0.9rem; }
+.carrier-card p { color: var(--surface-body); font-size: 0.95rem; }
+.carrier-card-label {
+  margin-top: 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.carrier-card .btn { margin-top: 1.3rem; }
+
+@media (min-width: 768px) {
+  .carrier-cards { display: none; }
+  .carrier-table-wrap { display: block; }
+}
+
+/* This table is prose, not a grid of ticks: cells read left-aligned and the
+   carrier column does not need to be as wide as a benefit name. */
+.carrier-table th,
+.carrier-table td { text-align: left; vertical-align: top; }
+.carrier-table th[scope="row"],
+.carrier-table thead th:first-child { min-width: 0; width: 12ch; }
+.carrier-table thead th { white-space: normal; }
+.carrier-table .btn {
+  min-height: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Cell values. Green is the reassurance mark, exactly as everywhere else; the
+   other states are neutral type, never red — nothing here is a warning. */
+.cell-yes { color: var(--surface-mark); font-weight: 700; }
+.cell-no { color: var(--surface-label); }
+.cell-part { font-size: 0.9rem; color: var(--surface-body); }
+/* A coverage cell we have not confirmed against the official chart. Marked, not
+   guessed — an invented cell in a Medicare benefits table is a compliance
+   problem, so it says so on its face. */
+.cell-todo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--surface-label);
+  border: 1px dashed var(--surface-line);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  display: inline-block;
+}
+
+.table-key {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--surface-label);
+}
+.source-note {
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--surface-label);
+  max-width: 80ch;
+}
+
+/* An empty frame waiting on a real asset — the official PDF chart, a video.
+   Dashed, so it never reads as a finished component. */
+.embed-slot {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px dashed var(--surface-line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+.embed-slot h3 { font-size: 1.05rem; }
+.embed-slot p { color: var(--surface-body); font-size: 1rem; }
+
+/* ---------- Carrier strip ----------
+   A rolling row of carrier chips. Duplicated in the markup and translated by
+   exactly half its width, so the loop is seamless. It pauses on hover and stops
+   dead under reduced motion, where it becomes a plain wrapped row. */
+.carrier-strip {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  overflow: hidden;
+  /* Fades both ends so chips enter and leave rather than appearing at a hard
+     edge. Masking beats a gradient overlay here — the panel behind it changes
+     colour from section to section. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.carrier-track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: carrier-roll 38s linear infinite;
+}
+.carrier-strip:hover .carrier-track,
+.carrier-strip:focus-within .carrier-track { animation-play-state: paused; }
+@keyframes carrier-roll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.carrier-chip {
+  display: inline-flex;
   align-items: center;
-  font-size: 0.875rem;
-  color: var(--on-navy-soft);
+  gap: 0.6rem;
+  flex: 0 0 auto;
+  min-height: 64px;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+  color: var(--surface-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
-.footer-legal a { color: var(--on-navy-soft); }
+.carrier-chip .chip-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.carrier-lane + .carrier-lane { margin-top: 0.75rem; }
+.carrier-lane-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.7rem;
+}
+/* The second lane rolls the other way, so the two don't read as one block. */
+.carrier-lane--reverse .carrier-track { animation-direction: reverse; }
 
-/* ---------- Breakpoints ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .carrier-strip { -webkit-mask-image: none; mask-image: none; }
+  .carrier-track {
+    animation: none;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  /* The duplicate half exists only to make the loop seamless; with the loop off
+     it is just the same list printed twice. */
+  .carrier-track [data-clone] { display: none; }
+}
 
-/* Phones stack the quick-start bar, so the hero's vertical rhythm needs to
-   tighten further to keep everything above the fold. The smaller offset
-   accounts for the wordmark wrapping to two lines at this width.
-   Declared here, after the base .hero rule, so it actually wins on source order. */
+/* ---------- Stat / fact chips ----------
+   Small standing facts. Never a number we haven't got — these carry statements. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: clamp(1.5rem, 2.5vw, 2rem);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-line);
+  background: var(--surface-card);
+  color: var(--surface-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.chip .mark { color: var(--surface-mark); flex: 0 0 auto; }
+
+/* ---------- Callout ----------
+   A single paragraph that needs to sit apart: the Part D penalty, a compliance
+   note, the "this is a template" banner on the testimonials. */
+.callout {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  border-left: 3px solid var(--surface-mark-line);
+  background: var(--surface-mark-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: clamp(1.15rem, 2vw, 1.5rem) clamp(1.25rem, 2.2vw, 1.75rem);
+  display: grid;
+  gap: 0.5rem;
+}
+.callout h3 { font-size: 1.05rem; }
+.callout p { color: var(--surface-body); font-size: 1.02rem; }
+/* The neutral variant, for "this is placeholder content" notices, which are
+   information rather than reassurance — so no green. */
+.callout--note {
+  border-left-color: var(--surface-line);
+  background: var(--surface-card);
+}
+
+/* ---------- Post list (Education hub) ---------- */
+.post-list { display: grid; gap: 0; border-top: 1px solid var(--surface-line); }
+.post-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2.5rem;
+  align-items: baseline;
+  padding: clamp(1.5rem, 2.6vw, 2.1rem) 0;
+  border-bottom: 1px solid var(--surface-line);
+}
+.post-row h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.post-row h3 a { text-decoration: none; }
+.post-row h3 a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.post-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+}
+.post-row p { color: var(--surface-body); font-size: 1.02rem; }
+
+/* Post body — the article itself. */
+.post-body { max-width: 68ch; }
+.post-body > * + * { margin-top: 1.2rem; }
+.post-body h2 {
+  margin-top: 2.5rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+}
+.post-body h3 { margin-top: 2rem; }
+.post-body ul, .post-body ol { padding-left: 1.3rem; display: grid; gap: 0.6rem; }
+
+/* ---------- Newsletter ---------- */
+.subscribe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  max-width: 560px;
+}
+.subscribe .field { flex: 1 1 240px; }
+.subscribe label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--surface-label);
+  margin-bottom: 0.45rem;
+}
+.subscribe input {
+  width: 100%;
+  min-height: 54px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--surface-body);
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+}
+
+/* ---------- Breadcrumbs ---------- */
+.crumbs {
+  font-size: 0.9rem;
+  color: var(--surface-label);
+  margin-bottom: 1.25rem;
+}
+.crumbs a { color: var(--surface-label); text-underline-offset: 4px; }
+.crumbs a:hover { color: var(--surface-heading); }
+
+/* ==========================================================================
+   Breakpoints
+   ========================================================================== */
+
+/* Short viewports (landscape phones, small laptop windows): the hero
+   compresses and the rotating chip steps aside — the Reviews section still
+   carries that proof further down the page. */
+@media (max-height: 640px) {
+  .hero { --hero-gap: clamp(0.4rem, 2vh, 1.2rem); }
+  .review-chip { display: none; }
+  .hero .display-tail { font-size: 1.05rem; }
+}
+/* Short AND wide — a landscape phone or a short laptop window. Stacking the
+   sub-paragraph above the quick-start card is what makes the hero tallest here,
+   so once there's horizontal room the floor goes side by side instead. That
+   alone pulls the whole hero back inside a 375px-tall landscape viewport, so
+   nothing is cropped. (The ≥900px rule already does this; this covers the
+   680–900px landscape band the fold problem actually lives in.) */
+@media (max-height: 640px) and (min-width: 680px) {
+  .hero-floor {
+    grid-template-columns: 1fr minmax(280px, 360px);
+    align-items: end;
+  }
+}
+@media (max-width: 560px) and (max-height: 760px) {
+  .review-chip { display: none; }
+}
+
 @media (max-width: 560px) {
-  .hero {
-    --hero-gap: clamp(0.5rem, 3vh, 2.5rem);
-    --hero-gap-offset: 15px;
-  }
-}
+  :root { --gutter: 8px; --radius-panel: 22px; }
+  .hero .display-xl { letter-spacing: -0.035em; }
 
-/* Short phones (iPhone SE and similar): even fully compressed, the headline,
-   subhead, review chip and stacked quick-start bar can't all clear the fold.
-   The rotating review chip is the only piece here that isn't essential to the
-   primary action, so it steps aside — the full Reviews section still carries
-   that proof further down the page. */
-@media (max-width: 560px) and (max-height: 720px) {
-  .review-chip { display: none; }
-  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
-}
-
-/* Very short viewports at any width — chiefly a phone held in landscape.
-   520px is well below any real laptop window, so this never fires on desktop.
-   Everything tightens and the review chip steps aside, as above. */
-@media (max-height: 520px) {
-  .hero {
-    --hero-gap: clamp(0.35rem, 2vh, 1.5rem);
-    --hero-gap-offset: 8px;
-    padding-bottom: 0.75rem;
-  }
-  .review-chip { display: none; }
-  .hero-sub { font-size: 1.05rem; }
-  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
+  /* The hamburger bought this back a lot of room — the header is one ~76px row
+     on a phone now, not the ~200px of wrapped nav rows it used to be. The gap
+     stays modest anyway: the headline still takes two lines here, and the
+     quick-start bar has to clear the fold with the bottom gutter under it. */
+  .hero { --hero-gap: clamp(0.75rem, 2.2vh, 1.6rem); }
+  .review-chip { margin-top: 0.85rem; }
+  .review-chip blockquote { font-size: 0.86rem; padding: 0.7rem 1.05rem; }
+  .hero-sub { font-size: 1rem; }
 }
 
 @media (min-width: 640px) {
   .trust-band ul { grid-template-columns: repeat(2, 1fr); }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: repeat(2, 1fr); }
+  /* A connected row has five children, so it keeps stacking here rather than
+     splitting two-up and stranding a connector at the end of a row. */
+  .cards--3.cards--connected { grid-template-columns: 1fr; }
+  .media-grid--2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  /* Bottom inset = the tab's own padding, top and bottom of it combined.
+     Mirroring the whole 77px band the tab occupies was the literal match but
+     read far heavier, because that band is filled by the tab while the bottom
+     one is empty. This is the tab's breathing room, repeated. */
+  .hero { padding-bottom: calc(var(--header-pad) * 2); }
+
+  .hero-floor { grid-template-columns: 1fr auto; }
+  .steps { grid-template-columns: repeat(3, 1fr); column-gap: clamp(1rem, 2vw, 2.5rem); }
+  /* Section heads go two-up: heading left, lead paragraph right. Only when
+     there IS a lead — otherwise the heading would be squeezed into the left
+     column with an empty column beside it. */
+  .section-intro:has(.lead) {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 2.5rem;
+    align-items: end;
+  }
+  .section-intro { max-width: none; }
+  .section-intro h2 { max-width: 18ch; }
+  .lead { margin-top: 0; }
+
+  /* Term and explanation go side by side once there's room for both. */
+  .def-row { grid-template-columns: 15rem 1fr; align-items: baseline; }
+  .post-row { grid-template-columns: 1fr 20rem; }
+  .split { grid-template-columns: 1.15fr 1fr; }
+  .split--media-first { grid-template-columns: 1fr 1.15fr; }
+  /* Two columns is the point of a comparison — show both unless the visitor
+     has actively picked one view. */
+  .compare-cols { grid-template-columns: repeat(2, 1fr); }
+  .media-grid--3 { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (min-width: 1024px) {
   .cards--3 { grid-template-columns: repeat(3, 1fr); }
+  .cards--3.cards--connected { grid-template-columns: 1fr auto 1fr auto 1fr; }
   .cards--4 { grid-template-columns: repeat(4, 1fr); }
-  .steps { grid-template-columns: repeat(3, 1fr); }
   .trust-band ul { grid-template-columns: repeat(4, auto); justify-content: space-between; }
-  .cta-grid { grid-template-columns: 1.1fr 1fr; }
-  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+  .cta-grid { grid-template-columns: 1.15fr 1fr; }
+  .footer-grid { grid-template-columns: 1.6fr 1fr 1fr; }
 }
 
 /* ---------- Reduced motion: nothing moves ---------- */

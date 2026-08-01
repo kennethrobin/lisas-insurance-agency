@@ -1,0 +1,55 @@
+---
+/**
+ * The dental eligibility list — the four "is this right for me?" prompts under
+ * the section statement.
+ *
+ * Native <details>/<summary>, deliberately. The disclosure state, keyboard
+ * handling and the expanded/collapsed announcement all come from the browser,
+ * so the items work with JavaScript disabled and there is no script here. Each
+ * <details> is independent, so several can be open at once — not an accordion.
+ *
+ * The section's own heading and the "Compare dental plans" button live in
+ * DentalVision.astro; there's deliberately no sub-heading or compare link in
+ * here, since both would duplicate what sits right beside this list.
+ */
+const items = [
+  {
+    label: 'I just lost coverage',
+    copy: 'If you recently left a job or a plan ended, several of these plans waive their waiting periods when you enroll soon after — usually within 30 to 60 days.',
+  },
+  {
+    label: 'I have a procedure coming up',
+    copy: 'If you know dental work is ahead, it’s worth checking which plans cover major services and how soon that coverage begins.',
+  },
+  {
+    label: 'I want my routine care covered',
+    copy: 'Cleanings, exams, and eye exams are covered from day one on most of these plans, often at little or no out-of-pocket cost.',
+  },
+  {
+    label: 'I need vision coverage',
+    copy: 'Vision can be added onto a dental plan or purchased on its own, depending on the carrier.',
+  },
+];
+---
+
+<div class="eligibility">
+  <ul class="eligibility-list">
+    {items.map((item) => (
+      <li>
+        <details class="eligibility-item">
+          {/* The flex row is a span INSIDE the summary, not the summary
+              itself: giving <summary> display:flex drops its native button
+              semantics in some engines, and the whole point of using
+              <details> is to keep them. The +/- marker is a CSS ::after on the
+              row, the same treatment the FAQ list uses. */}
+          <summary>
+            <span class="eligibility-row">
+              <span class="eligibility-label">{item.label}</span>
+            </span>
+          </summary>
+          <p>{item.copy}</p>
+        </details>
+      </li>
+    ))}
+  </ul>
+</div>

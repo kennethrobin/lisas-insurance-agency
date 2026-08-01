@@ -1,0 +1,330 @@
+---
+/**
+ * Health Insurance — the under-65 path.
+ *
+ * A different audience from the rest of the site: working-age individuals and
+ * families buying on the Marketplace, plus the person bridging a short gap
+ * before Medicare starts. Nothing here names a premium, a subsidy amount, or a
+ * carrier's network size — those are personal to the applicant and change every
+ * plan year.
+ */
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+import { site } from '../data/site';
+import { links, isPending, externalAttrs } from '../data/links';
+
+const title = 'Health Insurance for Individuals & Families | Lisa’s Insurance Agency';
+const description =
+  'Marketplace health insurance for people under 65 — plan types explained, enrollment periods, and short-term coverage to bridge a gap. Free help from a licensed agent.';
+
+/** The ACA link isn't live yet, so the button becomes the call path instead. */
+const acaPending = isPending(links.healthSherpaAca);
+
+const planTypes = [
+  {
+    tag: 'Most flexibility',
+    name: 'PPO — Preferred Provider Organization',
+    copy: 'You can see providers inside or outside the plan’s network, and you don’t need a referral to see a specialist. Care outside the network is still covered, though it costs you more. Usually the highest premium of the four.',
+  },
+  {
+    tag: 'A middle path',
+    name: 'POS — Point of Service',
+    copy: 'A blend: you pick a primary care doctor and generally need a referral to see a specialist, but the plan does cover some out-of-network care. Often priced between an HMO and a PPO.',
+  },
+  {
+    tag: 'Lower premium',
+    name: 'HMO — Health Maintenance Organization',
+    copy: 'Care stays inside the network, and you go through a primary care doctor for referrals. Outside the network, only emergencies are covered. The trade for that is usually a lower premium.',
+  },
+  {
+    tag: 'Lower premium',
+    name: 'EPO — Exclusive Provider Organization',
+    copy: 'Network-only like an HMO, but generally without the referral step. Outside the network, again, emergencies only.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What is a Special Enrollment Period?',
+    a: 'It’s a window outside Open Enrollment when you’re allowed to buy or change a Marketplace plan, opened by a specific life event. If you qualify, you generally have 60 days from the event to enroll — and in some cases a window beforehand as well.',
+  },
+  {
+    q: 'What kinds of events open one?',
+    a: 'Losing health coverage you already had — including through a job, a divorce, or aging off a parent’s plan. Moving to a new area with different plans available. Getting married, having a baby, or adopting. Changes in income or household that affect your eligibility. Certain other situations, including gaining citizenship or leaving incarceration.',
+  },
+  {
+    q: 'Does quitting my plan on purpose count?',
+    a: 'No. Voluntarily dropping coverage, or losing it for not paying your premiums, does not open a Special Enrollment Period. That’s an important distinction to get right before you cancel anything — call me first.',
+  },
+  {
+    q: 'Will I have to prove the event happened?',
+    a: 'Usually, yes. The Marketplace typically asks for documentation — a letter showing when your old coverage ended, a lease or other proof of a move, a marriage or birth certificate. Keeping that paperwork handy makes the whole thing faster.',
+  },
+  {
+    q: 'What if I miss every window?',
+    a: 'Then Marketplace coverage generally has to wait for the next Open Enrollment. That’s the gap short-term coverage is designed for — call me and we’ll look at what’s available to you in the meantime.',
+  },
+  {
+    q: 'Does it cost more to enroll through you?',
+    a: 'No. The premium is the same whether you enroll on your own or with my help. I’m paid by the carriers, so my time costs you nothing.',
+  },
+];
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Health insurance · Under 65"
+  heading="Coverage for you and your family, before Medicare."
+  intro="If you’re under 65 and buying your own health insurance, the Marketplace is where most people start. Here’s how it works, what the plan types actually mean, and when you’re allowed to enroll."
+>
+  <!-- ─── What the Marketplace is ─────────────────────────────────────── -->
+  <section class="section" id="marketplace" aria-labelledby="marketplace-heading">
+    <div class="container">
+      <p class="eyebrow">The Marketplace</p>
+
+      <div class="section-intro">
+        <h2 id="marketplace-heading">What is the Health Insurance Marketplace?</h2>
+        <p class="lead">
+          It’s the place, created under the Affordable Care Act, where individuals
+          and families buy health coverage directly rather than through an employer.
+        </p>
+      </div>
+
+      <div class="split">
+        <div class="prose">
+          <p>
+            ACA Marketplace plans cover essential health benefits, including doctor
+            visits, hospital care, prescriptions, emergency care, maternity and
+            newborn care, mental health services, and preventive care.
+          </p>
+          <p>
+            No plan can deny coverage or charge more because of a pre-existing
+            condition, and there are no lifetime limits on covered benefits.
+          </p>
+          <p>
+            Depending on your income and household size, you may qualify for help
+            lowering your premium and possibly your deductible and copays. Your
+            eligibility is determined when you apply, and it’s one of the first
+            things I check with you.
+          </p>
+          <p>
+            <strong>What actually varies between plans</strong> is the network of
+            doctors and hospitals, how much you pay each month versus how much you
+            pay when you use care, and which prescriptions are covered. Those three
+            things are what we compare.
+          </p>
+        </div>
+
+        <div class="media-grid">
+          <MediaSlot label="a family at home, warm and unposed" ratio="4 / 3" />
+        </div>
+      </div>
+
+      <div class="chips">
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          No one is turned down for a health condition
+        </span>
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          Essential benefits are covered on every plan
+        </span>
+        <span class="chip">
+          <svg class="mark" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+          Same premium with my help or without it
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Plan types ──────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="plan-types" aria-labelledby="plan-types-heading">
+    <div class="container">
+      <p class="eyebrow">Plan types</p>
+
+      <div class="section-intro">
+        <h2 id="plan-types-heading">PPO, POS, HMO, EPO — what the letters mean.</h2>
+        <p class="lead">
+          The difference between them comes down to two questions: can you go
+          outside the network, and do you need a referral first?
+        </p>
+      </div>
+
+      <dl class="def-list">
+        {planTypes.map((plan) => (
+          <div class="def-row">
+            <dt>
+              <span class="def-tag">{plan.tag}</span>
+              {plan.name}
+            </dt>
+            <dd>{plan.copy}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="callout">
+        <h3>Which plans are available depends on where you live.</h3>
+        <p>
+          Insurance companies offer different plans in different counties, so your
+          local option may vary. Before choosing a plan, check that your doctors are
+          in the plan’s network and your prescriptions are covered. These are the
+          details people often discover too late.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Enrollment periods ──────────────────────────────────────────── -->
+  <section class="section" id="enrollment" aria-labelledby="enrollment-heading">
+    <div class="container">
+      <p class="eyebrow">When you can enroll</p>
+
+      <div class="section-intro">
+        <h2 id="enrollment-heading">Your Enrollment Options</h2>
+      </div>
+
+      <dl class="def-list">
+        <div class="def-row">
+          <dt>
+            <span class="def-tag">Once a year</span>
+            Open Enrollment
+          </dt>
+          <dd>
+            The annual period when you can buy a Marketplace plan or change your
+            current plan for any reason. It usually runs in late fall and early
+            winter for coverage starting the next year. Dates vary by year and by
+            state. To have coverage starting January 1, enrolling early is
+            important.
+          </dd>
+        </div>
+        <div class="def-row">
+          <dt>
+            <span class="def-tag">When life changes</span>
+            Special Enrollment Period
+          </dt>
+          <dd>
+            This is a set period to enroll, an opportunity to get Marketplace
+            coverage after a qualifying life event, such as losing coverage, moving,
+            getting married, or having a baby. Knowing the rules before you need them
+            can help you avoid missing your enrollment window.
+          </dd>
+        </div>
+      </dl>
+
+      <div class="section-intro" style="margin-top: clamp(48px, 6vw, 80px)">
+        <h2>Special Enrollment Periods, in detail.</h2>
+      </div>
+
+      <Faq items={faqs} schema />
+    </div>
+  </section>
+
+  <!-- ─── Short-term ──────────────────────────────────────────────────── -->
+  <section class="section section--navy" id="short-term" aria-labelledby="short-term-heading">
+    <div class="container">
+      <p class="eyebrow">Bridging a gap</p>
+
+      <div class="section-intro">
+        <h2 id="short-term-heading">Short-term coverage, when you just need a bridge.</h2>
+        <p class="lead">
+          Sometimes a full Marketplace plan isn’t what the situation calls for,
+          because the situation is measured in months.
+        </p>
+      </div>
+
+      <div class="split">
+        <div class="prose">
+          <p>
+            Two people I talk to often: someone two or three months out from turning
+            65, and someone who retired up to a year before Medicare starts. Both
+            need to be covered in the meantime, and neither wants to start a whole
+            new annual plan they’ll leave almost immediately. Short-term health
+            insurance is built for exactly that stretch.
+          </p>
+          <p>
+            <strong>It works differently from a Marketplace plan</strong>, and the
+            differences matter. Short-term plans are not required to cover the
+            essential health benefits, they can ask health questions and decline
+            you based on the answers, and pre-existing conditions are generally not
+            covered. They also don’t qualify you for premium help. What they give
+            you in exchange is a plan you can start quickly, for a defined stretch
+            of time, at a lower monthly cost.
+          </p>
+          <p>
+            How long they can run, and whether they’re sold at all, varies by state.
+            That makes this a conversation rather than a checkout. Let me know the
+            dates you need covered, and I’ll tell you what’s actually available to
+            you.
+          </p>
+        </div>
+
+        <div class="media-grid">
+          <MediaSlot label="couple in their early sixties, at a kitchen table" ratio="4 / 3" />
+        </div>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Ask about a short-term plan</a>
+        <a class="btn btn--ghost" href="/medicare">Turning 65? Start with Medicare</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+
+  <!-- ─── Enroll + dental cross-link ──────────────────────────────────── -->
+  <section class="section" id="enroll" aria-labelledby="enroll-heading">
+    <div class="container">
+      <p class="eyebrow">Get covered</p>
+
+      <div class="section-intro">
+        <h2 id="enroll-heading">Ready to look at real plans?</h2>
+        <p class="lead">
+          Browse what’s available where you live, or let me narrow it down with you
+          first. Either way costs you the same.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        {acaPending ? (
+          <>
+            {/* TODO: links.healthSherpaAca — Lisa's branded HealthSherpa link.
+                Until it exists this is the call path, not a dead button. */}
+            <a class="btn btn--accent" href={site.phoneHref}>Get Marketplace Coverage</a>
+            <span class="chip">Online enrollment link coming soon — for now, call or text</span>
+          </>
+        ) : (
+          <a class="btn btn--accent" href={links.healthSherpaAca} {...externalAttrs}>
+            Get Marketplace Coverage
+          </a>
+        )}
+        <a class="btn btn--ghost" href="/contact">Ask me a question first</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+
+      <div class="callout" style="margin-top: clamp(40px, 5vw, 64px)">
+        <h3>Dental and vision are separate</h3>
+        <p>
+          Marketplace medical plans don’t generally include adult dental or vision
+          coverage — those are bought separately, and you don’t have to wait for an
+          enrollment window to do it.
+          <a href="/dental-insurance">See dental &amp; vision plans</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Choose Wisely"
+    copy="Tell me your situation and your dates. I’ll tell you which of these applies to you — and if none of them do, I’ll say that too."
+  />
+</Page>

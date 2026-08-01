@@ -1,0 +1,81 @@
+---
+/**
+ * A single Education post. The collection entry's id is the URL slug, so the
+ * filename in src/content/blog/ is the address.
+ */
+import Page from '../../../layouts/Page.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<'blog'> };
+const { Content } = await render(post);
+
+const dateFormat = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  author: { '@type': 'Person', name: 'Lisa' },
+};
+---
+
+<Page
+  title={post.data.title}
+  description={post.data.description}
+  eyebrow={post.data.tag ?? 'Medicare · Education'}
+  heading={post.data.title}
+  intro={post.data.description}
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  </Fragment>
+
+  <section class="section" aria-label="Article">
+    <div class="container">
+      <p class="crumbs">
+        <a href="/medicare">Medicare</a> /
+        <a href="/medicare/education">Education</a> /
+        {post.data.title}
+      </p>
+
+      <p class="post-meta">
+        <time datetime={post.data.date.toISOString()}>
+          {dateFormat.format(post.data.date)}
+        </time>
+        {post.data.tag && <> · {post.data.tag}</>}
+      </p>
+
+      <div class="post-body">
+        <Content />
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--ghost" href="/medicare/education">All guides</a>
+        <a class="btn btn--ghost" href="/medicare">Medicare overview</a>
+      </div>
+
+      <p class="source-note">
+        General educational information, not advice about your specific situation.
+        For the official rules, see Medicare.gov or call 1-800-MEDICARE.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Questions about what you just read?"
+    copy="That’s the point of writing it down. Call or text and we’ll go through how it applies to you."
+  />
+</Page>

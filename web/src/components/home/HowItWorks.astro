@@ -1,25 +1,40 @@
 ---
-// How it works with Lisa — 3 steps.
+// How it works with Lisa — 3 steps, set as a numbered process row.
+//
+// The "Schedule a call" action resolves through links.ts: with a booking URL it
+// links there, and without one it becomes the text path with wording that
+// matches, so the button is never a dead control.
+import { site } from '../../data/site';
+import { links, isPending, externalAttrs } from '../../data/links';
+
 const steps = [
   {
-    title: 'Call or text me',
-    copy: 'Free, no pressure. Tell me about your doctors, prescriptions, and budget.',
+    title: 'Call or schedule a time',
+    copy: 'Our first conversation is simply about understanding your healthcare needs. We’ll review your doctors, prescriptions, and coverage options. I’ll answer your questions so you have the information you need to make a decision when you’re ready.',
   },
   {
-    title: 'I shop my carriers',
-    copy: 'I compare the plans I represent and explain the trade-offs in plain English.',
+    title: 'I Compare Your Options',
+    copy: 'Choosing Medicare coverage doesn’t have to be overwhelming. I’ll guide you through your available options, explain the differences, and help you compare plans that match your healthcare goals.',
   },
   {
-    title: 'You’re covered — and kept',
-    copy: 'I handle the enrollment and stay your agent for the life of the policy.',
+    title: 'Ongoing Support',
+    copy: 'My role as your advisor doesn’t end when you choose a plan. I’ll be here to help you review your coverage annually, understand changes, and navigate future enrollment decisions with confidence.',
   },
 ];
+
+const bookingPending = isPending(links.booking);
 ---
 
 <section class="section" id="how-it-works" aria-labelledby="how-heading">
   <div class="container">
+    <p class="eyebrow">How it works</p>
+
     <div class="section-intro">
-      <h2 id="how-heading">How it works with Lisa.</h2>
+      <h2 id="how-heading">Choosing a Plan Is Just the Beginning</h2>
+      <p class="lead">
+        I’ll be here annually to review your coverage, answer questions, and help
+        make sure your plan continues to meet your healthcare needs.
+      </p>
     </div>
 
     <ol class="steps">
@@ -30,5 +45,18 @@ const steps = [
         </li>
       ))}
     </ol>
+
+    <div class="actions actions--stack">
+      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      {bookingPending ? (
+        /* TODO: links.booking — no scheduling page yet, so this is the text
+           path with wording that matches rather than a button that opens
+           nothing. */
+        <a class="btn btn--ghost" href={site.smsHref}>Text me a good time</a>
+      ) : (
+        <a class="btn btn--ghost" href={links.booking} {...externalAttrs}>Schedule a call</a>
+      )}
+    </div>
+    <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
   </div>
 </section>

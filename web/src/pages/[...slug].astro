@@ -1,11 +1,15 @@
 ---
-import Base from '../layouts/Base.astro';
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
 import { pageStubs, type PageStub } from '../data/site';
 
 /**
- * Generates a placeholder for every canonical route in the IA so the whole
- * navigation is clickable. Replace a route here with a real .astro page under
- * src/pages/ whenever it's ready — a real file wins over this catch-all.
+ * Placeholder for the routes that have no designed content yet — the
+ * existing-client hub and the legal tail. Every prospect-facing page is a real
+ * file now, and a real file always wins over this catch-all.
+ *
+ * These build on the brand shell like everything else, so an unfinished page
+ * still looks like part of the site rather than like a different website.
  */
 export function getStaticPaths() {
   return pageStubs.map((stub) => ({
@@ -23,18 +27,34 @@ const parents = segments.slice(0, -1).map((segment, i) => ({
 }));
 ---
 
-<Base title={stub.title} noindex={stub.path === '/thank-you'}>
-  <p class="crumbs">
-    <a href="/">Home</a>
-    {parents.map((parent) => <> / <a href={parent.href}>{parent.label}</a></>)}
-    {' / '}{stub.title}
-  </p>
+<Page
+  title={stub.title}
+  eyebrow="Lisa's Insurance Agency"
+  heading={stub.title}
+  intro={stub.note || undefined}
+  noindex
+>
+  <section class="section">
+    <div class="container">
+      <p class="crumbs">
+        <a href="/">Home</a>
+        {parents.map((parent) => <> / <a href={parent.href}>{parent.label}</a></>)}
+        {' / '}{stub.title}
+      </p>
 
-  <h1>{stub.title}</h1>
+      <div class="callout callout--note">
+        <h3>This page is still being written</h3>
+        <p>
+          The content for this page hasn’t been built yet. In the meantime, call
+          or text and I’ll take care of it directly — that’s faster than any form
+          anyway.
+        </p>
+      </div>
+    </div>
+  </section>
 
-  {stub.note && <p class="stub-note">{stub.note}</p>}
-
-  <p class="stub-meta">
-    Placeholder — content not built yet. Canonical URL: <code>{stub.path}</code>
-  </p>
-</Base>
+  <CtaBand
+    heading="Let’s sort it out on the phone."
+    copy="Whatever you needed this page for, I can handle it with you directly."
+  />
+</Page>

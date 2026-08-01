@@ -1,0 +1,82 @@
+---
+/**
+ * The layout every interior page uses.
+ *
+ * Shell + brand.css only — never Base.astro or global.css. Both stylesheets
+ * define `.btn` (and other shared names) and whichever loads last wins, which
+ * is how the gold capsules once turned into the scaffold's blue rectangles.
+ * Routing every page through here means that mistake can't be made per-page.
+ *
+ * Ships the sitewide chrome and the standard page hero, so a new page is just
+ * its sections.
+ */
+import Shell from './Shell.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import PageHero from '../components/PageHero.astro';
+import '../styles/brand.css';
+
+interface Props {
+  /** <title> text. The site name is appended unless `rawTitle`. */
+  title: string;
+  description?: string;
+  rawTitle?: boolean;
+  noindex?: boolean;
+  /** Small uppercase label above the page heading. */
+  eyebrow: string;
+  /** The <h1>. Defaults to `title` when the two are the same sentence. */
+  heading?: string;
+  /** Optional titled line between the h1 and the intro. */
+  subhead?: string;
+  /** One or two sentences under the heading. */
+  intro?: string;
+  /** Set false to supply a bespoke hero in the default slot instead. */
+  hero?: boolean;
+}
+
+const {
+  title,
+  description,
+  rawTitle = false,
+  noindex = false,
+  eyebrow,
+  heading,
+  subhead,
+  intro,
+  hero = true,
+} = Astro.props;
+---
+
+<Shell title={title} description={description} rawTitle={rawTitle} noindex={noindex}>
+  <Fragment slot="head">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/OpenSans-var-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <!-- ASSET PENDING: replace with branded OG image (current file is a plain navy placeholder) -->
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </Fragment>
+
+  <SiteHeader />
+  <main id="main">
+    {hero && (
+      <PageHero
+        eyebrow={eyebrow}
+        heading={heading ?? title}
+        subhead={subhead}
+        intro={intro}
+      />
+    )}
+    <slot />
+  </main>
+  <SiteFooter />
+</Shell>

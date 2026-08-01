@@ -1,0 +1,138 @@
+---
+/**
+ * Contact.
+ *
+ * Four ways in, ranked by how this audience actually behaves: call, text,
+ * schedule, then the note form. The schedule option resolves through
+ * links.ts — with no booking URL it becomes the call path with honest wording
+ * rather than a button that opens nothing.
+ */
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+import { links, externalAttrs } from '../data/links';
+
+const title = 'Contact Lisa | Lisa’s Insurance Agency';
+const description =
+  'Call, text, schedule a time, or send a note. Free help with Medicare, health, dental and vision coverage from a licensed agent.';
+
+const agencySchema = {
+  '@context': 'https://schema.org',
+  '@type': 'InsuranceAgency',
+  name: site.name,
+  telephone: site.phoneHref.replace('tel:', ''),
+  email: site.email,
+  description:
+    'Medicare, health, dental and vision help — free, and for the life of your policy.',
+  // CONFIRM: replace with the actual list of 43 licensed states
+  areaServed: 'United States — licensed in 43 states',
+};
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Contact"
+  heading="I’m Here When You’re Ready"
+  intro="Choose what works best for you. You can call me directly or schedule a convenient time. Either way, I’m here to help."
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(agencySchema)} />
+  </Fragment>
+
+  <!-- ─── The four ways ───────────────────────────────────────────────── -->
+  <section class="section" id="ways" aria-labelledby="ways-heading">
+    <div class="container">
+      <p class="eyebrow">Reach me</p>
+
+      <div class="section-intro">
+        <h2 id="ways-heading">Connect Your Way</h2>
+      </div>
+
+      <div class="cards cards--3 cards--tiles">
+        <article class="card">
+          <h3>Call</h3>
+          <p>
+            A phone call is the fastest way to reach me. If I’m with another
+            client, leave a message, and I’ll return your call as soon as
+            possible, usually within 24 hours.
+          </p>
+          <a class="btn btn--accent" href={site.phoneHref}>{site.phone}</a>
+        </article>
+
+        <article class="card">
+          <h3>Send an email</h3>
+          <p>
+            Send me an email with your request, and I’ll reply by email or call if
+            you prefer.
+          </p>
+          <a class="btn btn--ghost" href={`mailto:${site.email}`}>Send an email</a>
+        </article>
+
+        <article class="card">
+          <h3>Schedule a call</h3>
+          <p>
+            Schedule a time on my calendar that works best for you.
+          </p>
+          <a class="btn btn--ghost" href={links.booking} {...externalAttrs}>Schedule</a>
+        </article>
+      </div>
+
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+
+      <dl class="def-list" style="margin-top: clamp(40px, 5vw, 64px)">
+        <div class="def-row">
+          <dt><span class="def-tag">Email</span>Write to me</dt>
+          <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+        </div>
+        <div class="def-row">
+          <dt><span class="def-tag">Hours</span>When I’m around</dt>
+          <dd>10:00 AM – 7:00 PM CST</dd>
+        </div>
+        <div class="def-row">
+          <dt><span class="def-tag">Where</span>Licensed in</dt>
+          <dd>
+            43 states. Ask me about yours — if I can’t help there, I’ll tell you
+            straight away.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ─── What to have ready ──────────────────────────────────────────── -->
+  <section class="section section--navy" id="prepare" aria-labelledby="prepare-heading">
+    <div class="container">
+      <p class="eyebrow">Before you call</p>
+
+      <div class="section-intro">
+        <h2 id="prepare-heading">Nothing is required — but this helps.</h2>
+        <p class="lead">
+          If you happen to have these to hand, we’ll get a lot further in the
+          first call. If you don’t, call anyway.
+        </p>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <h3>Your doctors</h3>
+          <p>Names of everyone you see — primary care and every specialist — plus the hospital you’d want to use.</p>
+        </li>
+        <li>
+          <h3>Your prescriptions</h3>
+          <p>The actual names and doses, and the pharmacy you fill them at. This is the detail that changes the answer most.</p>
+        </li>
+        <li>
+          <h3>What you have now</h3>
+          <p>Any coverage through an employer, a union or the VA, and your Medicare card if you already have one.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Let's talk. No pressure, no cost — just answers."
+    copy="Whatever stage you're at, a conversation is free and you're under no obligation at the end of it."
+  />
+</Page>

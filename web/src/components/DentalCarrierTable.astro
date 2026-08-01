@@ -1,0 +1,81 @@
+---
+/**
+ * The dental & vision carrier comparison.
+ *
+ * One source of rows (data/dental-carriers.ts), rendered twice: a real <table>
+ * with scoped headers for tablet and up, and a stack of cards below that. Four
+ * columns cannot be read on a phone, and a horizontally scrolling table is
+ * worse than a card per carrier — the audience skews senior and the action
+ * button needs to sit under the text it belongs to.
+ *
+ * Only one of the two is in the accessibility tree at a time: the hidden one is
+ * `display: none`, not merely off-screen, so a screen reader never meets the
+ * same seven carriers twice.
+ */
+import { dentalCarriers, callToEnrollHref } from '../data/dental-carriers';
+import { externalAttrs } from '../data/links';
+
+/* DV-03 asks for rel="noopener noreferrer" on the enrollment links. The shared
+   externalAttrs is rel="noopener" and is spread across every outbound link on
+   the site, so the stricter value is set here rather than by widening a
+   constant the revision doc never named. */
+
+const columns = ['Carrier', 'Plan Type & Deductible Rules', 'Network & Core Strengths', 'Action'];
+---
+
+<div class="carrier-compare">
+  <!-- Tablet and up -->
+  <div class="table-scroll carrier-table-wrap">
+    {/* Named by the section's own h2 rather than a <caption>, so the table
+        introduces no copy that the client did not supply. */}
+    <table class="compare-table carrier-table" aria-labelledby="compare-heading">
+      <thead>
+        <tr>
+          {columns.map((column) => <th scope="col">{column}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {dentalCarriers.map((row) => (
+          <tr>
+            <th scope="row">{row.carrier}</th>
+            <td class="cell-part">{row.planType}</td>
+            <td class="cell-part">{row.network}</td>
+            <td class="cell-part">
+              {row.action === 'apply' ? (
+                <a class="btn btn--accent" href={row.href} {...externalAttrs} rel="noopener noreferrer">
+                  Apply Online Now
+                </a>
+              ) : (
+                <a class="btn btn--ghost" href={callToEnrollHref}>
+                  Call to Enroll
+                </a>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Phone -->
+  <ul class="carrier-cards">
+    {dentalCarriers.map((row) => (
+      <li class="carrier-card">
+        <h3>{row.carrier}</h3>
+        <p class="carrier-card-label">Plan Type &amp; Deductible Rules</p>
+        <p>{row.planType}</p>
+        <p class="carrier-card-label">Network &amp; Core Strengths</p>
+        <p>{row.network}</p>
+        {row.action === 'apply' ? (
+          <a class="btn btn--accent" href={row.href} {...externalAttrs} rel="noopener noreferrer">
+            Apply Online Now
+          </a>
+        ) : (
+          <a class="btn btn--ghost" href={callToEnrollHref}>
+            Call to Enroll
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
