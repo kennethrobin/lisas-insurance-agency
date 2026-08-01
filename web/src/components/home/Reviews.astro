@@ -50,8 +50,13 @@ const summary =
 
     {google ? (
       <div class="cards cards--3">
+        {/* data-reviewer is the carousel dots' accessible name. The dots script
+            falls back to footer.textContent, which is right for the written
+            cards but would read "Margaret H. 2 months ago" here, since this
+            footer also carries the timestamp. Same name either way — no new
+            copy, just a cleaner label. */}
         {google.reviews.map((review) => (
-          <article class="card review-card">
+          <article class="card review-card" data-reviewer={review.authorName}>
             <p class="stars" aria-hidden="true">{starsFor(review.rating)}</p>
             <p class="visually-hidden">Rated {review.rating} out of 5.</p>
 
@@ -183,7 +188,12 @@ const summary =
       dots.className = 'review-dots';
 
       cards.forEach((card, i) => {
-        const who = card.querySelector('footer')?.textContent?.trim() ?? String(i + 1);
+        /* data-reviewer when the card came from Google (its footer holds the
+           timestamp too); the footer text otherwise, for the written cards. */
+        const who =
+          card.dataset.reviewer?.trim() ||
+          card.querySelector('footer')?.textContent?.trim() ||
+          String(i + 1);
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.setAttribute('aria-label', who);
