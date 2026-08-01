@@ -17,7 +17,7 @@ import { links, isPending, externalAttrs } from '../data/links';
 
 const title = 'Health Insurance for Individuals & Families | Lisa’s Insurance Agency';
 const description =
-  'Marketplace health insurance for people under 65 — plan types explained, enrollment periods, and short-term coverage to bridge a gap. Free help from a licensed agent.';
+  'Marketplace health insurance for people under 65: plan types explained, enrollment periods, and short-term coverage to bridge a gap. Free help from a licensed agent.';
 
 /** The ACA link isn't live yet, so the button becomes the call path instead. */
 const acaPending = isPending(links.healthSherpaAca);
@@ -25,22 +25,22 @@ const acaPending = isPending(links.healthSherpaAca);
 const planTypes = [
   {
     tag: 'Most flexibility',
-    name: 'PPO — Preferred Provider Organization',
+    name: 'PPO: Preferred Provider Organization',
     copy: 'You can see providers inside or outside the plan’s network, and you don’t need a referral to see a specialist. Care outside the network is still covered, though it costs you more. Usually the highest premium of the four.',
   },
   {
     tag: 'A middle path',
-    name: 'POS — Point of Service',
+    name: 'POS: Point of Service',
     copy: 'A blend: you pick a primary care doctor and generally need a referral to see a specialist, but the plan does cover some out-of-network care. Often priced between an HMO and a PPO.',
   },
   {
     tag: 'Lower premium',
-    name: 'HMO — Health Maintenance Organization',
+    name: 'HMO: Health Maintenance Organization',
     copy: 'Care stays inside the network, and you go through a primary care doctor for referrals. Outside the network, only emergencies are covered. The trade for that is usually a lower premium.',
   },
   {
     tag: 'Lower premium',
-    name: 'EPO — Exclusive Provider Organization',
+    name: 'EPO: Exclusive Provider Organization',
     copy: 'Network-only like an HMO, but generally without the referral step. Outside the network, again, emergencies only.',
   },
 ];
@@ -48,23 +48,23 @@ const planTypes = [
 const faqs = [
   {
     q: 'What is a Special Enrollment Period?',
-    a: 'It’s a window outside Open Enrollment when you’re allowed to buy or change a Marketplace plan, opened by a specific life event. If you qualify, you generally have 60 days from the event to enroll — and in some cases a window beforehand as well.',
+    a: 'It’s a window outside Open Enrollment when you’re allowed to buy or change a Marketplace plan, opened by a specific life event. If you qualify, you generally have 60 days from the event to enroll, and in some cases a window beforehand as well.',
   },
   {
     q: 'What kinds of events open one?',
-    a: 'Losing health coverage you already had — including through a job, a divorce, or aging off a parent’s plan. Moving to a new area with different plans available. Getting married, having a baby, or adopting. Changes in income or household that affect your eligibility. Certain other situations, including gaining citizenship or leaving incarceration.',
+    a: 'Losing health coverage you already had, including through a job, a divorce, or aging off a parent’s plan. Moving to a new area with different plans available. Getting married, having a baby, or adopting. Changes in income or household that affect your eligibility. Certain other situations, including gaining citizenship or leaving incarceration.',
   },
   {
     q: 'Does quitting my plan on purpose count?',
-    a: 'No. Voluntarily dropping coverage, or losing it for not paying your premiums, does not open a Special Enrollment Period. That’s an important distinction to get right before you cancel anything — call me first.',
+    a: 'No. Voluntarily dropping coverage, or losing it for not paying your premiums, does not open a Special Enrollment Period. That’s an important distinction to get right before you cancel anything. Call me first.',
   },
   {
     q: 'Will I have to prove the event happened?',
-    a: 'Usually, yes. The Marketplace typically asks for documentation — a letter showing when your old coverage ended, a lease or other proof of a move, a marriage or birth certificate. Keeping that paperwork handy makes the whole thing faster.',
+    a: 'Usually, yes. The Marketplace typically asks for documentation: a letter showing when your old coverage ended, a lease or other proof of a move, a marriage or birth certificate. Keeping that paperwork handy makes the whole thing faster.',
   },
   {
     q: 'What if I miss every window?',
-    a: 'Then Marketplace coverage generally has to wait for the next Open Enrollment. That’s the gap short-term coverage is designed for — call me and we’ll look at what’s available to you in the meantime.',
+    a: 'Then Marketplace coverage generally has to wait for the next Open Enrollment. That’s the gap short-term coverage is designed for. Call me and we’ll look at what’s available to you in the meantime.',
   },
   {
     q: 'Does it cost more to enroll through you?',
@@ -153,7 +153,7 @@ const faqs = [
       <p class="eyebrow">Plan types</p>
 
       <div class="section-intro">
-        <h2 id="plan-types-heading">PPO, POS, HMO, EPO — what the letters mean.</h2>
+        <h2 id="plan-types-heading">PPO, POS, HMO, EPO: what the letters mean.</h2>
         <p class="lead">
           The difference between them comes down to two questions: can you go
           outside the network, and do you need a referral first?
@@ -298,9 +298,13 @@ const faqs = [
         {acaPending ? (
           <>
             {/* TODO: links.healthSherpaAca — Lisa's branded HealthSherpa link.
-                Until it exists this is the call path, not a dead button. */}
+                NOTE: this is the ONE enrollment path still pending. The Sunfire
+                link fixed the two Medicare pages, but it is a Medicare portal
+                and must not be wired to the under-65 ACA button. Until the
+                HealthSherpa URL exists this stays the call path, not a dead
+                button. */}
             <a class="btn btn--accent" href={site.phoneHref}>Get Marketplace Coverage</a>
-            <span class="chip">Online enrollment link coming soon — for now, call or text</span>
+            <span class="chip">Online enrollment is on its way. For now, call or text</span>
           </>
         ) : (
           <a class="btn btn--accent" href={links.healthSherpaAca} {...externalAttrs}>
@@ -315,7 +319,7 @@ const faqs = [
         <h3>Dental and vision are separate</h3>
         <p>
           Marketplace medical plans don’t generally include adult dental or vision
-          coverage — those are bought separately, and you don’t have to wait for an
+          coverage; those are bought separately, and you don’t have to wait for an
           enrollment window to do it.
           <a href="/dental-insurance">See dental &amp; vision plans</a>.
         </p>
@@ -325,6 +329,6 @@ const faqs = [
 
   <CtaBand
     heading="Choose Wisely"
-    copy="Tell me your situation and your dates. I’ll tell you which of these applies to you — and if none of them do, I’ll say that too."
+    copy="Tell me your situation and your dates. I’ll tell you which of these applies to you, and if none of them do, I’ll say that too."
   />
 </Page>

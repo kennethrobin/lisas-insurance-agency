@@ -11,13 +11,11 @@ import Page from '../../layouts/Page.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Faq from '../../components/Faq.astro';
 import { site } from '../../data/site';
-import { links, isPending, externalAttrs } from '../../data/links';
+import { links, externalAttrs } from '../../data/links';
 
-const title = 'Medicare Part D — Prescription Drug Coverage | Lisa’s Insurance Agency';
+const title = 'Medicare Part D: Prescription Drug Coverage | Lisa’s Insurance Agency';
 const description =
   'How Medicare Part D works, why the late-enrollment penalty is permanent, and how to match a drug plan to the medicines you actually take.';
-
-const enrollPending = isPending(links.sunfirePartD);
 
 const steps = [
   {
@@ -41,11 +39,11 @@ const faqs = [
   },
   {
     q: 'What counts as creditable coverage?',
-    a: 'Drug coverage that Medicare considers at least as good as a standard Part D plan — often coverage from an employer, a union, the VA, or TRICARE. If you have one of those, you can usually delay Part D with no penalty. Your plan is required to tell you each year whether it’s creditable; keep that notice.',
+    a: 'Drug coverage that Medicare considers at least as good as a standard Part D plan, often coverage from an employer, a union, the VA, or TRICARE. If you have one of those, you can usually delay Part D with no penalty. Your plan is required to tell you each year whether it’s creditable; keep that notice.',
   },
   {
     q: 'I don’t take any medications. Do I still need it?',
-    a: 'That’s the situation the penalty exists for. Signing up when you’re first eligible, even with nothing to fill, keeps the door open at no penalty later — and health changes without warning. It’s worth a conversation rather than a default assumption either way.',
+    a: 'That’s the situation the penalty exists for. Signing up when you’re first eligible, even with nothing to fill, keeps the door open at no penalty later, and health changes without warning. It’s worth a conversation rather than a default assumption either way.',
   },
   {
     q: 'Can I have Part D with a Medicare Advantage plan?',
@@ -53,7 +51,7 @@ const faqs = [
   },
   {
     q: 'Can I change plans if my prescriptions change?',
-    a: 'Plans can change their drug lists each year, and so can your prescriptions — which is why it’s worth re-checking during the Annual Enrollment Period each autumn rather than letting a plan roll over unexamined. That review is part of what I do for clients, at no cost.',
+    a: 'Plans can change their drug lists each year, and so can your prescriptions, which is why it’s worth re-checking during the Annual Enrollment Period each autumn rather than letting a plan roll over unexamined. That review is part of what I do for clients, at no cost.',
   },
 ];
 ---
@@ -69,7 +67,6 @@ const faqs = [
   <!-- ─── What Part D is ──────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
-      <p class="crumbs"><a href="/medicare">Medicare</a> / Prescription Drugs</p>
       <p class="eyebrow">What It Covers</p>
 
       <div class="section-intro">
@@ -177,18 +174,9 @@ const faqs = [
         </p>
 
         <div class="actions actions--stack">
-          {enrollPending ? (
-            <>
-              {/* TODO: links.sunfirePartD — Sunfire "Simply Enroll" for Part D.
-                  Until it's live this is the call path, never a dead button. */}
-              <a class="btn btn--accent" href={site.phoneHref}>Simply Enroll</a>
-              <span class="chip">Online enrollment link coming soon — for now, call or text</span>
-            </>
-          ) : (
-            <a class="btn btn--accent" href={links.sunfirePartD} {...externalAttrs}>
-              Simply Enroll
-            </a>
-          )}
+          <a class="btn btn--accent" href={links.sunfirePartD} {...externalAttrs}>
+            Simply Enroll
+          </a>
           <a class="btn btn--ghost" href="/contact">Questions? Contact Lisa</a>
         </div>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>

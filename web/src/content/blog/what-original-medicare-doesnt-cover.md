@@ -5,7 +5,7 @@ date: 2026-06-23
 tag: "Coverage basics"
 ---
 
-Original Medicare — Parts A and B together — covers a great deal. What surprises
+Original Medicare, Parts A and B together, covers a great deal. What surprises
 people is the list of everyday things it doesn't. Here's that list, and what
 usually fills each gap.
 
@@ -16,7 +16,7 @@ you collect yourself generally aren't covered. That's what Part D is for, either
 as a standalone plan or built into a Medicare Advantage plan.
 
 Worth knowing: going without prescription coverage when you're first eligible can
-add a permanent penalty to your premium later. It isn't a one-time fee — you keep
+add a permanent penalty to your premium later. It isn't a one-time fee; you keep
 paying it. If you take no medications today, that's exactly the situation the
 penalty catches out.
 
@@ -29,7 +29,7 @@ any time of year.
 
 ## Long-term custodial care
 
-Help with daily living — bathing, dressing, eating — isn't covered when that's
+Help with daily living (bathing, dressing, eating) isn't covered when that's
 the only care needed. Medicare does cover skilled nursing care after a qualifying
 hospital stay, which is a narrower thing than most people assume it to be.
 
@@ -42,7 +42,7 @@ if you travel.
 ## Your share of the bill, without a ceiling
 
 This is the gap people underestimate. Original Medicare pays most of a covered
-bill and leaves you deductibles, copayments and coinsurance — and on its own,
+bill and leaves you deductibles, copayments and coinsurance, and on its own,
 there is no annual limit on how much that adds up to.
 
 The two ways of dealing with that are the whole Supplement-versus-Advantage

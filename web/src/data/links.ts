@@ -15,11 +15,14 @@ export const links = {
   /** TODO: Lisa's branded HealthSherpa ACA marketplace link */
   healthSherpaAca: '#',
 
-  /** TODO: Sunfire "Simply Enroll" — Medicare Advantage */
-  sunfireMedicareAdvantage: '#',
-
-  /** TODO: Sunfire "Simply Enroll" — Part D */
-  sunfirePartD: '#',
+  /**
+   * Real. Lisa's Sunfire consumer portal ("Simply Enroll"). One portal covers
+   * both Medicare Advantage and Part D shopping, so both keys point at it —
+   * kept as two keys so they can diverge later if Lisa ever gets
+   * product-specific links.
+   */
+  sunfireMedicareAdvantage: 'https://www.sunfirematrix.com/app/consumer/tbr/4724061/',
+  sunfirePartD: 'https://www.sunfirematrix.com/app/consumer/tbr/4724061/',
 
   /**
    * Real. Lisa's public cal.com booking page for the initial consultation. The

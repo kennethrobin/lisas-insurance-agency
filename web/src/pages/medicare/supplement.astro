@@ -7,10 +7,10 @@
  * form gets wrong, so the only action here is a conversation. That is a
  * deliberate difference from the Advantage page, not an oversight.
  *
- * The testimonials block is a clearly-labelled TEMPLATE. The entries are
- * obviously-fake samples, not attributed to anyone, and the banner above them
- * says so — a placeholder quote with a real-sounding name attached is a
- * fabricated endorsement, which is exactly what must not ship.
+ * The "Client stories" template block was removed at the owner's request
+ * (2026-08). When sourced, verbatim client reviews exist they belong in a new
+ * section here — never placeholder quotes with real-sounding names, which
+ * would read as fabricated endorsements.
  */
 import Page from '../../layouts/Page.astro';
 import CtaBand from '../../components/CtaBand.astro';
@@ -22,26 +22,6 @@ import { site } from '../../data/site';
 const title = 'Medicare Supplement (Medigap) Plans Explained | Lisa’s Insurance Agency';
 const description =
   'What a Medicare Supplement covers, how the standardized plans A through N compare, how Medigap differs from Medicare Advantage, and why you still need Part D.';
-
-/**
- * TEMPLATE ONLY. Placeholder structure so Lisa can see the shape of the block.
- * Not real people, not real quotes, not attributed. Replace wholesale with
- * sourced, verbatim reviews — do not edit these into "realistic" ones.
- */
-const testimonialTemplate = [
-  {
-    quote: '[Client’s own words about what the process felt like — sourced review goes here.]',
-    who: '[First name, state]',
-  },
-  {
-    quote: '[Client’s own words about the service after enrolling — sourced review goes here.]',
-    who: '[First name, state]',
-  },
-  {
-    quote: '[Client’s own words about how a question got handled — sourced review goes here.]',
-    who: '[First name, state]',
-  },
-];
 
 const faqs = [
   {
@@ -79,10 +59,9 @@ const faqs = [
   heading="Medicare Supplement (Medigap)"
   intro="Medicare Supplement (Medigap) plans work alongside Original Medicare to help cover your share of costs. These plans are identified by letters, such as Plan G or Plan N. Each letter represents a standardized set of benefits established by the federal government, so the coverage for the same letter is the same no matter which insurance company offers it."
 >
-  <!-- ─── What Medigap is ─────────────────────────────────────────────── -->
+  <!-- ─── What Medigap is ─────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
-      <p class="crumbs"><a href="/medicare">Medicare</a> / Medicare Supplement</p>
       <p class="eyebrow">How Medigap works</p>
 
       <div class="section-intro">
@@ -214,43 +193,11 @@ const faqs = [
     </div>
   </section>
 
-  <!-- ─── Testimonials TEMPLATE ───────────────────────────────────────── -->
-  <section class="section" id="testimonials" aria-labelledby="testimonials-heading">
-    <div class="container">
-      <p class="eyebrow">Client stories</p>
-
-      <div class="section-intro">
-        <h2 id="testimonials-heading">What working together is like.</h2>
-      </div>
-
-      <div class="callout callout--note">
-        <h3>Template — not real reviews</h3>
-        <p>
-          The three cards below are an empty layout showing where sourced client
-          reviews will sit. They are not quotes from real people and are not
-          attributed to anyone. They get replaced wholesale with verbatim reviews
-          once those are collected, with the client’s permission.
-        </p>
-      </div>
-
-      <div class="cards cards--3" style="margin-top: clamp(28px, 3.5vw, 44px)">
-        {testimonialTemplate.map((item) => (
-          <article class="card review-card">
-            <p class="stars" aria-hidden="true">★★★★★</p>
-            <blockquote>{item.quote}</blockquote>
-            <footer>{item.who}</footer>
-          </article>
-        ))}
-      </div>
-
-      <p class="reviews-footnote">
-        Reviews will be shown exactly as written, and only with permission.
-      </p>
-    </div>
-  </section>
-
-  <!-- ─── How Lisa works ──────────────────────────────────────────────── -->
-  <section class="section section--navy" id="how-i-help" aria-labelledby="help-heading">
+  {/* With the template block gone, this section follows the (navy) Part D
+      panel, so it goes light and the FAQ takes the navy turn — the same
+      closing rhythm the Part D page uses. */}
+  <!-- ─── How Lisa works ────────────────────────────────────── -->
+  <section class="section" id="how-i-help" aria-labelledby="help-heading">
     <div class="container">
       <p class="eyebrow">How I help</p>
 
@@ -289,8 +236,8 @@ const faqs = [
     </div>
   </section>
 
-  <!-- ─── FAQ ─────────────────────────────────────────────────────────── -->
-  <section class="section" id="faq" aria-labelledby="faq-heading">
+  <!-- ─── FAQ ─────────────────────────────────────────────── -->
+  <section class="section section--navy" id="faq" aria-labelledby="faq-heading">
     <div class="container">
       <p class="eyebrow">Questions</p>
 

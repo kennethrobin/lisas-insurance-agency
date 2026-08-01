@@ -1,11 +1,17 @@
 ---
-// Hero: a warm field of colour with the headline set very large and very light
-// — no stock humans, per the imagery rule.
+// Hero: a warm field of colour with one composed statement group set mid
+// frame — no stock humans, per the imagery rule.
 //
-// The H1 carries the same sentence as before, typeset in two parts: the opening
-// phrase runs at display scale across the panel, the rest sits under it small
-// and quiet. The split is presentational only — the sentence is unchanged.
-// Quick-start bar routes to a section; it collects no data.
+// The lockup is the whole composition now: the display line, the "I'm Lisa"
+// sentence, and the Talk to Lisa action, grouped in the middle of the frame
+// (owner's request, 2026-08). The old sub-statement ("with a real person in
+// your corner") is gone. So are the rotating review capsule and the
+// quick-start box that used to sit on the hero's floor: both were already
+// display:none at the owner's request, and the capsule carried placeholder
+// quotes that must never ship — real proof lives in the Reviews section,
+// which pulls from Google. On phones the quick-start survives as the
+// NeedsSelector section directly under the hero.
+import { site } from '../../data/site';
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -27,57 +33,20 @@
   </div>
 
   <div class="container">
-    <h1 id="hero-heading">
-      {/* Stacked deliberately — the break is part of the composition, not a
-          wrap, so it holds at every width. */}
-      <span class="display-xl">Medicare<br />made simple</span>
-      <span class="display-tail">— with a real person in your corner.</span>
-    </h1>
+    <div class="hero-lockup">
+      <h1 id="hero-heading">
+        {/* Stacked deliberately — the break is part of the composition, not a
+            wrap, so it holds at every width. */}
+        <span class="display-xl">Medicare<br />made simple</span>
+      </h1>
 
-    <!-- The working controls sit on the hero's baseline, under the display line -->
-    <div class="hero-floor">
-      <div>
-        <p class="hero-sub">
-          I’m Lisa. I help people across the country with Medicare, health, dental
-          and vision coverage — free — and I stay with you long after you enroll.
-        </p>
+      <p class="hero-sub">
+        I’m Lisa. I help people across the country with Medicare, health, dental
+        and vision coverage, free, and I stay with you long after you enroll.
+      </p>
 
-        <!-- Rotating review chip (one visible at a time; rotation pauses under reduced motion) -->
-        <div class="review-chip">
-          <!-- REPLACE: real review -->
-          <blockquote class="is-active">
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <span>“Lisa made Medicare finally make sense to me.”</span>
-            <span class="who">— Margaret, TX</span>
-          </blockquote>
-          <!-- REPLACE: real review -->
-          <blockquote>
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <span>“She found the right plan and still checks in every year.”</span>
-            <span class="who">— James, OK</span>
-          </blockquote>
-          <!-- REPLACE: real review -->
-          <blockquote>
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <span>“I call Lisa, not an 800 number. That’s why I stay.”</span>
-            <span class="who">— Diane, MO</span>
-          </blockquote>
-        </div>
-      </div>
-
-      <!-- Quick-start bar: one select + one button, no data collected -->
-      <form class="quickstart">
-        <div class="field">
-          <label for="quickstart-topic">What do you need help with?</label>
-          <select id="quickstart-topic" name="topic">
-            <option value="medicare">Medicare</option>
-            <option value="health">Health insurance (under 65)</option>
-            <option value="dental">Dental &amp; Vision</option>
-            <option value="other">Something else</option>
-          </select>
-        </div>
-        <button class="btn btn--accent" type="submit">Get free help</button>
-      </form>
+      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
     </div>
   </div>
 </section>

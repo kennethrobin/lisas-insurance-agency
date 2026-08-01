@@ -24,7 +24,7 @@ This is the question worth answering before any other, because getting it wrong
 is expensive and permanent.
 
 If you're still working at 65 and have coverage through that job, you may be able
-to delay Part B without a penalty — or you may not. It depends on the coverage
+to delay Part B without a penalty, or you may not. It depends on the coverage
 and on how large the employer is. The same question applies to prescription
 coverage and Part D.
 
@@ -40,7 +40,7 @@ through a Medicare Advantage plan instead. You can't hold both.
 
 Which one suits you depends on your doctors, your prescriptions, how much you
 travel, and what you'd rather pay monthly versus at the point of care. That's a
-conversation, not a form — and it's the part I'd rather you didn't rush.
+conversation, not a form, and it's the part I'd rather you didn't rush.
 
 ## What to have in front of you
 

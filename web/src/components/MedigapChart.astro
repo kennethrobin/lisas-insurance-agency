@@ -68,7 +68,7 @@ const rows: { benefit: string; cells: Cell[]; foot?: string }[] = [
   {
     benefit: 'Yearly out-of-pocket limit',
     cells: ['no', 'no', 'no', 'no', 'no', 'no', 'todo', 'todo', 'no', 'no'],
-    foot: 'Plans K and L are the only two with a yearly out-of-pocket limit. Once you reach it, the plan pays 100% of covered services for the rest of the year. The limit is set federally and changes each year — [CONFIRM: current-year amounts for K and L].',
+    foot: 'Plans K and L are the only two with a yearly out-of-pocket limit. Once you reach it, the plan pays 100% of covered services for the rest of the year. The limit is set federally and changes each year. [CONFIRM: current-year amounts for K and L].',
   },
 ];
 
@@ -106,7 +106,7 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
               ) : (
                 <span class="cell-part">{cell}<span class="visually-hidden"> covered</span></span>
               )}
-              <span class="visually-hidden"> — Plan {plans[i]}</span>
+              <span class="visually-hidden">, Plan {plans[i]}</span>
             </td>
           ))}
         </tr>
@@ -118,8 +118,8 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
 <p class="table-key">
   <span><span class="cell-yes" aria-hidden="true">●</span> Covered in full</span>
   <span><span class="cell-no" aria-hidden="true">—</span> Not covered</span>
-  <span>50% / 75% / 80% — the share the plan pays</span>
-  <span><span class="cell-todo">CONFIRM</span> — figure pending</span>
+  <span>50% / 75% / 80%: the share the plan pays</span>
+  <span><span class="cell-todo">CONFIRM</span>: figure pending</span>
 </p>
 
 {footnotes.map((note) => <p class="source-note">{note}</p>)}
@@ -128,7 +128,7 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
   <strong>Source:</strong> Medigap benefits are standardized by federal law, and
   this grid reproduces the official one published at
   <a href={links.medicareGov} {...externalAttrs}>Medicare.gov</a>. Every insurance
-  company must offer the same benefits under the same plan letter — what differs
+  company must offer the same benefits under the same plan letter; what differs
   between companies is the price and the service. Plans C and F are not available
   to people who became eligible for Medicare on or after January 1, 2020.
   Massachusetts, Minnesota and Wisconsin standardize their plans differently, so

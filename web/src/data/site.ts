@@ -92,7 +92,7 @@ export const pageStubs: PageStub[] = [
   { path: '/policyholders/documents', title: 'Online Documents', note: '' },
   { path: '/policyholders/contact-carrier', title: 'Contact My Carrier', note: '' },
 
-  { path: '/accessibility', title: 'Accessibility Statement', note: 'Keep — legal.' },
+  { path: '/accessibility', title: 'Accessibility Statement', note: 'Keep (legal).' },
   { path: '/privacy', title: 'Privacy Policy', note: 'New page. Missing on the current site; needed for trust + compliance.' },
   { path: '/thank-you', title: 'Thank You', note: 'Form confirmation. Must be noindex.' },
 ];
