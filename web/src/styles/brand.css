@@ -25,50 +25,30 @@
 
 /* ---------- Design tokens ---------- */
 :root {
-  /* Editorial navy / cream / gold palette. A deep, slightly warm navy replaces
-     the old brighter blue; pure white becomes a warm ivory. Gold accent kept. */
-  --navy:      #1B2E4A;  /* dark sections, hero overlay, dark nav bar, footer */
-  --navy-deep: #132236;  /* gradient / overlay partner (darker) */
-  --navy-soft: #294162;  /* gradient partner (lighter end) */
-  --steel:     #3F5C7A;  /* links, secondary accents */
+  --navy:   #20344F;  /* headers, header bar, footer, trust anchor */
+  --navy-deep: #16273D; /* gradient partner for hero */
+  --navy-soft: #2C4666; /* gradient partner for hero (lighter end) */
+  --steel:  #4A6D8C;  /* links, secondary accents */
+  --gold:   #C68A3C;  /* PRIMARY ACTION ONLY — buttons */
+  --gold-hover: #B0762C;
+  --gold-ink: #3A2708; /* dark text on gold buttons */
+  --green:  #34704F;  /* reassurance accents: checkmarks, badges. Never a button */
+  --green-on-navy: #8FD0A8; /* readable green tint for marks on navy */
+  --ink:    #22303D;  /* ALL body text */
+  --mist:   #F4F7FA;  /* alternating section backgrounds */
+  --paper:  #FFFFFF;
+  --hairline: #D9E2EA;      /* the only allowed gray — borders */
+  --on-navy-body: #E4ECF4;  /* body text on navy backgrounds */
+  --on-navy-soft: #C9D6E2;  /* small print on navy backgrounds */
 
-  --gold:      #C68A3C;  /* PRIMARY ACTION + emphasized words + small highlights */
-  --gold-hover:#B0762C;
-  --gold-ink:  #3A2708;  /* dark text on gold */
-  --gold-soft: #E3B978;  /* light gold for marks/eyebrows on navy */
-
-  --ink:   #26313C;      /* ALL body text (on cream) */
-  --cream: #F3EADA;      /* warm page background (was pure white) */
-  --paper: #FBF6EC;      /* warm near-white card / raised surface (was #FFF) */
-  --mist:  #EDE3D1;      /* alternating warm section background */
-  --hairline: #E2D7C4;   /* the only allowed neutral — warm borders */
-  --on-navy-body: #EAE3D5;  /* body text on navy backgrounds */
-  --on-navy-soft: #C7BEAC;  /* small print on navy backgrounds */
-
-  /* Reassurance marks are gold in this palette (no green anywhere). Defined as
-     tokens so every existing green reference recolors consistently. */
-  --green:         var(--gold);
-  --green-on-navy: var(--gold-soft);
-
-  /* Type: editorial high-contrast serif for display, clean sans for body. */
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-display: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-body: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  /* Type-scale tokens — compact scale, all sizes relative to the 17px body.
-     NOTE: CLAUDE.md pins body at 18px minimum for the senior audience; this
-     drops it one step to 17px per an explicit design request. */
-  --fs-eyebrow: 0.75rem;
-  --fs-body: 1.0625rem;  /* 17px base */
-  --fs-lead: 1.125rem;
-  --fs-h3: 1.3rem;
-  --fs-h2: clamp(1.7rem, 2.1vw + 0.9rem, 2.4rem);
-  --fs-h1: clamp(2.1rem, 3.9vw + 0.9rem, 3.3rem);
-
-  --radius: 20px;
+  --radius: 16px;
   --radius-sm: 12px;
   --header-h: 76px;
-  --container: 1200px;
-  --shadow-card: 0 2px 6px rgba(19, 34, 54, 0.06), 0 14px 34px rgba(19, 34, 54, 0.08);
+  --container: 1120px;
+  --shadow-card: 0 2px 6px rgba(32, 52, 79, 0.06), 0 12px 32px rgba(32, 52, 79, 0.07);
 }
 
 /* ---------- Reset / base ---------- */
@@ -82,10 +62,10 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-size: var(--fs-body);      /* 17px base (compact scale) */
+  font-size: 1.125rem;            /* 18px base — non-negotiable */
   line-height: 1.65;
   color: var(--ink);
-  background: var(--cream);       /* warm editorial page background */
+  background: var(--paper);
   overflow-x: clip;               /* guard against any accidental horizontal scroll */
 }
 
@@ -93,58 +73,24 @@ img, svg, video { max-width: 100%; display: block; }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.15;
+  font-weight: 700;
+  line-height: 1.18;
   color: var(--navy);
   text-wrap: balance;
 }
 
-/* Editorial serif headlines (Fraunces): the high-contrast letterforms carry the
-   display weight, so we drop the old heavy sans weight + negative tracking. */
+/* Large sans headlines: heavier weight + slight negative tracking reads
+   more polished and holds together at display sizes. */
 h1 {
-  font-size: var(--fs-h1);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
+  font-size: clamp(2.15rem, 4.2vw + 1rem, 3.4rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
 }
-h2 { font-size: var(--fs-h2); letter-spacing: -0.005em; }
-h3 { font-size: var(--fs-h3); }
+h2 { font-size: clamp(1.8rem, 2.2vw + 1rem, 2.4rem); letter-spacing: -0.008em; }
+h3 { font-size: 1.3rem; }
 
-/* Bordered capsule eyebrow above section titles (reference cue) + accent word. */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.3rem 0.85rem;
-  border: 1px solid rgba(198, 138, 60, 0.5);
-  border-radius: 999px;
-  background: rgba(198, 138, 60, 0.1);
-  font-family: var(--font-body);
-  font-size: var(--fs-eyebrow);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1.1rem;
-}
-.eyebrow::before {
-  content: "";
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--gold);
-  flex: 0 0 auto;
-}
-.section--navy .eyebrow, .how-panel .eyebrow {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--gold-soft);
-}
-.section--navy .eyebrow::before, .how-panel .eyebrow::before {
-  background: var(--gold-soft);
-}
-.accent { color: var(--gold); }
-
-p { max-width: 65ch; text-wrap: pretty; }  /* pretty = no single-word orphan lines */
+p { max-width: 65ch; }
 
 a { color: var(--steel); text-underline-offset: 3px; }
 a:hover { color: var(--navy); }
@@ -166,37 +112,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   padding-inline: clamp(20px, 4vw, 32px);
 }
 
-.section { padding-block: clamp(72px, 10vw, 120px); }
+.section { padding-block: clamp(64px, 9vw, 104px); }
 .section--mist { background: var(--mist); }
 .section--navy { background: var(--navy); color: var(--on-navy-body); }
 .section--navy h2 { color: #fff; }
 
-/* Section headers: one consistent hierarchy — capsule top-most, then the title,
-   everything left-aligned. */
-.section-intro {
-  margin-bottom: clamp(32px, 4.5vw, 48px);
-  max-width: 760px;
-}
-
-/* Split variant: the capsule still sits on top spanning the full width; below
-   it the title (left) and lead copy (right) start on the same top line. */
-.section-intro--split { max-width: none; }
-@media (min-width: 900px) {
-  .section-intro--split {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 0 clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
-  }
-  .section-intro--split .eyebrow { grid-column: 1 / -1; justify-self: start; }
-  /* Small offset so the lead's first line optically tops out with the H2 cap. */
-  .section-intro--split .lead { margin-top: 0.45rem; }
-}
-.lead { font-size: var(--fs-lead); margin-top: 0.9rem; }
-
-/* Why-Lisa headline gets the full container so it sits on one line, matching
-   the Reviews heading. */
-#why-me .section-intro { max-width: none; }
+.section-intro { margin-bottom: clamp(32px, 5vw, 48px); }
+.lead { font-size: 1.2rem; margin-top: 0.9rem; }
 
 .skip-link {
   position: absolute;
@@ -216,13 +138,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-height: 48px;
-  padding: 0.75rem 1.6rem;
+  gap: 0.55rem;
+  min-height: 52px;
+  padding: 0.85rem 1.8rem;
   border-radius: 999px;
   border: 2px solid transparent;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
@@ -260,7 +182,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .hero .btn--outline:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
 /* "Calling connects you with Lisa…" — rides along with every phone display */
-.microline { font-size: 0.85rem; margin-top: 0.6rem; }
+.microline { font-size: 0.9rem; margin-top: 0.6rem; }
 .section--navy .microline, .hero .microline, .site-footer .microline { color: var(--on-navy-soft); }
 
 /* ---------- Header ---------- */
@@ -268,42 +190,37 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 60;
-  /* 14px × 2 + 44px content = 72px, matching --header-h exactly.
-     Whole-pixel value eliminates subpixel rounding differences
-     above vs below the call pill. */
-  padding-block: 0.875rem;
+  padding-block: 0.65rem;
   background: transparent;
   transition: background-color 0.25s, box-shadow 0.25s;
 }
 
-/* Logo left, nav centered (takes the width it needs), actions right. Centering
-   via auto margins instead of space-between keeps the nav from being squeezed
-   and wrapping. */
 .site-header .container {
   display: flex;
   align-items: center;
-  gap: 0.75rem 1rem;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(0.95rem, 0.8vw + 0.65rem, 1.15rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
   color: #fff;
   text-decoration: none;
-  line-height: 1.2;
+  line-height: 1.25;
   padding-block: 0.4rem;
-  white-space: nowrap;   /* logo always one line */
+  text-wrap: balance;
 }
 
-/* Compact pills + logo on small screens (logo stays one line) */
+/* Keep the wordmark to two tidy lines next to the phone pill on small screens */
 @media (max-width: 560px) {
-  .wordmark { font-size: 0.9rem; }
-  .header-phone { font-size: 0.9rem; padding: 0.35rem 0.8rem; }
+  .wordmark { font-size: 0.95rem; }
+  .header-phone { font-size: 0.95rem; padding: 0.35rem 0.85rem; }
 }
 .wordmark:hover { color: #fff; }
 
-.header-right { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
+.header-right { display: flex; align-items: center; gap: 0.6rem; }
 
 /* Phone: white outline pill over hero -> gold tap-to-call pill on white header */
 .header-phone {
@@ -311,16 +228,12 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   gap: 0.45rem;
   min-height: 44px;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   border-radius: 999px;
   border: 2px solid rgba(255, 255, 255, 0.55);
   color: #fff;
   font-weight: 700;
-  font-size: 0.95rem;
-  /* Explicit line-height matches .nav-top (1.2). Without it the pill inherits
-     body's 1.65, making the line box taller than the icon and creating an
-     optical vertical shift inside the pill. */
-  line-height: 1.2;
+  font-size: 1rem;
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 0.25s, color 0.25s, border-color 0.25s;
@@ -328,16 +241,16 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .header-phone:hover { color: #fff; border-color: #fff; }
 
 /* Primary nav — always visible, no hamburger. Driven by site.ts `mainNav`. */
-.site-nav { display: flex; min-width: 0; margin-inline: auto; }
+.site-nav { display: flex; min-width: 0; }
 .site-nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: nowrap;      /* single tidy row on desktop; stacks below at <=960px */
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.1rem 0.35rem;
+  gap: 0.15rem 0.35rem;
 }
 .nav-item { position: relative; }
 
@@ -347,13 +260,13 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: center;
   gap: 0.3rem;
   min-height: 44px;
-  padding: 0.35rem 0.55rem;
+  padding: 0.4rem 0.7rem;
   border: 0;
   border-radius: 10px;
   background: transparent;
   color: #fff;
   font-family: var(--font-body);
-  font-size: clamp(0.85rem, 0.25vw + 0.78rem, 0.95rem);
+  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.05rem);
   font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
@@ -367,15 +280,20 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .nav-caret { width: 10px; height: 6px; flex: 0 0 auto; transition: transform 0.2s; }
 [data-nav-dd] > .nav-top[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
 
-/* Solid (scrolled) state = dark navy bar. The nav rides transparent over the
-   dark hero at the top, then becomes a solid navy bar once you scroll. */
+/* Solid (scrolled) state */
 .site-header.is-solid {
-  background: var(--navy);
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 10px 30px rgba(19, 34, 54, 0.28);
+  background: var(--paper);
+  box-shadow: 0 1px 0 var(--hairline), 0 8px 24px rgba(32, 52, 79, 0.08);
 }
-.site-header.is-solid .wordmark { color: #fff; }
-.site-header.is-solid .nav-top { color: var(--on-navy-body); }
-.site-header.is-solid .nav-top:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
+.site-header.is-solid .wordmark { color: var(--navy); }
+.site-header.is-solid .nav-top { color: var(--navy); }
+.site-header.is-solid .nav-top:hover { background: var(--mist); color: var(--navy); }
+.site-header.is-solid .header-phone {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--gold-ink);
+}
+.site-header.is-solid .header-phone:hover { background: var(--gold-hover); border-color: var(--gold-hover); }
 
 /* Sub-item dropdown — lightweight disclosure (hover/click/focus). The panel is
    always white with navy text, independent of the header's transparent/solid
@@ -404,7 +322,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 }
 .nav-dd-heading {
   padding: 0.25rem 0.75rem;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -413,11 +331,11 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .nav-dropdown ul { list-style: none; margin: 0; padding: 0; }
 .nav-dropdown a {
   display: block;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 0.75rem;
   border-radius: 8px;
   color: var(--navy);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.3;
   text-decoration: none;
 }
@@ -427,10 +345,10 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    phone, shrinking slightly instead of hiding behind a toggle. The header's real
    height is measured into --header-actual (JS), which the hero's top offset uses,
    so the first view never crops however many rows the nav wraps to. */
-@media (max-width: 960px) {
-  .site-header .container { flex-wrap: wrap; row-gap: 0.4rem; }
-  .site-nav { flex: 1 0 100%; order: 3; margin-inline: 0; }
-  .site-nav-list { flex-wrap: wrap; justify-content: flex-start; }
+@media (max-width: 720px) {
+  .site-header .container { flex-wrap: wrap; row-gap: 0.35rem; }
+  .site-nav { flex: 1 0 100%; order: 3; }
+  .site-nav-list { justify-content: flex-start; }
   .nav-top { padding: 0.35rem 0.55rem; font-size: 0.95rem; }
   .nav-dropdown { min-width: 220px; }
 }
@@ -439,24 +357,25 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 /* The hero is a self-contained section: it fills the viewport and its contents
    fit inside it at any browser size, so the quick-start bar is never cut off.
 
-   `--hero-gap` sets the space between the header and the content. It's keyed to
-   viewport *height* (vh), so on a short laptop window the hero compresses
-   instead of pushing the bottom row below the fold. */
+   `--hero-gap` drives BOTH the space above the headline and the space under the
+   subhead, so those two gaps stay visually matched at every size. It's keyed to
+   viewport *height* (vh), so on a short laptop window the whole hero compresses
+   instead of pushing the quick-start bar below the fold. */
 .hero {
   --hero-gap: clamp(0.75rem, 5.5vh, 5rem);
+  /* Distance from the wordmark's bottom edge to the bottom of the header, so
+     the gap under the subhead renders visually equal to the logo->H1 gap.
+     Smaller on mobile, where the wordmark wraps to two lines. */
+  --hero-gap-offset: 22px;
 
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  /* Solid navy gradient — the hero photo is parked for now. To bring it back,
-     re-add the url('/hero.png') layer under a readability overlay. */
   background: linear-gradient(158deg, var(--navy-soft) 0%, var(--navy) 46%, var(--navy-deep) 100%);
   color: var(--on-navy-body);
 
   /* Fills the viewport, capped so a tall monitor doesn't leave a large empty
-     band under the quick-start bar. Slack space is distributed by .hero-copy's
-     auto margins so the copy breathes instead of pinning to the header. */
+     band under the quick-start bar. Deliberately NOT flex-centred: centring
+     adds slack above the headline, which would break the gap match below. */
   min-height: 100vh;                 /* fallback for browsers without svh */
   min-height: min(100svh, 860px);    /* svh = viewport minus mobile browser UI */
 
@@ -486,19 +405,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 66%);
 }
 
-.hero .container {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* The copy block floats in the hero's slack space — equal breathing room above
-   and below — so the headline isn't pinned to the header and the quick-start
-   isn't stranded mid-page. Auto margins collapse to zero on short viewports. */
-.hero-copy { margin-block: auto; }
+.hero .container { position: relative; z-index: 1; }
 
 /* Wider cap lets the headline flow further right and balance into 3 lines
    instead of 4 (text-wrap: balance evens the line lengths). The 9vh ceiling
@@ -507,79 +414,65 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .hero h1 {
   color: #fff;
   max-width: 24ch;
-  font-size: min(clamp(2rem, 3.8vw + 0.9rem, 3rem), 8vh);
+  font-size: min(clamp(2.15rem, 4.2vw + 1rem, 3.4rem), 8vh);
 }
 
 .hero-sub {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   max-width: 62ch;        /* more room so the last line isn't a lone word */
   margin-top: clamp(0.5rem, 1.5vh, 1.2rem);
   text-wrap: pretty;      /* avoids orphans / hanging single words */
 }
 
-/* Rotating review chip — the right half of the hero's bottom row on desktop.
-   Every quote is stacked in the same grid cell and hidden with visibility
-   (not display), so the chip is always sized by the longest review — the box
-   never changes size as the rotation advances, and the row height it shares
-   with the quick-start bar stays put. */
+/* Rotating review chip. Both this gap and the logo->H1 gap above are driven by
+   --hero-gap, so they stay visually matched as the hero compresses to fit. */
 .review-chip {
   position: relative;
+  margin-top: calc(var(--hero-gap) + var(--hero-gap-offset));
   max-width: 560px;
   min-height: 3.4rem;
-  display: grid;
 }
 .review-chip blockquote {
-  grid-area: 1 / 1;        /* all quotes share one cell; the longest sets its size */
-  visibility: hidden;      /* hidden quotes still occupy the cell */
-  display: flex;
-  flex-wrap: wrap;
+  display: none;
   align-items: baseline;
-  align-content: center;   /* centers the wrapped rows in the shared height */
-  gap: 0.4rem 0.6rem;
+  gap: 0.6rem;
   padding: 0.7rem 1.2rem;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: 0.95rem;
-  line-height: 1.3;        /* tighter leading so the quote fits the shared height */
+  font-size: 1rem;
   color: #fff;
 }
-.review-chip blockquote.is-active { visibility: visible; }
+.review-chip blockquote.is-active { display: flex; flex-wrap: wrap; }
 .review-chip .stars { color: var(--green-on-navy); letter-spacing: 0.1em; white-space: nowrap; }
 .review-chip .who { color: #BFD3E4; white-space: nowrap; }
 
-/* Bottom row: quick-start bar (left) and review chip (right) divide the hero's
-   base in half on desktop; stacked on smaller screens. */
-.hero-bottom {
-  margin-top: clamp(0.75rem, 2.5vh, 2rem);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem clamp(1.25rem, 2.5vw, 2rem);
-  align-items: stretch;   /* both boxes share the taller box's height */
-}
-@media (min-width: 900px) {
-  .hero-bottom { grid-template-columns: 1fr 1fr; }
-}
-
-/* Quick-start bar. Title + dropdown + button; the title keeps to one line. */
+/* Quick-start bar */
 .quickstart {
-  margin-top: 0;
+  margin-top: clamp(0.75rem, 2.5vh, 2rem);
   background: var(--paper);
   border-radius: 18px;
-  padding: clamp(0.8rem, 2vh, 1rem) clamp(0.8rem, 2vh, 1.25rem);
+  padding: clamp(0.8rem, 2vh, 1.1rem);
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.9rem 1rem;
-  width: 100%;
+  align-items: flex-end;
+  gap: 0.9rem;
+  max-width: 640px;
+}
+.quickstart .field { flex: 1 1 260px; }
+.quickstart label {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 0.45rem;
 }
 .quickstart select {
-  flex: 1 1 240px;
-  min-width: 0;
-  min-height: 48px;   /* matches .btn height */
+  width: 100%;
+  min-height: 52px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--ink);
   background: var(--paper);
   border: 2px solid var(--hairline);
@@ -588,127 +481,85 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 }
 .quickstart select:focus-visible { outline-offset: 1px; }
 .quickstart .btn { flex: 0 0 auto; }
-.quickstart-title {
-  flex: 1 0 100%;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.2rem;
-  line-height: 1.2;
-  color: var(--navy);
-  white-space: nowrap;   /* the title never wraps to two lines */
-}
-/* Wide windows: title, dropdown, and button share a single line inside the
-   half-width bar — compact title, a dropdown that can shrink (its options are
-   short), compact button. Below 1200px the title takes its own single line. */
-@media (min-width: 1200px) {
-  .quickstart { flex-wrap: nowrap; padding: 0.7rem 0.9rem; gap: 0.6rem; }
-  .quickstart-title { flex: 0 0 auto; font-size: 0.98rem; padding-right: 0.35rem; }
-  .quickstart select { flex: 1 1 130px; min-height: 44px; font-size: 0.95rem; }
-  .quickstart .btn { min-height: 44px; padding: 0.5rem 1.1rem; font-size: 0.9rem; white-space: nowrap; }
-}
 
-/* ---------- Stat strip: outlined capsules on cream, below the hero ---------- */
+/* ---------- Trust band ---------- */
 .trust-band {
-  background: var(--cream);
-  padding-block: clamp(32px, 4.5vw, 52px);
+  background: var(--navy);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  padding-block: clamp(28px, 4vw, 40px);
 }
-.stat-strip {
+.trust-band ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.9rem 1.25rem;
+  gap: 0.9rem 2rem;
 }
-.stat {
+.trust-band li {
   display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  border: 1.5px solid rgba(27, 46, 74, 0.22);
-  border-radius: 22px;
-  padding: 0.9rem 1.25rem;
-}
-.stat-lead {
-  font-family: var(--font-display);
+  align-items: center;
+  gap: 0.7rem;
   font-weight: 600;
-  font-size: clamp(1.55rem, 2.2vw, 2.1rem);
-  line-height: 1.1;
-  color: var(--navy);
+  font-size: 1.05rem;
 }
-.stat-label { font-size: 0.92rem; }
+.trust-band .mark { color: var(--green-on-navy); flex: 0 0 auto; }
 
 /* ---------- Generic cards ---------- */
 .cards {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
+  gap: 1.25rem;
 }
 .card {
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: clamp(1.25rem, 2.2vw, 1.75rem);
+  padding: clamp(1.5rem, 3vw, 2rem);
   box-shadow: var(--shadow-card);
-  /* Flex column so per-card CTAs can pin to the bottom at equal grid heights. */
-  display: flex;
-  flex-direction: column;
 }
-.card > p { flex-grow: 1; }  /* body copy absorbs slack so CTAs align across cards */
 .section:not(.section--mist) .card { background: var(--mist); box-shadow: none; }
-
-/* Highlighted dark card in a light grid (reference cue). */
-.section .card.card--dark {
-  background: var(--navy);
-  border-color: var(--navy);
-  color: var(--on-navy-body);
-  box-shadow: var(--shadow-card);
-}
-.card.card--dark h3 { color: #fff; }
 .card h3 { margin-bottom: 0.6rem; }
-/* Rounded media/color tile at the top of a card (solid-color stand-in for a photo). */
-.card-media {
-  aspect-ratio: 5 / 3;
-  border-radius: 14px;
-  background: linear-gradient(150deg, var(--navy-soft), var(--navy) 72%);
-  margin-bottom: 1.35rem;
-}
-.card-media--cream { background: rgba(198, 138, 60, 0.16); }
 .card .card-kicker {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--steel);
   margin-bottom: 0.5rem;
 }
-/* Card CTA: site-style pill button, pinned to the card's bottom edge so all
-   CTAs in a row sit level regardless of copy length. */
-.card-cta { margin-top: 1.25rem; align-self: flex-start; }
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  margin-top: 0.9rem;
+  font-weight: 700;
+  color: var(--steel);
+}
 
 /* Green check marks — reassurance only */
-/* Dark rounded icon tile (editorial reference look): navy tile, gold glyph. */
 .check-icon {
-  width: 48px; height: 48px;
-  border-radius: 14px;
-  background: var(--navy);
-  color: var(--gold-soft);
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(52, 112, 79, 0.12);
+  color: var(--green);
   display: grid;
   place-items: center;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 /* ---------- Medicare section ---------- */
 .medicare-cta { margin-top: clamp(32px, 5vw, 44px); }
-.medicare-cta .btn { margin-top: 1.35rem; }
+.medicare-cta .btn { margin-top: 1.2rem; }
 
-/* Intentional solid navy media block (stands in for the explainer video). */
 .video-placeholder {
   margin-top: clamp(36px, 5vw, 52px);
-  border: 0;
+  border: 2px dashed var(--hairline);
   border-radius: var(--radius);
-  background: var(--navy);
-  color: var(--on-navy-body);
+  background: var(--mist);
   aspect-ratio: 16 / 7;
   display: grid;
   place-content: center;
@@ -720,115 +571,63 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .video-placeholder .play-ring {
   width: 64px; height: 64px;
   border-radius: 50%;
-  background: var(--gold);
-  color: var(--gold-ink);
+  background: var(--navy);
+  color: #fff;
   display: grid;
   place-items: center;
 }
-.video-placeholder p { font-weight: 600; color: #fff; }
+.video-placeholder p { font-weight: 600; color: var(--navy); }
 
-/* ---------- How it works: dark rounded feature panel (reference cue) ---------- */
-.how-panel {
-  background: var(--navy);
-  border-radius: clamp(20px, 3vw, 36px);
-  padding: clamp(1.25rem, 2.8vw, 2.5rem);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  color: var(--on-navy-body);
-}
-.how-panel h2 { color: #fff; }
-.how-media {
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(227, 185, 120, 0.14), rgba(227, 185, 120, 0) 60%),
-    linear-gradient(160deg, var(--navy-soft), var(--navy-deep) 85%);
-  min-height: 260px;
-}
-@media (min-width: 900px) {
-  .how-panel { grid-template-columns: 0.85fr 1.15fr; align-items: stretch; }
-  .how-media { min-height: 100%; }
-}
+/* ---------- How it works ---------- */
 .steps {
   list-style: none;
   counter-reset: step;
-  margin: 1.4rem 0 0;
+  margin: 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 .steps li {
   counter-increment: step;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  gap: 1rem 1.35rem;
-  padding-block: 1.2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--mist);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 3vw, 2rem);
 }
-.steps li:first-child { border-top: 0; padding-top: 0.4rem; }
-/* Small gold number disc (reference cue). */
 .steps li::before {
   content: counter(step);
   display: grid;
   place-items: center;
-  width: 24px; height: 24px;
+  width: 52px; height: 52px;
   border-radius: 50%;
-  background: var(--gold);
-  color: var(--gold-ink);
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 700;
-  align-self: start;
-  margin-top: 0.2rem;
-}
-.steps h3 { color: #fff; font-size: 1.15rem; margin-bottom: 0.3rem; }
-.steps p { font-size: 0.95rem; }
-
-/* ---------- Reviews ---------- */
-/* Big serif opening quote (reference cue). */
-.review-card::before {
-  content: "\201C";
-  display: block;
+  background: var(--navy);
+  color: #fff;
   font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 600;
-  line-height: 0.55;
-  color: var(--gold);
+  font-size: 1.5rem;
+  font-weight: 700;
   margin-bottom: 1rem;
 }
-.review-card.card--dark::before { color: var(--gold-soft); }
+.steps h3 { margin-bottom: 0.5rem; }
+
+/* ---------- Reviews ---------- */
 .review-card .stars {
   color: var(--green);
   letter-spacing: 0.12em;
-  font-size: 1rem;
+  font-size: 1.05rem;
   margin-bottom: 0.8rem;
 }
-.review-card.card--dark .stars { color: var(--gold-soft); }
-.review-card blockquote { font-size: 1rem; }
+.review-card blockquote { font-size: 1.05rem; }
 .review-card footer { margin-top: 0.9rem; font-weight: 700; color: var(--navy); }
-.review-card.card--dark footer { color: #fff; }
 .reviews-actions {
   margin-top: 2rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.9rem;
 }
-.reviews-footnote { margin-top: 1.2rem; font-size: 0.9rem; }
-/* States-not-covered note stays no wider than the CTA button row above it. */
-#dental .reviews-footnote { max-width: 42ch; }
+.reviews-footnote { margin-top: 1.2rem; font-size: 0.95rem; }
 
 /* ---------- FAQ ---------- */
-/* Capsule sits above the whole section; below it the title (left) and the
-   accordion stack (right) start on the same top line. */
-.faq-grid h2 { margin-bottom: clamp(20px, 3vw, 32px); }
-@media (min-width: 900px) {
-  .faq-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
-  }
-  .faq-grid h2 { margin-bottom: 0; }
-}
 .faq-list { display: grid; gap: 0.9rem; max-width: 820px; }
 .faq-list details {
   background: var(--paper);
@@ -839,9 +638,9 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   list-style: none;
   cursor: pointer;
   position: relative;
-  padding: 1rem 3rem 1rem 1.2rem;
+  padding: 1.1rem 3.2rem 1.1rem 1.3rem;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--navy);
   min-height: 44px;
   border-radius: var(--radius-sm);
@@ -853,26 +652,17 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   right: 1.2rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   font-weight: 400;
   color: var(--steel);
   line-height: 1;
   transition: transform 0.2s;
 }
-.faq-list details[open] summary::after { content: "\2013"; } /* en dash — CSS hex escape (no 'u') */
-/* 0.6rem top gives a clear visual gap between the question and the answer. */
-.faq-list details p { padding: 0.6rem 1.3rem 1.2rem; }
+.faq-list details[open] summary::after { content: "–"; }
+.faq-list details p { padding: 0 1.3rem 1.2rem; }
 
 /* ---------- CTA band + contact form ---------- */
-/* CTA contact section = a rounded dark panel floating on the cream page,
-   with clear cream space below before the footer begins. */
-.cta-band {
-  position: relative;
-  overflow: hidden;
-  margin-inline: clamp(16px, 4vw, 48px);
-  margin-block-end: clamp(56px, 8vw, 112px);
-  border-radius: clamp(20px, 3vw, 36px);
-}
+.cta-band { position: relative; overflow: hidden; }
 .cta-band::before {
   content: "";
   position: absolute;
@@ -891,12 +681,12 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   align-items: start;
 }
 .cta-copy h2 { max-width: 18ch; }
-.cta-copy .btn { margin-top: 1.35rem; }
+.cta-copy .btn { margin-top: 1.6rem; }
 
 .contact-card {
   background: var(--paper);
   border-radius: var(--radius);
-  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
   box-shadow: 0 18px 44px rgba(10, 20, 34, 0.35);
   color: var(--ink);
 }
@@ -905,16 +695,16 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .contact-form label {
   display: block;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--navy);
   margin-bottom: 0.4rem;
 }
 .contact-form input,
 .contact-form select {
   width: 100%;
-  min-height: 48px;   /* matches .btn height */
+  min-height: 52px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--ink);
   background: var(--paper);
   border: 2px solid var(--hairline);
@@ -938,7 +728,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   background: var(--navy);
   color: var(--on-navy-body);
   padding-block: clamp(56px, 7vw, 80px) 2rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 .site-footer a { color: #fff; }
 .site-footer a:hover { color: var(--on-navy-soft); }
@@ -948,14 +738,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
   grid-template-columns: 1fr;
   gap: 2.5rem;
 }
-.footer-brand .wordmark {
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: clamp(1.55rem, 3vw, 2.1rem);
-  font-weight: 600;
-  line-height: 1.05;
-  padding: 0;
-}
+.footer-brand .wordmark { color: #fff; font-size: 1.35rem; padding: 0; }
 .footer-brand .mission { margin-top: 0.8rem; max-width: 34ch; }
 .footer-contact { margin-top: 1.2rem; display: grid; gap: 0.35rem; }
 .footer-contact a { text-decoration: none; font-weight: 600; }
@@ -964,7 +747,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 .footer-col h3 {
   color: #fff;
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1017,10 +800,15 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 
 /* ---------- Breakpoints ---------- */
 
-/* Phones stack the hero's bottom row, so the vertical rhythm tightens to keep
-   everything above the fold. Declared after the base .hero rule so it wins. */
+/* Phones stack the quick-start bar, so the hero's vertical rhythm needs to
+   tighten further to keep everything above the fold. The smaller offset
+   accounts for the wordmark wrapping to two lines at this width.
+   Declared here, after the base .hero rule, so it actually wins on source order. */
 @media (max-width: 560px) {
-  .hero { --hero-gap: clamp(0.5rem, 3vh, 2.5rem); }
+  .hero {
+    --hero-gap: clamp(0.5rem, 3vh, 2.5rem);
+    --hero-gap-offset: 15px;
+  }
 }
 
 /* Short phones (iPhone SE and similar): even fully compressed, the headline,
@@ -1030,6 +818,7 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
    that proof further down the page. */
 @media (max-width: 560px) and (max-height: 720px) {
   .review-chip { display: none; }
+  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
 
 /* Very short viewports at any width — chiefly a phone held in landscape.
@@ -1038,21 +827,24 @@ section, [id] { scroll-margin-top: calc(var(--header-actual, var(--header-h)) + 
 @media (max-height: 520px) {
   .hero {
     --hero-gap: clamp(0.35rem, 2vh, 1.5rem);
+    --hero-gap-offset: 8px;
     padding-bottom: 0.75rem;
   }
   .review-chip { display: none; }
-  .hero-sub { font-size: 1rem; }
+  .hero-sub { font-size: 1.05rem; }
+  .quickstart { margin-top: calc(var(--hero-gap) + var(--hero-gap-offset)); }
 }
 
 @media (min-width: 640px) {
-  .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  .trust-band ul { grid-template-columns: repeat(2, 1fr); }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (min-width: 1024px) {
   .cards--3 { grid-template-columns: repeat(3, 1fr); }
   .cards--4 { grid-template-columns: repeat(4, 1fr); }
-  .stat-strip { grid-template-columns: repeat(4, 1fr); }
+  .steps { grid-template-columns: repeat(3, 1fr); }
+  .trust-band ul { grid-template-columns: repeat(4, auto); justify-content: space-between; }
   .cta-grid { grid-template-columns: 1.1fr 1fr; }
   .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
 }
