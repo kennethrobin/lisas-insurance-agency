@@ -864,19 +864,18 @@ main {
   width: 100%;
 }
 
-/* THE LOCKUP — the whole hero composition in one group, set mid frame
-   (owner's request, 2026-08). `margin-block: auto` centres the group in the
-   space between the header offset and the hero's bottom padding; the members
-   are centre-aligned so the block reads as one composed statement rather than
-   a headline with stragglers. The old layout split these apart: headline
-   centred, sub-sentence stranded on the floor where the (now removed)
-   quick-start card used to live. */
+/* THE LOCKUP — the hero composition, left-aligned to the logo and split top to
+   bottom (owner's request, 2026-08). The headline and the "I'm Lisa" sentence
+   sit at the top-left; the Talk to Lisa action and its compliance microline are
+   pinned to the bottom-left (the `margin-top: auto` on the button below eats the
+   space between). Everything shares the container's left edge, so the whole
+   group lines up with the wordmark in the header above it. */
 .hero-lockup {
-  margin-block: auto;
+  flex: 1;                  /* fill the hero so the action can reach the floor */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .hero-lockup h1 {
@@ -910,7 +909,10 @@ main {
    compliance microline rides directly beneath, exactly as it does beside
    every other visible phone number on the site. */
 .hero-lockup .btn {
-  margin-top: clamp(22px, 3.5vh, 34px);
+  /* Pinned to the hero floor: the auto margin absorbs the gap between the
+     sub-sentence and the action, dropping the button (and the microline that
+     follows it) to the bottom-left. */
+  margin-top: auto;
 }
 .hero-lockup .microline {
   margin-top: 0.7rem;
@@ -2875,9 +2877,9 @@ main {
   h2 { text-wrap: pretty; }
 
   /* ---------- Hero ------------------------------------------------------
-     The lockup (headline + sentence + call action) centres itself at every
-     width, so the phone hero needs no repositioning rules of its own — only
-     a height and a comfortable tap size for the one action.
+     The lockup (headline + sentence + call action) is left-aligned top-to-
+     bottom at every width, so the phone hero needs no repositioning rules of
+     its own — only a height and a comfortable tap size for the one action.
 
      100vh is dropped rather than kept as a fallback. On the browsers that lack
      `svh` it is the LARGE viewport, so it is exactly the value that makes an
