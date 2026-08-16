@@ -19,12 +19,6 @@ export function getStaticPaths() {
 }
 
 const { stub } = Astro.props as { stub: PageStub };
-
-const segments = stub.path.split('/').filter(Boolean);
-const parents = segments.slice(0, -1).map((segment, i) => ({
-  label: segment.replace(/-/g, ' '),
-  href: '/' + segments.slice(0, i + 1).join('/'),
-}));
 ---
 
 <Page
@@ -36,17 +30,11 @@ const parents = segments.slice(0, -1).map((segment, i) => ({
 >
   <section class="section">
     <div class="container">
-      <p class="crumbs">
-        <a href="/">Home</a>
-        {parents.map((parent) => <> / <a href={parent.href}>{parent.label}</a></>)}
-        {' / '}{stub.title}
-      </p>
-
       <div class="callout callout--note">
         <h3>This page is still being written</h3>
         <p>
           The content for this page hasn’t been built yet. In the meantime, call
-          or text and I’ll take care of it directly — that’s faster than any form
+          or text and I’ll take care of it directly. That’s faster than any form
           anyway.
         </p>
       </div>

@@ -28,7 +28,7 @@ import FaqContact from '../components/home/FaqContact.astro';
 
 const title = 'Medicare, Health, Dental & Vision Agent | Lisa’s Insurance Agency';
 const description =
-  'Medicare made simple — with a real person in your corner. Free help with Medicare, health, dental & vision plans in 43 states. Talk to Lisa today.';
+  'Medicare made simple, with a real person in your corner. Free help with Medicare, health, dental & vision plans in 43 states. Talk to Lisa today.';
 
 const agencySchema = {
   '@context': 'https://schema.org',
@@ -37,9 +37,9 @@ const agencySchema = {
   telephone: site.phoneHref.replace('tel:', ''),
   email: site.email,
   description:
-    'Medicare, health, dental & vision help — free, and for the life of your policy.',
+    'Medicare, health, dental & vision help: free, and for the life of your policy.',
   // CONFIRM: replace with the actual list of 43 licensed states
-  areaServed: 'United States — licensed in 43 states',
+  areaServed: 'United States, licensed in 43 states',
 };
 
 // The FAQPage schema now ships from the Faq component alongside the visible
@@ -72,9 +72,8 @@ const agencySchema = {
   <SiteHeader />
   <main id="main">
     <Hero />
-    {/* Phone-only. The hero's own .quickstart is hidden below 768px and this
-        takes its place directly beneath, so the hero keeps one oversized
-        moment instead of carrying a form as well. */}
+    {/* Phone-only (display:none at >=768px): the "what do you need help with"
+        quick-start, as four large tap targets directly under the hero. */}
     <NeedsSelector />
     <TrustBand />
     <MedicareSimple />
@@ -91,26 +90,14 @@ const agencySchema = {
 
 <script>
   // Homepage behavior. Small on purpose — no frameworks.
-  // The header (height measurement, scrolled state, hamburger drawer) moved into
-  // SiteHeader.astro when the header went sitewide; the contact form's handler
-  // lives in CtaBand.astro. What's left here is the two homepage-only widgets.
+  // The header lives in SiteHeader.astro and the contact card in
+  // GetInTouch.astro; the only homepage-only widget left is the phone
+  // quick-start under the hero. (The hero's rotating review chip is gone —
+  // it carried placeholder quotes, and real proof now comes from Google in
+  // the Reviews section.)
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* 1 · Hero review chip: rotate every 6s (skipped under reduced motion) */
-  const chips = document.querySelectorAll('.review-chip blockquote');
-  if (chips.length > 1 && !reducedMotion.matches) {
-    let current = 0;
-    setInterval(() => {
-      chips[current].classList.remove('is-active');
-      current = (current + 1) % chips.length;
-      chips[current].classList.add('is-active');
-    }, 6000);
-  }
-
-  /* 2 · Quick-start: route the visitor to the matching section.
-     Two controls share this handler — the hero's <select> on desktop and the
-     four radio rows below the hero on a phone. Only one is ever rendered, but
-     binding both keeps the routing in one place. */
+  /* Quick-start: route the visitor to the matching section. */
   const targets: Record<string, string> = {
     medicare: '#medicare',
     health: '#coverage',
@@ -118,18 +105,14 @@ const agencySchema = {
     other: '#contact',
   };
 
-  document
-    .querySelectorAll<HTMLFormElement>('.quickstart, .quickstart-form')
-    .forEach((form) => {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const chosen =
-          form.querySelector<HTMLSelectElement>('select')?.value ??
-          form.querySelector<HTMLInputElement>('input[name="topic"]:checked')?.value ??
-          'other';
-        document.querySelector(targets[chosen] ?? '#contact')?.scrollIntoView({
-          behavior: reducedMotion.matches ? 'auto' : 'smooth',
-        });
+  document.querySelectorAll<HTMLFormElement>('.quickstart-form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const chosen =
+        form.querySelector<HTMLInputElement>('input[name="topic"]:checked')?.value ?? 'other';
+      document.querySelector(targets[chosen] ?? '#contact')?.scrollIntoView({
+        behavior: reducedMotion.matches ? 'auto' : 'smooth',
       });
     });
+  });
 </script>

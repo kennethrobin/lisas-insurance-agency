@@ -65,17 +65,23 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // 4. Build the forwarded body from the field-name contract. The phone is
-  //    normalised to digits. Consent version + timestamp ride along under their
-  //    config-defined names; if the CRM has no such fields yet they are ignored.
+  //    normalised to digits. Fields whose configured name is still a TODO
+  //    placeholder are NOT sent: AgencyBloc accepts unknown names at the HTTP
+  //    level (verified: 200 either way) but drops them from the record, and a
+  //    payload full of TODO_* keys makes the real submissions harder to read in
+  //    their logs. The values still exist client-side — the "help" text prefills
+  //    the booking notes — and each starts flowing to the CRM the moment its
+  //    real field name lands in leadForm.ts.
+  const resolved = (name: string) => !name.startsWith('TODO');
   const upstream = new URLSearchParams();
   upstream.set(f.firstName, firstName);
   upstream.set(f.lastName, lastName);
   upstream.set(f.email, email);
   upstream.set(f.phone, digits(phoneRaw));
-  upstream.set(f.help, help);
   upstream.set(f.honeypot, ''); // keep the contract's field, empty
-  upstream.set(f.consentVersion, crm.consentTextVersion);
-  upstream.set(f.consentTimestamp, new Date().toISOString());
+  if (resolved(f.help)) upstream.set(f.help, help);
+  if (resolved(f.consentVersion)) upstream.set(f.consentVersion, crm.consentTextVersion);
+  if (resolved(f.consentTimestamp)) upstream.set(f.consentTimestamp, new Date().toISOString());
 
   // 5. Forward server-side with a timeout.
   const controller = new AbortController();
@@ -97,6 +103,9 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    // One line per accepted lead, no PII: enough to reconcile "the CRM shows
+    // nothing" against "the site forwarded N leads that day" from Vercel logs.
+    console.log('[lead] forwarded ok', res.status, new Date().toISOString());
     return json({ ok: true });
   } catch (err) {
     // Timeout or network failure — the lead must not just vanish.

@@ -45,12 +45,6 @@ const articleSchema = {
 
   <section class="section" aria-label="Article">
     <div class="container">
-      <p class="crumbs">
-        <a href="/medicare">Medicare</a> /
-        <a href="/medicare/education">Education</a> /
-        {post.data.title}
-      </p>
-
       <p class="post-meta">
         <time datetime={post.data.date.toISOString()}>
           {dateFormat.format(post.data.date)}

@@ -191,7 +191,10 @@ const probeTapTargets = () => {
     // A radio or checkbox wrapped in a label is targeted by the whole label,
     // which is the standard pattern; measuring the 22px dot inside a 56px row
     // reports a problem that does not exist for anyone actually tapping it.
-    const label = el.closest('label');
+    // The same logic applies to a sibling <label for="..."> — clicking it
+    // activates the control, so WCAG 2.5.8 counts the pair as one target.
+    let label = el.closest('label');
+    if (!label && el.id) label = document.querySelector(`label[for="${CSS.escape(el.id)}"]`);
     if (label && label !== el) {
       const lr = label.getBoundingClientRect();
       if (lr.width >= MIN && lr.height >= MIN) continue;

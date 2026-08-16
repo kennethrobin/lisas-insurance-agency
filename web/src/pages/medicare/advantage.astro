@@ -11,14 +11,11 @@ import Page from '../../layouts/Page.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import CompareMaMedigap from '../../components/CompareMaMedigap.astro';
 import Faq from '../../components/Faq.astro';
-import { site } from '../../data/site';
-import { links, isPending, externalAttrs } from '../../data/links';
+import { links, externalAttrs } from '../../data/links';
 
 const title = 'Medicare Advantage (Part C) Explained | Lisa’s Insurance Agency';
 const description =
   'How Medicare Advantage plans work, the difference between HMO, PPO and PFFS, how they compare to a Medicare Supplement, and the three things to check before you enroll.';
-
-const enrollPending = isPending(links.sunfireMedicareAdvantage);
 
 const types = [
   {
@@ -34,7 +31,7 @@ const types = [
   {
     tag: 'PFFS',
     name: 'Private Fee-for-Service',
-    copy: 'The plan sets what it pays providers and what you pay. Any provider who accepts Medicare may treat you — but they can decide appointment by appointment whether to accept the plan’s terms, so it’s worth confirming before each visit. Less common than the other two.',
+    copy: 'The plan sets what it pays providers and what you pay. Any provider who accepts Medicare may treat you, but they can decide appointment by appointment whether to accept the plan’s terms, so it’s worth confirming before each visit. Less common than the other two.',
   },
 ];
 
@@ -85,10 +82,9 @@ const faqs = [
   heading="Medicare Advantage, start to finish."
   intro="An all-in-one alternative to Original Medicare, run by private insurance companies. Here’s how it works, how it differs from a Supplement, and the three checks to make before you sign anything."
 >
-  <!-- ─── What it is ──────────────────────────────────────────────────── -->
+  <!-- ─── What it is ────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
-      <p class="crumbs"><a href="/medicare">Medicare</a> / Medicare Advantage</p>
       <p class="eyebrow">A brief overview</p>
 
       <div class="section-intro">
@@ -175,9 +171,9 @@ const faqs = [
 
       <p class="source-note">
         Which of these are sold where you live varies by county, and so does the
-        list of carriers offering them. There are other, less common plan types as
-        well — including plans built for people with specific conditions or who
-        also have Medicaid. Ask me what’s available at your address.
+        list of carriers offering them. There are other, less common plan types
+        as well, including plans built for people with specific conditions or
+        who also have Medicaid. Ask me what’s available at your address.
       </p>
     </div>
   </section>
@@ -231,18 +227,9 @@ const faqs = [
         </p>
 
         <div class="actions actions--stack">
-          {enrollPending ? (
-            <>
-              {/* TODO: links.sunfireMedicareAdvantage — Sunfire "Simply Enroll".
-                  Until it's live this is the call path, never a dead button. */}
-              <a class="btn btn--accent" href={site.phoneHref}>Simply Enroll</a>
-              <span class="chip">Online enrollment link coming soon — for now, call or text</span>
-            </>
-          ) : (
-            <a class="btn btn--accent" href={links.sunfireMedicareAdvantage} {...externalAttrs}>
-              Simply Enroll
-            </a>
-          )}
+          <a class="btn btn--accent" href={links.sunfireMedicareAdvantage} {...externalAttrs}>
+            Simply Enroll
+          </a>
           <a class="btn btn--ghost" href="/contact">Questions? Contact Lisa</a>
         </div>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
