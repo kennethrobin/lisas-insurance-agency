@@ -192,8 +192,14 @@ body {
   color: var(--surface-body);
   background: var(--bg);
   overflow-x: clip;
-  /* Panels sit on the dark page with an even gutter all the way round. */
+  /* Panels sit on the dark page with an even gutter all the way round. On
+     notched / Dynamic-Island phones the side and bottom gutters grow to clear
+     the safe area, so nothing (a panel edge, the sticky call bar) lands under
+     the sensor housing or the home indicator in either orientation. */
   padding: var(--gutter);
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+  padding-bottom: max(var(--gutter), env(safe-area-inset-bottom));
 }
 
 img, svg, video { max-width: 100%; display: block; }
@@ -437,9 +443,12 @@ main {
   position: fixed;
   top: 0;
   /* Same width as every panel below it — inset by the page gutter on both
-     sides — while staying flush to the top of the window. */
-  left: var(--gutter);
-  right: var(--gutter);
+     sides — while staying flush to the top of the window. The insets grow to
+     max(gutter, safe-area) so on a notched phone in landscape the tab (and the
+     menu button at its right edge) never slides under the sensor housing or the
+     rounded corner and gets clipped. */
+  left: max(var(--gutter), env(safe-area-inset-left));
+  right: max(var(--gutter), env(safe-area-inset-right));
   z-index: 60;
   /* Symmetric: the tab used to carry 20px above the row and 11px below, which
      sat the wordmark and pills low in the shape. */

@@ -26,7 +26,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* viewport-fit=cover is required for env(safe-area-inset-*) to resolve to
+        real values on notched / Dynamic-Island iPhones. Without it the fixed
+        header draws under the sensor housing in landscape and clips the menu
+        button (and the call bar's safe-area padding stays inert). */}
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{rawTitle ? title : `${title} | ${site.name}`}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical.href} />
