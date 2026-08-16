@@ -128,8 +128,22 @@ export function fetchGoogleReviews(): Promise<GooglePlaceReviews | null> {
 }
 
 async function fetchGoogleReviewsUncached(): Promise<GooglePlaceReviews | null> {
-  const key = import.meta.env.GOOGLE_PLACES_API_KEY;
-  const placeId = import.meta.env.GOOGLE_PLACE_ID;
+  // Read process.env FIRST, then fall back to import.meta.env.
+  //
+  // This site is statically built, so this runs during `astro build`. On Vercel
+  // the project's dashboard variables are injected into the build as
+  // process.env — but a static build's `import.meta.env` is populated by Vite
+  // from .env FILES only, NOT from host-injected system env. Reading
+  // import.meta.env alone therefore returns undefined on Vercel even when the
+  // variables are set, and the site silently falls back to the written reviews.
+  // process.env is the value the host actually provides; import.meta.env stays
+  // as the fallback so a local `.env` workflow keeps working unchanged.
+  // Via globalThis so a bare `process` identifier never trips type-checking in
+  // a config that hasn't pulled in @types/node.
+  const env: Record<string, string | undefined> =
+    (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
+  const key = env.GOOGLE_PLACES_API_KEY ?? import.meta.env.GOOGLE_PLACES_API_KEY;
+  const placeId = env.GOOGLE_PLACE_ID ?? import.meta.env.GOOGLE_PLACE_ID;
 
   // Not configured yet. Silent by design — this is the expected state until
   // the key and Place ID are filled in, exactly like a "#" link in links.ts.
