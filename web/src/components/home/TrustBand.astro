@@ -1,9 +1,15 @@
 ---
-// Trust band.
+// Honest trust band: no invented stats.
 //
-// The star item shows a fixed "5 star rating" (owner's request). If you later
-// want it driven by the live Google rating again, restore the build-time
-// fetchGoogleReviews() call from googleReviews.ts and render its value here.
+// The Google rating comes from the same build-time Places fetch the Reviews
+// section uses (one API call per build, cached in googleReviews.ts). Until the
+// key and Place ID are configured it keeps the marked [X.X] placeholder, which
+// is deliberately unshippable-looking rather than a made-up number.
+import { fetchGoogleReviews } from '../../data/googleReviews';
+
+const google = await fetchGoogleReviews();
+const rating =
+  google?.rating != null ? `${google.rating.toFixed(1)} Google rating` : null;
 ---
 
 <section class="trust-band" aria-label="Why you can trust Lisa">
@@ -23,7 +29,14 @@
       </li>
       <li>
         <span class="mark" aria-hidden="true">★</span>
-        5 star rating
+        {rating ? (
+          rating
+        ) : (
+          <>
+            <!-- CONFIRM: renders once GOOGLE_PLACES_API_KEY + GOOGLE_PLACE_ID are set -->
+            [X.X] Google rating
+          </>
+        )}
       </li>
       <li>
         <svg class="mark" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
