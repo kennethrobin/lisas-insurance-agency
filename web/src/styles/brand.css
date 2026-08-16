@@ -864,14 +864,15 @@ main {
   width: 100%;
 }
 
-/* THE LOCKUP — the hero composition, left-aligned to the logo and split top to
-   bottom (owner's request, 2026-08). The headline and the "I'm Lisa" sentence
-   sit at the top-left; the Talk to Lisa action and its compliance microline are
-   pinned to the bottom-left (the `margin-top: auto` on the button below eats the
-   space between). Everything shares the container's left edge, so the whole
-   group lines up with the wordmark in the header above it. */
+/* THE LOCKUP — the hero composition, left-aligned to the logo (owner's request,
+   2026-08). Two auto margins do the vertical layout: one above the headline and
+   one above the button. They split the hero's free height evenly, so the
+   headline + "I'm Lisa" sentence float to the vertical middle while the Talk to
+   Lisa action and its microline stay pinned to the bottom-left. Everything
+   shares the container's left edge, so the group lines up with the wordmark in
+   the header above it. */
 .hero-lockup {
-  flex: 1;                  /* fill the hero so the action can reach the floor */
+  flex: 1;                  /* fill the hero so the layout has height to divide */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -880,6 +881,9 @@ main {
 
 .hero-lockup h1 {
   max-width: none;
+  /* Pairs with the button's auto margin below to centre the headline group in
+     the hero's vertical axis. */
+  margin-top: auto;
 }
 
 /* Stacked over two lines (the break is in the markup) and back to the light
