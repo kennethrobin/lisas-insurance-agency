@@ -801,14 +801,13 @@ main {
   inset: 0;
   overflow: hidden;
   border-radius: inherit;   /* stays inside the panel's rounded corners */
-  /* No poster still: the layer is transparent so the hero's own navy gradient
-     shows through until the video fades in. A poster here was a single frame of
-     the OLD clip, which flashed as a "ghost" before the new video painted. When
-     a real still from the current clip exists, set it here again
-     (background: url('/media/hero-poster.jpg') center / cover no-repeat) and it
-     will match. Reduced-motion / data-saver visitors, who never load the video,
-     simply see the gradient field — which is the hero's intended colour anyway. */
-  background: transparent;
+  /* Poster = a still from the CURRENT clip (frame grab), shown instantly so the
+     hero is never a blank blue field while the video loads. The video fades in
+     over its own matching frame, so the still simply "comes alive" rather than
+     dissolving in from colour. This is also what reduced-motion / data-saver
+     visitors see, since they never fetch the video. Regenerate this JPG whenever
+     the clip changes so the poster keeps matching. */
+  background: url('/media/hero-poster.jpg') center / cover no-repeat;
 }
 
 .hero-video {
