@@ -70,17 +70,14 @@ import { site } from '../../data/site';
     if (reduceMotion || saveData) return; // poster only — nothing is fetched
 
     function start() {
-      // Phones get the 854px encode: a third of the bytes, and indistinguishable
-      // under a ~90% navy wash at that size.
-      var small = window.matchMedia('(max-width: 899px)').matches;
-      var base = small ? '/media/hero-sm' : '/media/hero';
-
-      [['video/webm', base + '.webm'], ['video/mp4', base + '.mp4']].forEach(function (pair) {
-        var source = document.createElement('source');
-        source.type = pair[0];
-        source.src = pair[1];
-        video.appendChild(source);
-      });
+      // One MP4 for every size — the source clip ships as a single MP4. If a
+      // smaller mobile encode or a WebM is produced later, branch on
+      // window.matchMedia('(max-width: 899px)') here and append extra <source>s
+      // before the MP4 (the browser picks the first it can play).
+      var source = document.createElement('source');
+      source.type = 'video/mp4';
+      source.src = '/media/hero.mp4';
+      video.appendChild(source);
 
       video.addEventListener('playing', function () {
         video.dataset.ready = 'true'; // fades it in over the poster
