@@ -801,9 +801,14 @@ main {
   inset: 0;
   overflow: hidden;
   border-radius: inherit;   /* stays inside the panel's rounded corners */
-  /* The still frame. Also the entire background whenever the video doesn't
-     play, which is why it lives here rather than on the video's poster attr. */
-  background: url('/media/hero-poster.jpg') center / cover no-repeat;
+  /* No poster still: the layer is transparent so the hero's own navy gradient
+     shows through until the video fades in. A poster here was a single frame of
+     the OLD clip, which flashed as a "ghost" before the new video painted. When
+     a real still from the current clip exists, set it here again
+     (background: url('/media/hero-poster.jpg') center / cover no-repeat) and it
+     will match. Reduced-motion / data-saver visitors, who never load the video,
+     simply see the gradient field — which is the hero's intended colour anyway. */
+  background: transparent;
 }
 
 .hero-video {
