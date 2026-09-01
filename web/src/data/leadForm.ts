@@ -18,8 +18,15 @@ export const crm = {
    * AgencyBloc web-to-lead endpoint. The browser never posts here directly —
    * src/pages/api/lead.ts forwards to it server-side so the visitor never leaves
    * the site. Not echoed to the client.
+   *
+   * 2026-09-01: replaced the original token (MUBQTEWDSAPCQ9WF1ISY), which
+   * AgencyBloc answered with response=OK but which was NOT connected to Lisa's
+   * account — every submission was silently discarded. This token comes from
+   * the "Website Lead" form in HER account (embed regenerated on the support
+   * call). Leads land as Individuals → Prospect, Lead Source "Website".
+   * reCAPTCHA: confirmed not required (no keys configured on the account).
    */
-  endpoint: 'https://app.agencybloc.com/fp/webToLead/v1/MUBQTEWDSAPCQ9WF1ISY/',
+  endpoint: 'https://app.agencybloc.com/fp/webToLead/v1/HYLJSTW2DU4MI3Y999TE/',
 
   /**
    * Field `name` attributes. These ARE the contract with AgencyBloc — the values
@@ -39,16 +46,12 @@ export const crm = {
     honeypot: '_Website',
 
     /**
-     * "What can I help you with" — a custom field the account owner is adding in
-     * the AgencyBloc form builder. The real `name` is revealed when she
-     * regenerates the embed.
-     *
-     * TODO: replace 'TODO_HELP_FIELD' with the real AgencyBloc field name before
-     * launch. Until then this value is still collected from the visitor and sent,
-     * but AgencyBloc will not recognise the field name and will DROP it — so the
-     * "what do you need help with" text is lost until this is filled in.
+     * "What can I help you with?" — the custom field on the "Website Lead"
+     * form. The name is EXACTLY what AgencyBloc's regenerated embed uses,
+     * spaces and question mark included; URL-encoding on the wire is handled
+     * by URLSearchParams. Do not "clean this up" — renaming it breaks capture.
      */
-    help: 'TODO_HELP_FIELD',
+    help: 'custom_What can I help you with?',
 
     /**
      * Consent audit trail. The version string of the consent wording the visitor
