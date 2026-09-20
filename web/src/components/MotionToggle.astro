@@ -1,0 +1,33 @@
+<button class="motion-toggle" type="button" data-motion-toggle aria-pressed="false" hidden>
+  Pause animations
+</button>
+
+<script>
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const motionButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-motion-toggle]')];
+  const motionVideo = document.querySelector<HTMLVideoElement>('.hero-video');
+  let manuallyPaused = false;
+
+  function syncMotion() {
+    const paused = manuallyPaused || motionPreference.matches;
+    document.documentElement.toggleAttribute('data-motion-paused', paused);
+    motionButtons.forEach((button) => {
+      button.hidden = motionPreference.matches;
+      button.setAttribute('aria-pressed', String(paused));
+    });
+    if (motionVideo) {
+      if (paused) motionVideo.pause();
+      else if (motionVideo.querySelector('source')) motionVideo.play().catch(() => {});
+    }
+  }
+
+  motionButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      manuallyPaused = !manuallyPaused;
+      syncMotion();
+    });
+  });
+  motionPreference.addEventListener('change', syncMotion);
+  document.documentElement.setAttribute('data-motion-ready', '');
+  syncMotion();
+</script>

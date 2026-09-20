@@ -47,7 +47,7 @@ const bookingPending = isPending(links.booking);
     </ol>
 
     <div class="actions actions--stack">
-      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      <a class="btn btn--accent" href={site.phoneHref}><span class="phone-label">Talk to Lisa · <span class="phone-number">{site.phone}</span></span></a>
       {bookingPending ? (
         /* TODO: links.booking — no scheduling page yet, so this is the text
            path with wording that matches rather than a button that opens

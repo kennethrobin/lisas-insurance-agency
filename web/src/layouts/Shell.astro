@@ -32,6 +32,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
         button (and the call bar's safe-area padding stays inert). */}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{rawTitle ? title : `${title} | ${site.name}`}</title>
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical.href} />
     {noindex && <meta name="robots" content="noindex" />}

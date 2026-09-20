@@ -21,16 +21,23 @@
  * /medicare/supplement — none of it real. Against `astro preview` the same
  * comparison is a clean zero.
  *
- * WHY THE OVERFLOW CHECK MEASURES ELEMENTS, NOT scrollWidth
+ * WHY THE OVERFLOW CHECK MEASURES BOTH ELEMENTS AND ROOT SCROLL
  * brand.css sets `body { overflow-x: clip }`. That silently swallows horizontal
  * overflow, so documentElement.scrollWidth can read clean while content is in
  * fact hanging off the side. We therefore walk every element and compare its
  * right edge to documentElement.clientWidth, and separately record whether an
  * ancestor legitimately clips it (.table-scroll, the carrier marquee) so a
- * deliberate scroller isn't confused with a genuine leak.
+ * deliberate scroller isn't confused with a genuine leak. Root width and
+ * actual scroll offsets also catch positioned descendants escaping a scroller.
+ *
+ * Full mobile matrix: --all --browser=webkit --widths=320,360,390,430,768
+ * Arbitrary widths are supported; use --zoom=2, --motion=default, or
+ * --screenshots=none for geometry-only checks. --all discovers built routes.
+ * Failures return a nonzero exit code. Desktop type/tap findings are reported,
+ * but do not gate the mobile audit; root overflow gates all widths.
  */
 
-import { chromium } from 'playwright';
+import { chromium, webkit } from 'playwright';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import fs from 'node:fs';
@@ -63,6 +70,7 @@ const ROUTES = [
 
 /** Realistic device heights — the hero is sized off viewport height (svh). */
 const WIDTHS = [
+  { w: 320, h: 740 },
   { w: 360, h: 740 },
   { w: 390, h: 844 },
   { w: 430, h: 932 },
@@ -97,7 +105,16 @@ function args() {
  * Returns the real offenders plus, for each, the ancestor that clips it (if
  * any) so intentional scrollers can be triaged out of the failure list.
  */
-const probeOverflow = () => {
+export const probeOverflow = async () => {
+  const top = window.scrollY;
+  window.scrollTo({ left: 100000, top, behavior: 'instant' });
+  await new Promise(requestAnimationFrame);
+  const maxScrollX = window.scrollX;
+  window.scrollTo({ left: -100000, top, behavior: 'instant' });
+  await new Promise(requestAnimationFrame);
+  const minScrollX = window.scrollX;
+  window.scrollTo({ left: 0, top, behavior: 'instant' });
+  await new Promise(requestAnimationFrame);
   const limit = document.documentElement.clientWidth;
   const describe = (el) => {
     const id = el.id ? `#${el.id}` : '';
@@ -112,7 +129,8 @@ const probeOverflow = () => {
   for (const el of document.querySelectorAll('*')) {
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0) continue;
-    if (rect.right <= limit + 1) continue;
+    if (rect.right <= limit + 1 && rect.left >= -1) continue;
+    if (!el.checkVisibility()) continue;
 
     const style = getComputedStyle(el);
     if (style.visibility === 'hidden' || style.display === 'none') continue;
@@ -132,7 +150,7 @@ const probeOverflow = () => {
       const ox = getComputedStyle(p).overflowX;
       if (ox && ox !== 'visible') {
         const pr = p.getBoundingClientRect();
-        if (pr.right <= limit + 1) clippedBy = describe(p);
+        if (pr.right <= limit + 1 && pr.left >= -1) clippedBy = describe(p);
         break;
       }
     }
@@ -141,7 +159,7 @@ const probeOverflow = () => {
       el: describe(el),
       right: Math.round(rect.right),
       width: Math.round(rect.width),
-      over: Math.round(rect.right - limit),
+      over: Math.round(Math.max(rect.right - limit, -rect.left)),
       clippedBy,
     });
   }
@@ -157,12 +175,14 @@ const probeOverflow = () => {
     clientWidth: limit,
     scrollWidth: document.documentElement.scrollWidth,
     innerWidth: window.innerWidth,
+    maxScrollX,
+    minScrollX,
     elements: [...seen.values()].sort((a, b) => b.over - a.over),
   };
 };
 
 /** Interactive controls smaller than 44px in either dimension. */
-const probeTapTargets = () => {
+export const probeTapTargets = () => {
   const MIN = 44;
   const sel = 'a, button, input, select, textarea, summary, [role="button"]';
   const describe = (el) => {
@@ -176,6 +196,7 @@ const probeTapTargets = () => {
 
   const out = [];
   for (const el of document.querySelectorAll(sel)) {
+    if (!el.checkVisibility()) continue;
     const style = getComputedStyle(el);
     if (style.display === 'none' || style.visibility === 'hidden') continue;
     if (el.closest('[hidden]')) continue;
@@ -219,7 +240,7 @@ const probeTapTargets = () => {
 };
 
 /** Rendered text with a computed font-size under 13px. */
-const probeFontSizes = () => {
+export const probeFontSizes = () => {
   const MIN = 13;
   const describe = (el) => {
     const id = el.id ? `#${el.id}` : '';
@@ -239,7 +260,8 @@ const probeFontSizes = () => {
 
     const el = n.parentElement;
     if (!el) continue;
-    if (el.closest('[hidden], script, style, noscript')) continue;
+    if (el.closest('[hidden], .visually-hidden, script, style, noscript')) continue;
+    if (!el.checkVisibility()) continue;
 
     const style = getComputedStyle(el);
     if (style.display === 'none' || style.visibility === 'hidden') continue;
@@ -279,23 +301,41 @@ async function applyZoom(page, zoom) {
   await page.waitForTimeout(200);
 }
 
-async function capture(label, zoom = 1) {
+export function builtRoutes() {
+  const output = path.join(ROOT, '.vercel/output/static');
+  if (!fs.existsSync(output)) throw new Error('Run npm run build before auditing all routes.');
+  return fs.readdirSync(output, { recursive: true })
+    .filter((file) => file.endsWith('.html'))
+    .map((file) => '/' + file.replace(/(^|\/)index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, ''))
+    .sort();
+}
+
+async function capture(label, zoom = 1, opts = {}) {
   const outDir = path.join(OUT_ROOT, label);
   fs.mkdirSync(outDir, { recursive: true });
 
-  const browser = await chromium.launch();
+  const engine = opts.browser === 'webkit' ? webkit : chromium;
+  const browser = await engine.launch();
   // Reduced motion pins the page down: the hero video never loads, the carrier
   // marquee stops, the review chip stops rotating. Without it no two
   // screenshots are ever the same and the regression diff is meaningless.
   const context = await browser.newContext({
-    reducedMotion: 'reduce',
+    reducedMotion: opts.motion === 'default' ? 'no-preference' : 'reduce',
     deviceScaleFactor: 1,
+    isMobile: true,
+    hasTouch: true,
   });
 
   const report = [];
 
-  for (const route of ROUTES) {
-    for (const { w, h } of WIDTHS) {
+  const routes = opts.routes ? String(opts.routes).split(',') : opts.all ? builtRoutes() : ROUTES;
+  const widths = opts.widths ? String(opts.widths).split(',').map(Number).map((w) => {
+    if (!Number.isFinite(w) || w < 240) throw new Error(`Invalid viewport width: ${w}`);
+    return WIDTHS.find((viewport) => viewport.w === w) ?? { w, h: w < 768 ? 844 : 1024 };
+  }) : WIDTHS;
+  if (!widths.length || !routes.length) throw new Error('No routes or viewports selected.');
+  for (const route of routes) {
+    for (const { w, h } of widths) {
       const page = await context.newPage();
       await page.setViewportSize({ width: w, height: h });
 
@@ -330,7 +370,7 @@ async function capture(label, zoom = 1) {
         () => document.documentElement.scrollHeight
       );
       const file = path.join(outDir, `${slug(route)}-${w}.png`);
-      await page.screenshot({
+      if (opts.screenshots !== 'none') await page.screenshot({
         path: file,
         fullPage: true,
         clip: { x: 0, y: 0, width: w, height: fullHeight },
@@ -355,13 +395,26 @@ function summarise(report) {
   let hardOverflow = 0;
   let tapFails = 0;
   let fontFails = 0;
+  let pageFails = 0;
 
   const lines = [];
 
   for (const entry of report) {
     if (entry.error) {
+      pageFails++;
       lines.push(`FAIL ${entry.route} @${entry.width}: ${entry.error}`);
       continue;
+    }
+    if (entry.status !== 200 && !(entry.route === '/404' && entry.status === 404)) {
+      pageFails++;
+      lines.push(`FAIL ${entry.route} @${entry.width}: HTTP ${entry.status}`);
+    }
+    if (entry.overflow.scrollWidth > entry.overflow.clientWidth + 1 ||
+        entry.overflow.innerWidth > entry.overflow.clientWidth + 1 ||
+        Math.abs(entry.overflow.maxScrollX ?? 0) > 1 ||
+        Math.abs(entry.overflow.minScrollX ?? 0) > 1) {
+      hardOverflow++;
+      lines.push(`FAIL root scroll ${entry.route} @${entry.width}: ${JSON.stringify(entry.overflow)}`);
     }
     // Only unclipped overflow is a real failure.
     const real = entry.overflow.elements.filter((e) => !e.clippedBy);
@@ -391,7 +444,7 @@ function summarise(report) {
   lines.push(
     `\n=== TOTALS ===\noverflow elements: ${hardOverflow}\ntap targets < ${MIN_TAP}px: ${tapFails}\ntext < ${MIN_FONT}px: ${fontFails}`
   );
-  return { text: lines.join('\n'), hardOverflow, tapFails, fontFails };
+  return { text: lines.join('\n'), hardOverflow, tapFails, fontFails, pageFails };
 }
 
 /* ==========================================================================
@@ -413,7 +466,8 @@ function diff(fromLabel, toLabel) {
       const fa = path.join(a, name);
       const fb = path.join(b, name);
       if (!fs.existsSync(fa) || !fs.existsSync(fb)) {
-        lines.push(`SKIP ${name} (missing)`);
+        lines.push(`FAIL ${name} (missing)`);
+        worst = Math.max(worst, 1);
         continue;
       }
 
@@ -446,23 +500,27 @@ function diff(fromLabel, toLabel) {
 
 /* ========================================================================== */
 
-const opts = args();
-
-if (opts.diff) {
-  const [from, to] = String(opts.diff).split(':');
-  const r = diff(from, to);
-  console.log(r.text);
-  process.exit(r.worst === 0 ? 0 : 1);
-} else {
-  const label = String(opts.label ?? 'after');
-  const zoom = Number(opts.zoom ?? 1);
-  console.log(
-    `Capturing "${label}" from ${BASE_URL}${zoom !== 1 ? ` at ${zoom * 100}% text zoom` : ''} ...`
-  );
-  const report = await capture(label, zoom);
-  const s = summarise(report);
-  console.log(s.text);
-  fs.writeFileSync(path.join(OUT_ROOT, label, 'summary.txt'), s.text);
-  const clean = s.hardOverflow === 0 && s.tapFails === 0 && s.fontFails === 0;
-  console.log(clean ? '\nALL CHECKS CLEAN' : '\nCHECKS FAILING (see above)');
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const opts = args();
+  if (opts.diff) {
+    const [from, to] = String(opts.diff).split(':');
+    const r = diff(from, to);
+    console.log(r.text);
+    process.exitCode = r.worst === 0 ? 0 : 1;
+  } else {
+    const label = String(opts.label ?? 'after');
+    const zoom = Number(opts.zoom ?? 1);
+    console.log(`Capturing "${label}" from ${BASE_URL} (${opts.browser ?? 'chromium'}, ${zoom * 100}% text) ...`);
+    const report = await capture(label, zoom, opts);
+    const s = summarise(report);
+    console.log(s.text);
+    fs.writeFileSync(path.join(OUT_ROOT, label, 'summary.txt'), s.text);
+    // Desktop type/tap findings predate the mobile work. Root overflow and
+    // HTTP failures gate every viewport; mobile typography and taps also gate.
+    const mobile = summarise(report.filter((entry) => entry.width < 1024));
+    const clean = s.hardOverflow === 0 && s.pageFails === 0 &&
+      mobile.tapFails === 0 && mobile.fontFails === 0;
+    console.log(clean ? '\nMOBILE CHECKS CLEAN (desktop typography reported separately)' : '\nCHECKS FAILING (see above)');
+    process.exitCode = clean ? 0 : 1;
+  }
 }

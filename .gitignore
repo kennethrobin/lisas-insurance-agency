@@ -32,3 +32,5 @@ web/.mobile-audit/
 # OS / WSL cruft
 .DS_Store
 *:Zone.Identifier
+.vercel
+.env*

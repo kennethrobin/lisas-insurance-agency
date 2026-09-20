@@ -14,6 +14,7 @@
 // the hero was removed too (2026-09): mobile now matches desktop section for
 // section.
 import { site } from '../../data/site';
+import MotionToggle from '../MotionToggle.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -47,8 +48,9 @@ import { site } from '../../data/site';
         and vision coverage, free, and I stay with you long after you enroll.
       </p>
 
-      <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+      <a class="btn btn--accent" href={site.phoneHref}><span class="phone-label">Talk to Lisa · <span class="phone-number">{site.phone}</span></span></a>
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      <MotionToggle />
     </div>
   </div>
 </section>
@@ -86,7 +88,7 @@ import { site } from '../../data/site';
 
       video.load();
       // Autoplay can still be refused; the poster simply stays put if so.
-      var attempt = video.play();
+      var attempt = document.documentElement.hasAttribute('data-motion-paused') ? null : video.play();
       if (attempt && attempt.catch) attempt.catch(function () {});
     }
 

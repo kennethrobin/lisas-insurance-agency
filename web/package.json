@@ -11,6 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "audit:mobile": "node scripts/mobile-audit.mjs",
+    "audit:mobile:interactions": "node scripts/mobile-interactions.mjs",
+    "audit:mobile:sweep": "node scripts/mobile-sweep.mjs",
     "audit:diff": "node scripts/mobile-audit.mjs --diff=baseline:after",
     "audit:rhythm": "node scripts/rhythm.mjs",
     "audit:a11y": "node scripts/a11y-audit.mjs",
