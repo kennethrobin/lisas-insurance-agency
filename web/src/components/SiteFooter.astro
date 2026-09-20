@@ -8,6 +8,7 @@
  */
 import { site, footerNav, legalNav } from '../data/site';
 import { links, isPending, externalAttrs } from '../data/links';
+import Logo from './Logo.astro';
 
 const reviewLinks = [
   { label: 'Google', href: links.reviewGoogle },
@@ -20,7 +21,7 @@ const reviewLinks = [
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <p class="wordmark">{site.name}</p>
+        <p class="wordmark"><Logo /></p>
         <p class="mission">
           A licensed advisor by your side, year after year.
         </p>
@@ -106,6 +107,15 @@ const reviewLinks = [
         Secure online dental enrollment is available in 43 states. Coverage is
         currently unavailable in CT, VT, UT, HI, WY, WV, and RI.
       </p>
+      {/* Agent licence line. Renders only once site.license is filled in, so
+          nothing placeholder ships in this compliance-sensitive spot. */}
+      {(site.license.statement || site.license.npn) && (
+        <p>
+          {site.license.statement}
+          {site.license.statement && site.license.npn && ' · '}
+          {site.license.npn && <>National Producer Number {site.license.npn}</>}
+        </p>
+      )}
     </div>
 
     <div class="footer-legal">

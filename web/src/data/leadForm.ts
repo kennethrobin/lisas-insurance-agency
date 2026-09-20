@@ -69,13 +69,13 @@ export const crm = {
   /**
    * Version tag for the consent wording. Sent with every submission so a given
    * record can be tied to the exact language the visitor agreed to. Bump this
-   * whenever the consent copy changes.
+   * (date-stamp it) whenever the consent copy in GetInTouch.astro changes.
    *
-   * TODO: set once the real consent wording is approved (see §6 / the consent
-   * block in GetInTouch.astro). While the wording is a placeholder this stays a
-   * placeholder tag.
+   * v1 is the TCPA express-consent wording now shown in the form. If Lisa's
+   * compliance contact revises that wording before or after launch, change the
+   * copy AND bump this tag together so records stay tied to what was shown.
    */
-  consentTextVersion: 'TODO-consent-v0-placeholder',
+  consentTextVersion: 'consent-v1-2026-09-19',
 
   /** Upstream request timeout, ms. */
   timeoutMs: 10_000,

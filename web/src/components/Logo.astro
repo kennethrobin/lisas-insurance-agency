@@ -1,0 +1,47 @@
+---
+/**
+ * The brand logo: mark + wordmark, as one lockup.
+ *
+ * Renders Lisa's brand mark (inlined from her supplied SVG,
+ * lisasinsuranceagency_logo_2.svg) beside the agency name. The mark is drawn
+ * with `fill="currentColor"`, so it inherits the surface's heading colour —
+ * white on the navy header/footer, navy on light — exactly like the text
+ * wordmark beside it. Driven by `site.name`, so the name still lives in one
+ * place.
+ *
+ * ── CHANGING THE LOGO LATER ──────────────────────────────────────────────────
+ *   - Single-colour mark that should recolour with the surface: keep it inline
+ *     SVG and just replace the <path> data below (keep `fill="currentColor"`).
+ *   - Full-COLOUR logo that must render as-is: drop the file in
+ *     `web/public/media/` and swap the <svg> for
+ *       <img class="brand-mark" src="/media/logo.svg" alt="" aria-hidden="true" />
+ *   - If the file is a COMPLETE lockup (mark + name baked in), set
+ *     `showName={false}` where <Logo/> is used and give the <img> a real
+ *     `alt={site.name}` (drop aria-hidden) so the name isn't announced twice.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  /** Render the wordmark text beside the mark. Off when the image already
+      contains the name. */
+  showName?: boolean;
+  /** Extra classes on the root, e.g. a size/weight variant. */
+  class?: string;
+}
+const { showName = true, class: className } = Astro.props;
+---
+
+<span class:list={['brand-logo', className]}>
+  <svg
+    class="brand-mark"
+    viewBox="0 0 500 500"
+    fill="currentColor"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M324.16,88.78c-15.77-4.88-32.53-7.5-49.9-7.5-46.01,0-87.72,18.41-118.15,48.28,3.94,23.76,15.7,44.51,33.32,61.09,16.32,15.37,37.31,24.82,59.76,27.24,21.61,2.32,42.02-5.87,56.12-22.14,10.61-12.24,17.23-26.73,20.87-42.6,4.92-21.5,3.73-43.17-2.02-64.37ZM263.9,208.79c-16.43,0-29.75-13.32-29.75-29.76s13.32-29.76,29.75-29.76,29.76,13.33,29.76,29.76-13.32,29.76-29.76,29.76Z"/>
+    <path d="M308.88,396.8c-29.23-20.71-50.99-50.28-61.63-84.97-5.94-19.38-7.08-38.5-6.27-58.32-25.55-5.31-46.55-19.21-62.93-39.09-18.8-22.81-28.22-51.74-25.61-81.15-29.05,30.3-46.9,71.43-46.9,116.73,0,93.18,75.54,168.72,168.72,168.72,20.15,0,39.48-3.53,57.39-10.02-6.72-2.37-17.94-8.49-22.77-11.9ZM292.69,394.11c-1.72,2.51-21.01-9.99-27.9-15.23-27.63-21-47.27-49.99-56.78-83.43-4.24-14.91-6.06-29.73-6.67-45.17-.02-.73.47-1.47.73-1.79.37-.45,1.46-.82,2.29-.32,7.5,4.56,15.33,7.86,23.74,10.41,1.18.35,2.12,1.42,2.2,2.68l1.46,23.06c5.39,44.03,26.27,79.64,60.54,107.81.86.71.59,1.69.39,1.98Z"/>
+    <path d="M442.98,250c0,71.39-44.34,132.42-106.98,157.07-21.37-17.27-35.87-41.51-39.35-69.04-1.98-15.63-1.25-30.87,2.21-46.15,3.48-15.4,8.65-29.67,15.44-43.84l16.73-34.91c18.61-38.82,19.89-86.27-2.8-123.04,66.71,22.52,114.75,85.61,114.75,159.91Z"/>
+  </svg>
+  {showName && <span class="brand-name">{site.name}</span>}
+</span>

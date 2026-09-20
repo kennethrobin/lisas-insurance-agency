@@ -1,0 +1,182 @@
+---
+/**
+ * Privacy Policy.
+ *
+ * Written to describe what THIS site actually does, not a generic boilerplate:
+ *  - the Get-in-Touch form collects name / email / phone / message and forwards
+ *    them to AgencyBloc (the CRM) via /api/lead;
+ *  - the optional Step-2 scheduler is a cal.com embed, loaded only if used;
+ *  - homepage reviews are pulled from Google at BUILD time (no visitor tracking);
+ *  - fonts are self-hosted; there are no advertising or analytics trackers.
+ *
+ * REVIEW BEFORE LAUNCH (owner / compliance / counsel):
+ *  - Have Lisa / her compliance contact confirm the data-sharing and retention
+ *    descriptions against her actual AgencyBloc setup and carrier agreements.
+ *  - If analytics (e.g. Vercel Analytics, GA) or a mailing-list tool are added
+ *    later, disclose them in "Cookies and tracking" / "Information I collect".
+ *  - Confirm whether a physical mailing address should be listed for requests.
+ *  - This is a strong, accurate starting draft; it is not a substitute for legal
+ *    review. Nothing here invents a fact about Lisa's business.
+ */
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+
+const title = 'Privacy Policy | Lisa’s Insurance Agency';
+const description =
+  'How Lisa’s Insurance Agency collects, uses, shares and protects the information you provide, and the choices you have.';
+
+/** Kept in code so the shown date and the <time> attribute never drift. */
+const effectiveISO = '2026-09-19';
+const effectiveLabel = 'September 19, 2026';
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Privacy"
+  heading="Privacy policy"
+  intro="This policy explains what information I collect when you use this website or contact me, how I use it, and the choices you have."
+>
+  <section class="section" aria-labelledby="privacy-body-heading">
+    <div class="container">
+      <p class="eyebrow">The details</p>
+      <div class="section-intro">
+        <h2 id="privacy-body-heading">Your information, and what I do with it.</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          <strong>Effective date:</strong>
+          <time datetime={effectiveISO}>{effectiveLabel}</time>
+        </p>
+        <p>
+          Lisa’s Insurance Agency (“I”, “me”, “my”) respects your privacy. This
+          policy applies to
+          <a href="https://www.lisasinsuranceagency.com">lisasinsuranceagency.com</a>
+          and to the information you share with me when you ask for help with
+          insurance.
+        </p>
+
+        <h3>Information I collect</h3>
+        <p>
+          I only collect what you choose to give me. When you use the contact
+          form on this site, that is your <strong>name, email address, phone
+          number, and whatever you write in the message</strong>. If you call,
+          text or email me, I keep the information you share so I can help you.
+        </p>
+        <p>
+          This site does not use advertising trackers, and I do not buy or sell
+          personal information.
+        </p>
+
+        <h3>How I use your information</h3>
+        <ul>
+          <li>To respond to you and answer your questions.</li>
+          <li>To compare plans and prepare quotes for the coverage you ask about.</li>
+          <li>To help you apply for and enrol in a plan, if you choose to.</li>
+          <li>To stay in touch about your coverage while you are my client.</li>
+          <li>To meet the record-keeping rules that apply to licensed agents.</li>
+        </ul>
+
+        <h3>Calls and text messages</h3>
+        <p>
+          When you give me your phone number and ask to be contacted, you agree
+          that I may call or text you about your request and your coverage.
+          Message and data rates may apply. You can opt out of text messages at
+          any time by replying STOP, and you can ask me to stop calling at any
+          time.
+        </p>
+
+        <h3>When I share information, and with whom</h3>
+        <p>I share your information only as needed to help you, or as the law requires:</p>
+        <ul>
+          <li>
+            <strong>Insurance carriers</strong> — to request quotes and submit
+            applications for the coverage you choose.
+          </li>
+          <li>
+            <strong>Service providers who work on my behalf</strong> — for
+            example, the customer-management system I use to keep track of client
+            requests, and the scheduling tool that powers the “pick a time”
+            calendar. They may only use your information to provide their service
+            to me.
+          </li>
+          <li>
+            <strong>When required</strong> — to comply with the law, a regulator,
+            or a lawful request, or to protect rights and safety.
+          </li>
+        </ul>
+        <p>
+          I do <strong>not</strong> sell your personal information, and I do not
+          share it for anyone else’s marketing.
+        </p>
+
+        <h3>Cookies and tracking</h3>
+        <p>
+          This website does not set advertising or analytics cookies of its own.
+          If you open the optional scheduling calendar, that feature is provided
+          by a third party (cal.com) and may set its own cookies so it can work;
+          that is the only place a cookie is involved, and only if you use it.
+        </p>
+
+        <h3>Reviews shown on this site</h3>
+        <p>
+          The reviews on the homepage come from my public Google Business
+          listing and are shown exactly as they were written. They are collected
+          when the site is built, not by tracking you.
+        </p>
+
+        <h3>How I protect your information</h3>
+        <p>
+          I take reasonable steps to keep your information secure. The contact
+          form is transmitted over an encrypted connection and handed to my
+          customer-management system on the server side; your details are never
+          posted to a third party from your browser. No method of transmission
+          or storage is completely secure, but I treat your information with care.
+        </p>
+
+        <h3>How long I keep it</h3>
+        <p>
+          I keep your information for as long as needed to help you and to meet
+          the record-keeping requirements that apply to licensed insurance
+          agents, after which it is removed or retained only as the law allows.
+        </p>
+
+        <h3>Your choices</h3>
+        <ul>
+          <li>Ask me what information I have about you.</li>
+          <li>Ask me to correct or update it.</li>
+          <li>Ask me to delete it, where I am not required to keep it.</li>
+          <li>Opt out of calls or texts at any time.</li>
+        </ul>
+        <p>To make any of these requests, just contact me using the details below.</p>
+
+        <h3>Children’s privacy</h3>
+        <p>
+          This site is meant for adults seeking insurance. I do not knowingly
+          collect information from children.
+        </p>
+
+        <h3>Changes to this policy</h3>
+        <p>
+          If this policy changes, I will post the updated version here with a new
+          effective date.
+        </p>
+
+        <h3>Contact me</h3>
+        <ul>
+          <li>Phone: <a href={site.phoneHref}>{site.phone}</a></li>
+          <li>Email: <a href={`mailto:${site.email}`}>{site.email}</a></li>
+        </ul>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Questions about your information?"
+    copy="Ask me anything about how I handle your details — I’m happy to walk you through it."
+  />
+</Page>

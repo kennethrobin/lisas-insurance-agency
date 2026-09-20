@@ -490,6 +490,28 @@ main {
 }
 .wordmark:hover { color: var(--surface-heading); }
 
+/* ---------- Brand logo (mark + wordmark) ----------
+   Rendered by Logo.astro in the header tab and the footer brand block. The
+   anchor/paragraph keeps its own .wordmark rules (colour, tap-target padding,
+   the mobile ellipsis); this only lays the mark out beside the name. The mark
+   is drawn with currentColor, so it follows --surface-heading onto whichever
+   panel it sits on — white on the navy header and footer — matching the
+   wordmark text rather than reading as loose gold decoration. */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;   /* lets .brand-name ellipsis inside the header's nowrap row */
+}
+.brand-mark {
+  flex: 0 0 auto;
+  width: 2.55em;   /* 50% larger than the 1.7em wordmark-height default */
+  height: 2.55em;
+}
+/* Inherits the nowrap + ellipsis the header sets on .wordmark at narrow widths,
+   so a long name never pushes the phone/menu controls off the row. */
+.brand-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
 .header-right { display: flex; align-items: center; gap: 0.6rem; }
 
 /* Phone: always the lime pill — the one action that is never hidden. */

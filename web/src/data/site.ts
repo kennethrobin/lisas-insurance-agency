@@ -16,6 +16,20 @@ export const site = {
   phoneHref: 'tel:+19726397639',
   smsHref: 'sms:+19726397639',
   email: 'lisa@lisasinsuranceagency.com',
+
+  /**
+   * Agent licensing, shown in the footer for compliance and trust. Left EMPTY
+   * on purpose: a licence line is a compliance-sensitive spot, so nothing ships
+   * here until Lisa confirms her real numbers. The footer renders this block
+   * only when a value is set (see SiteFooter.astro), so an empty value simply
+   * shows nothing rather than a placeholder.
+   *   npn        National Producer Number, e.g. '1234567'
+   *   statement  Optional free-form line, e.g. 'Licensed in 43 states'
+   */
+  license: {
+    npn: '',
+    statement: '',
+  },
 };
 
 export type NavLink = {
@@ -78,9 +92,13 @@ export const legalNav: NavLink[] = [
 
 /**
  * Routes that still render as IA placeholders. Every prospect-facing page is a
- * real file under src/pages/ now; what is left here is the existing-client and
- * legal tail, which has no designed content yet. `[...slug].astro` builds each
- * one on the brand shell so they still look like the rest of the site.
+ * real file under src/pages/ now; what is left here is the existing-client tail,
+ * which has no designed content yet. `[...slug].astro` builds each one on the
+ * brand shell so they still look like the rest of the site.
+ *
+ * The legal tail (/accessibility, /privacy, /thank-you) are now real files under
+ * src/pages/ and have been removed from this list — a real file wins over the
+ * catch-all, so listing them here would only be dead metadata.
  */
 export type PageStub = { path: string; title: string; note: string };
 
@@ -91,10 +109,6 @@ export const pageStubs: PageStub[] = [
   { path: '/policyholders/update-info', title: 'Update My Info', note: '' },
   { path: '/policyholders/documents', title: 'Online Documents', note: '' },
   { path: '/policyholders/contact-carrier', title: 'Contact My Carrier', note: '' },
-
-  { path: '/accessibility', title: 'Accessibility Statement', note: 'Keep (legal).' },
-  { path: '/privacy', title: 'Privacy Policy', note: 'New page. Missing on the current site; needed for trust + compliance.' },
-  { path: '/thank-you', title: 'Thank You', note: 'Form confirmation. Must be noindex.' },
 ];
 
 /** Flat list of every real route, used to check nav links resolve. */
@@ -111,6 +125,9 @@ export const canonicalRoutes: string[] = [
   '/about',
   '/contact',
   '/policyholders',
+  '/accessibility',
+  '/privacy',
+  '/thank-you',
   ...pageStubs.map((stub) => stub.path),
 ];
 
