@@ -16,7 +16,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCallBar from '../components/MobileCallBar.astro';
 import Hero from '../components/home/Hero.astro';
-import NeedsSelector from '../components/home/NeedsSelector.astro';
 import TrustBand from '../components/home/TrustBand.astro';
 import MedicareSimple from '../components/home/MedicareSimple.astro';
 import WhyMe from '../components/home/WhyMe.astro';
@@ -72,9 +71,9 @@ const agencySchema = {
   <SiteHeader />
   <main id="main">
     <Hero />
-    {/* Phone-only (display:none at >=768px): the "what do you need help with"
-        quick-start, as four large tap targets directly under the hero. */}
-    <NeedsSelector />
+    {/* The phone-only "what do you need help with" quick-start (NeedsSelector)
+        was removed 2026-09 at the owner's request: desktop no longer has a
+        quick-start, and the mobile page should match it section for section. */}
     <TrustBand />
     <MedicareSimple />
     <WhyMe />
@@ -88,31 +87,6 @@ const agencySchema = {
   <MobileCallBar />
 </Shell>
 
-<script>
-  // Homepage behavior. Small on purpose — no frameworks.
-  // The header lives in SiteHeader.astro and the contact card in
-  // GetInTouch.astro; the only homepage-only widget left is the phone
-  // quick-start under the hero. (The hero's rotating review chip is gone —
-  // it carried placeholder quotes, and real proof now comes from Google in
-  // the Reviews section.)
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  /* Quick-start: route the visitor to the matching section. */
-  const targets: Record<string, string> = {
-    medicare: '#medicare',
-    health: '#coverage',
-    dental: '#dental',
-    other: '#contact',
-  };
-
-  document.querySelectorAll<HTMLFormElement>('.quickstart-form').forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const chosen =
-        form.querySelector<HTMLInputElement>('input[name="topic"]:checked')?.value ?? 'other';
-      document.querySelector(targets[chosen] ?? '#contact')?.scrollIntoView({
-        behavior: reducedMotion.matches ? 'auto' : 'smooth',
-      });
-    });
-  });
-</script>
+{/* No homepage-only script remains: the header behaviour lives in
+    SiteHeader.astro and the contact card in GetInTouch.astro. The phone
+    quick-start (and its routing script) was removed with NeedsSelector. */}
