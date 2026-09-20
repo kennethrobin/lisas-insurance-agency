@@ -75,7 +75,17 @@ const rows: { benefit: string; cells: Cell[]; foot?: string }[] = [
 const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
 ---
 
-<div class="table-scroll">
+{/* tabindex="0" + role + name: the wrapper is a scroll container (sticky
+    headers need it to own the scrolling), and a scrollable region a keyboard
+    can't reach fails WCAG 2.1.1 — axe: scrollable-region-focusable. Focusing
+    it lets arrow keys drive the scroll; the global :focus-visible ring shows
+    where you are. */}
+<div
+  class="table-scroll"
+  tabindex="0"
+  role="region"
+  aria-label="Medigap plan comparison chart"
+>
   <table class="compare-table">
     <caption>What each standardized Medigap plan covers</caption>
     <thead>

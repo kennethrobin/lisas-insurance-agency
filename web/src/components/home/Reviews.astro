@@ -237,7 +237,24 @@ const summary =
       dots = null;
     };
 
-    const sync = () => (phone.matches ? build() : teardown());
+    /* On phones the track is a horizontal scroll container, and a scrollable
+       region a keyboard can't reach fails WCAG 2.1.1 (axe:
+       scrollable-region-focusable). Focus + role + name are set only while the
+       carousel exists — on desktop the same node is a plain grid, where a tab
+       stop on a non-interactive box would just be noise. */
+    const sync = () => {
+      if (phone.matches) {
+        track.setAttribute('tabindex', '0');
+        track.setAttribute('role', 'region');
+        track.setAttribute('aria-label', 'Client reviews, scrollable');
+        build();
+      } else {
+        track.removeAttribute('tabindex');
+        track.removeAttribute('role');
+        track.removeAttribute('aria-label');
+        teardown();
+      }
+    };
     phone.addEventListener('change', sync);
     sync();
   }
