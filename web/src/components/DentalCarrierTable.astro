@@ -25,7 +25,14 @@ const columns = ['Carrier', 'Plan Type & Deductible Rules', 'Network & Core Stre
 
 <div class="carrier-compare">
   <!-- Tablet and up -->
-  <div class="table-scroll carrier-table-wrap">
+  {/* Keyboard access for the scroll box, exactly as on the Medigap chart:
+      a scrollable region must be reachable and drivable by keyboard. */}
+  <div
+    class="table-scroll carrier-table-wrap"
+    tabindex="0"
+    role="region"
+    aria-labelledby="compare-heading"
+  >
     {/* Named by the section's own h2 rather than a <caption>, so the table
         introduces no copy that the client did not supply. */}
     <table class="compare-table carrier-table" aria-labelledby="compare-heading">

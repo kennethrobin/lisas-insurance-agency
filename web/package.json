@@ -13,6 +13,7 @@
     "audit:mobile": "node scripts/mobile-audit.mjs",
     "audit:diff": "node scripts/mobile-audit.mjs --diff=baseline:after",
     "audit:rhythm": "node scripts/rhythm.mjs",
+    "audit:a11y": "node scripts/a11y-audit.mjs",
     "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.13.0",
     "pixelmatch": "^7.2.0",
     "playwright": "^1.62.1",
     "pngjs": "^7.0.0",

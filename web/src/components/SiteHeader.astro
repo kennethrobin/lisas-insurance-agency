@@ -47,9 +47,15 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
         <span class="header-phone-number">{site.phone}</span>
       </a>
 
+      {/* aria-label, not just the visible text: below 520px the "Menu" label
+          is display:none to keep the row on one line, which would leave the
+          button with no accessible name at exactly the widths where it is the
+          only way into the nav. The label matches the visible text, so voice
+          control ("tap Menu") works at every width. */}
       <button
         class="nav-toggle"
         type="button"
+        aria-label="Menu"
         aria-expanded="false"
         aria-controls="site-menu"
         data-nav-toggle
