@@ -1,0 +1,48 @@
+---
+/**
+ * Thank-you / confirmation page.
+ *
+ * NOINDEX — this is a post-submission destination, not a page Google should
+ * surface. The site's main contact flow (GetInTouch.astro) confirms in place
+ * without a redirect, so this page is the fallback confirmation for any plain
+ * link or non-JS submission that needs a real URL to land on.
+ */
+import Page from '../layouts/Page.astro';
+import { site } from '../data/site';
+
+const title = 'Thank you | Lisa’s Insurance Agency';
+const description = 'Your details are with me. I’ll be in touch soon.';
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  noindex
+  eyebrow="Thank you"
+  heading="Thank you. I’ve got your details."
+  intro="Your request is with me now, and I’ll be in touch soon. There’s nothing else you need to do."
+>
+  <section class="section" aria-labelledby="next-heading">
+    <div class="container">
+      <p class="eyebrow">What happens next</p>
+      <div class="section-intro">
+        <h2 id="next-heading">I’ll reach out personally.</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          I review every request myself and follow up by phone or email,
+          whichever suits you. If you’d rather not wait, you’re always welcome to
+          call or text me directly.
+        </p>
+      </div>
+
+      <div class="actions actions--stack">
+        <a class="btn btn--accent" href={site.phoneHref}>Talk to Lisa · {site.phone}</a>
+        <a class="btn btn--ghost" href="/">Back to home</a>
+      </div>
+      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+    </div>
+  </section>
+</Page>

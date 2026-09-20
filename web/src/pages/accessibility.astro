@@ -1,0 +1,112 @@
+---
+/**
+ * Accessibility Statement.
+ *
+ * A real page, not the [...slug] placeholder — a public accommodation's site
+ * (an insurance agency is one under ADA Title III) is expected to publish an
+ * accessibility commitment and a way to report barriers. Target standard is
+ * WCAG 2.1 AA.
+ *
+ * REVIEW BEFORE LAUNCH (owner / compliance):
+ *  - Confirm the response-time promise below (currently "within 3 business
+ *    days") matches what Lisa can actually meet.
+ *  - If a formal remediation vendor or ADA counsel is engaged, add them here.
+ * Nothing on this page invents a fact: contact details come from site.ts and the
+ * conformance target is the one the build is written against.
+ */
+import Page from '../layouts/Page.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+
+const title = 'Accessibility Statement | Lisa’s Insurance Agency';
+const description =
+  'Our commitment to keeping lisasinsuranceagency.com usable for everyone, the accessibility standard we build to, and how to tell us about a barrier.';
+---
+
+<Page
+  title={title}
+  description={description}
+  rawTitle
+  eyebrow="Accessibility"
+  heading="Accessibility statement"
+  intro="I want everyone to be able to use this website and reach me for help, regardless of ability or the technology they use."
+>
+  <section class="section" aria-labelledby="commitment-heading">
+    <div class="container">
+      <p class="eyebrow">Our commitment</p>
+      <div class="section-intro">
+        <h2 id="commitment-heading">Built to be used by everyone.</h2>
+      </div>
+
+      <div class="prose">
+        <p>
+          Lisa’s Insurance Agency is committed to making its website accessible
+          to the widest possible audience, including people with disabilities. I
+          serve a lot of clients over the age of 65, and keeping this site easy
+          to read and simple to operate is part of doing that job well.
+        </p>
+
+        <h3>The standard I aim for</h3>
+        <p>
+          This site is built to conform to the
+          <a
+            href="https://www.w3.org/WAI/WCAG21/quickref/"
+            target="_blank"
+            rel="noopener"
+          >Web Content Accessibility Guidelines (WCAG) 2.1, Level AA</a>.
+          These guidelines are the recognised standard for making web content
+          more accessible, and they explain how to make a site easier to
+          perceive, operate and understand.
+        </p>
+
+        <h3>What that means on this site</h3>
+        <ul>
+          <li>Text is set at a large, legible size and never in low-contrast grey.</li>
+          <li>The whole site can be operated with a keyboard, and focus is always visible.</li>
+          <li>Menus, forms and controls carry labels that screen readers can announce.</li>
+          <li>Motion is reduced automatically for anyone whose device asks for it.</li>
+          <li>The layout reflows to any screen size without loss of content or function.</li>
+        </ul>
+
+        <h3>Ongoing effort</h3>
+        <p>
+          Accessibility is not a one-time fix. I review the site as it changes and
+          work to correct any barriers that come to light. Some content provided
+          by third parties (for example, an embedded scheduling calendar) is not
+          fully within my control, and where that is the case I will always offer
+          another way to get the same thing done — you can always simply call.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--navy" aria-labelledby="feedback-heading">
+    <div class="container">
+      <p class="eyebrow">Tell me about a barrier</p>
+      <div class="section-intro">
+        <h2 id="feedback-heading">If something doesn’t work for you, let me know.</h2>
+        <p class="lead">
+          If you have trouble using any part of this website, I want to hear
+          about it — and I’ll help you get what you need in the meantime.
+        </p>
+      </div>
+
+      <div class="prose">
+        <p>
+          Please include the page you were on and a short description of the
+          problem. I aim to respond within three business days.
+        </p>
+        <ul>
+          <li>Phone: <a href={site.phoneHref}>{site.phone}</a></li>
+          <li>Email: <a href={`mailto:${site.email}`}>{site.email}</a></li>
+        </ul>
+        <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Prefer to just talk it through?"
+    copy="You never have to use the website to work with me. Call or text and I’ll take care of it with you directly."
+  />
+</Page>

@@ -91,20 +91,26 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
       </div>
 
       {/* ── Consent ──────────────────────────────────────────────────────
-          TODO: the exact consent wording is PENDING COMPLIANCE REVIEW and must
-          be supplied by the account owner and her compliance contact before
-          launch — it governs permission to phone the visitor. Built as the
-          required-checkbox variant so it can be downgraded to a plain statement
-          (drop the <input> and the `required`) without restructuring. The
-          consent text version + submission timestamp are attached server-side
-          in /api/lead from leadForm.ts. */}
+          TCPA express-consent wording (v1). Governs permission to phone/text the
+          visitor at the number they entered. Built as the required-checkbox
+          variant so it can be downgraded to a plain statement (drop the <input>
+          and the `required`) without restructuring. The consent text version
+          (leadForm.ts → consentTextVersion) + submission timestamp are attached
+          server-side in /api/lead.
+          COMPLIANCE: if Lisa's compliance contact revises this language, update
+          the copy AND bump consentTextVersion together so records stay tied to
+          exactly what was shown. */}
       <div class="git-consent">
         <input id={`${id}-consent`} data-git-consent type="checkbox" required
           aria-describedby={`${id}-consent-error`} />
         <label for={`${id}-consent`}>
-          <strong>[TODO: consent wording pending compliance review]</strong>
-          By checking this box you agree to be contacted about your request. Final
-          language is pending review and this placeholder must not ship as-is.
+          By checking this box, I agree that Lisa’s Insurance Agency may contact
+          me at the phone number and email I provided — including by phone call,
+          text message, and email — about Medicare, health, dental, and vision
+          insurance options, even if my number is on a Do Not Call list. Consent
+          is not a condition of purchase. Message and data rates may apply; reply
+          STOP to opt out of texts. See our
+          <a href="/privacy">Privacy Policy</a>.
         </label>
         <p class="git-error" id={`${id}-consent-error`} data-git-error hidden></p>
       </div>

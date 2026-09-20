@@ -16,6 +16,7 @@
  * Driven entirely by `mainNav` in src/data/site.ts.
  */
 import { site, mainNav } from '../data/site';
+import Logo from './Logo.astro';
 
 const path = Astro.url.pathname;
 /** Trailing slashes vary between dev and the built output; normalise once. */
@@ -30,7 +31,9 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
 
 <header class="site-header">
   <div class="container">
-    <a class="wordmark" href="/">{site.name}</a>
+    <a class="wordmark" href="/" aria-label={`${site.name} — home`}>
+      <Logo />
+    </a>
 
     <div class="header-right">
       <a

@@ -14,11 +14,12 @@ Rebuild of lisasinsuranceagency.com. Research + planning in `docs/`, the Astro s
 
 ## Site status
 
-Every prospect-facing page is designed and built (homepage + the pages in the nav tree). What
-remains as an IA placeholder is only the existing-client tail (`/policyholders/*`, `/agent-login`)
-and the legal pages (`/accessibility`, `/privacy`, `/thank-you`) — `web/src/pages/[...slug].astro`
-renders those on the brand shell too, so an unbuilt route still looks like the rest of the site.
-Build one for real by adding its own file under `src/pages/`; real files win over the catch-all.
+Every prospect-facing page is designed and built (homepage + the pages in the nav tree). The legal
+pages (`/accessibility`, `/privacy`, `/thank-you`) are now real files under `src/pages/` too. What
+remains as an IA placeholder is only the existing-client tail (`/policyholders/*`, `/agent-login`) —
+`web/src/pages/[...slug].astro` renders those on the brand shell, so an unbuilt route still looks
+like the rest of the site. Build one for real by adding its own file under `src/pages/`; real files
+win over the catch-all.
 
 ## Architecture
 
