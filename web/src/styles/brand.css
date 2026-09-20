@@ -183,6 +183,13 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
+  /* No horizontal viewport panning, ever. body already clips its own overflow,
+     but iOS Safari can still pan the VIEWPORT sideways past clipped content
+     (the 1900px carrier track under its overflow-hidden strip is what made the
+     page "scroll into empty space" on a phone). Guarding the root closes that.
+     `hidden` first as the fallback for engines without `clip`. */
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -1464,8 +1471,9 @@ main {
 }
 /* The old .contact-form / .quickstart / .form-success rules are gone with
    their markup: the hero's quick-start box was removed in the 2026-08 hero
-   redesign (NeedsSelector carries that job on phones) and the note form was
-   replaced wholesale by the GetInTouch card below. */
+   redesign and the note form was replaced wholesale by the GetInTouch card
+   below. (The phone-only NeedsSelector followed in 2026-09 — mobile now
+   matches desktop section for section.) */
 
 /* ---------- Unified "Get in Touch" card (GetInTouch.astro) ----------
    Two steps in one footprint: the lead form, then the cal.com booking view,
@@ -2647,9 +2655,9 @@ main {
   }
 
   .drawer-link {
-    min-height: 60px;
+    min-height: 56px;
     padding-block: 0.55rem;
-    font-size: 1.75rem;        /* 28px */
+    font-size: 1.5rem;         /* 24px — was 28px; whole phone scale stepped down 2026-09 */
     font-weight: 400;
     letter-spacing: -0.02em;
   }
@@ -2714,12 +2722,7 @@ main {
   .callbar { display: none; }
 }
 
-/* The phone-only needs selector and its desktop counterpart are mutually
-   exclusive: exactly one of them is ever rendered, so a screen reader meets
-   one control rather than two, and `display: none` keeps the hidden one out
-   of the flex flow entirely (no stray gap in <main> on desktop). */
 @media (min-width: 768px) {
-  .needs { display: none; }
   /* The dots are torn down above this width anyway; belt and braces in case a
      resize handler is ever missed. */
   .review-dots { display: none; }
@@ -2746,33 +2749,34 @@ main {
    Reconciled against the actual typeface (self-hosted Open Sans variable,
    weights 300–800) and against what the page measured at.
 
-   BOLDNESS IS SPENT ONCE. The hero keeps one genuinely oversized moment and
-   everything below steps down hard and stays there. Note this moves the hero
-   display *up*: it was rendering at 32px, which is not an oversized grotesque,
-   it is a large paragraph. The identity was missing on mobile, not overblown.
+   BOLDNESS IS SPENT ONCE. The hero keeps the page's one oversized moment and
+   everything below steps down hard and stays there.
 
-   Body stays at 18px, NOT the 17px originally proposed — CLAUDE.md makes 18px
-   a non-negotiable floor for this audience and that outranks a round number. */
+   2026-09 (owner's request): the whole phone scale stepped DOWN one notch —
+   hero 44->36, h1 38->32, h2 30->26, h3 21->20, lead 19->18. The page felt
+   uniformly oversized on a phone. Body stays at 18px — CLAUDE.md makes 18px a
+   non-negotiable floor for this audience, so the reduction comes out of the
+   display sizes, never the copy people actually have to read. */
 @media (max-width: 767px) {
-  /* Hero — the one oversized moment. 44/1.04/-0.02em. */
+  /* Hero — still the one oversized moment, at 36/1.06/-0.02em. */
   .hero .display-xl {
-    font-size: 2.75rem;
-    line-height: 1.04;
+    font-size: 2.25rem;
+    line-height: 1.06;
     letter-spacing: -0.02em;
   }
 
   /* Interior page heroes step down from the homepage's one big moment. */
   h1 {
-    font-size: 2.375rem;    /* 38px */
-    line-height: 1.06;
+    font-size: 2rem;        /* 32px */
+    line-height: 1.08;
     letter-spacing: -0.02em;
   }
 
   /* Section headings hold ONE size all the way down the page. */
   h2,
   .cta-copy h2 {
-    font-size: 1.875rem;    /* 30px */
-    line-height: 1.1;
+    font-size: 1.625rem;    /* 26px */
+    line-height: 1.12;
     letter-spacing: -0.015em;
   }
   /* 20ch at 30px in a ~330px column forces a 5-line rag with orphans. Let the
@@ -2787,16 +2791,16 @@ main {
   .compare-col h3,
   .def-row dt,
   .post-row h3 {
-    font-size: 1.3125rem;   /* 21px */
-    line-height: 1.22;
+    font-size: 1.25rem;     /* 20px */
+    line-height: 1.25;
     letter-spacing: -0.005em;
   }
 
   .lead,
   .page-hero-intro,
   .hero-sub {
-    font-size: 1.1875rem;   /* 19px */
-    line-height: 1.5;
+    font-size: 1.125rem;    /* 18px — the body floor; leads no longer outsize copy */
+    line-height: 1.55;
     letter-spacing: 0;
   }
 
@@ -2925,55 +2929,9 @@ main {
     min-height: 56px;
   }
 
-  /* ---------- Needs selector (phone only) -------------------------------
-     Four full-width targets instead of a select. Radios, so it is a real form
-     control with real semantics; the row is the label, so the whole 56px band
-     is the hit area rather than just the dot. */
-  .needs {
-    background: var(--panel);
-    border-radius: var(--radius-panel);
-    box-shadow: var(--shadow-panel);
-    padding-block: 32px;
-  }
-  .needs-set { border: 0; padding: 0; margin: 0; }
-  .needs-legend {
-    padding: 0;
-    margin-bottom: 16px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--surface-label);
-  }
-  .needs-options { display: grid; gap: 8px; }
-  .needs-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-height: 56px;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--surface-line);
-    border-radius: var(--radius-sm);
-    background: var(--surface-card);
-    color: var(--surface-body);
-    font-size: 1.125rem;
-    cursor: pointer;
-  }
-  .needs-option input {
-    flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    accent-color: var(--navy);
-    margin: 0;
-  }
-  /* The checked row reads as chosen without colour alone carrying it: the
-     border thickens and the ground lifts. */
-  .needs-option:has(input:checked) {
-    border-color: var(--surface-heading);
-    box-shadow: inset 0 0 0 1px var(--surface-heading);
-    background: var(--panel);
-  }
-  .needs-submit { width: 100%; min-height: 56px; margin-top: 16px; }
+  /* The phone-only needs selector ("What do you need help with?") and all its
+     .needs-* rules were removed 2026-09: desktop dropped its quick-start, and
+     the mobile page now matches it section for section. */
 
   /* ---------- Trust bar --------------------------------------------------
      2x2 with hairline dividers. This is reassurance, not a feature section:
@@ -3056,9 +3014,9 @@ main {
   .steps li::before {
     position: absolute;
     left: 0;
-    top: -4px;
+    top: -2px;
     margin-bottom: 0;
-    font-size: 2.125rem;   /* 34px — the accent numeral */
+    font-size: 1.875rem;   /* 30px — the accent numeral; was 34px */
     opacity: 0.4;
   }
   .steps h3 { margin-bottom: 6px; }
@@ -3127,8 +3085,8 @@ main {
   .faq-list summary {
     min-height: 56px;
     padding: 1.1rem 2.75rem 1.1rem 0;
-    font-size: 1.1875rem;   /* 19px */
-    line-height: 1.35;
+    font-size: 1.125rem;    /* 18px — the body floor; was 19px */
+    line-height: 1.4;
   }
   .faq-list summary::after { right: 0.25rem; font-size: 1.75rem; }
   .faq-list details p { padding: 0 0 1.4rem 0; }
