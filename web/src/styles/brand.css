@@ -26,7 +26,7 @@
      --green-on-navy on dark ones
    - navy headings / ink body on light; white headings / --on-navy-body on dark.
      Labels are steel on light, --on-navy-soft on dark. No grey text anywhere
-   - body text 18px / line-height 1.6
+   - body text 18px / line-height 1.6; phones use 16px / 1.65
    - tap targets >= 44px, visible focus states, reduced motion respected
    ========================================================================== */
 
@@ -196,7 +196,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-size: 1.125rem;            /* 18px base — non-negotiable */
+  font-size: 1.125rem;            /* 18px desktop/tablet default */
   line-height: 1.6;
   color: var(--surface-body);
   background: var(--bg);
@@ -877,25 +877,6 @@ main {
   .hero .hero-lockup .microline { max-width: min(44ch, 46%); }
 }
 
-.motion-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  max-width: 100%;
-  margin-top: 12px;
-  padding: 8px 14px;
-  border: 1px solid var(--surface-outline);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--surface-heading);
-  font: inherit;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  cursor: pointer;
-}
-.motion-toggle[hidden] { display: none; }
-.motion-toggle[aria-pressed='true'] { background: var(--surface-hover); }
 
 /* Fine grain over the gradient — keeps the warm field from looking plasticky. */
 .hero::after {
@@ -2472,9 +2453,8 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
 /* ---------- Both phone and tablet ----------------------------------------
    THE 13px FLOOR. The audit found 440 instances of rendered text below 13px,
    every one of them a small-caps label: eyebrows at 11.52px, field labels at
-   11.52px, carrier tags at 10.88px. CLAUDE.md already commits to "Body 18px
-   minimum — the audience skews senior, so legibility rules over density"; the
-   labels simply never got the same rule. Uppercase + letter-spaced at 11.5px is
+   11.52px, carrier tags at 10.88px. Readable body copy also needs readable
+   labels. Uppercase + letter-spaced at 11.5px is
    the least readable text on the site for a 66-year-old, and it is used for
    every section label on every page.
 
@@ -2828,11 +2808,9 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
    BOLDNESS IS SPENT ONCE. The hero keeps the page's one oversized moment and
    everything below steps down hard and stays there.
 
-   2026-09 (owner's request): the whole phone scale stepped DOWN one notch —
-   hero 44->36, h1 38->32, h2 30->26, h3 21->20, lead 19->18. The page felt
-   uniformly oversized on a phone. Body stays at 18px — CLAUDE.md makes 18px a
-   non-negotiable floor for this audience, so the reduction comes out of the
-   display sizes, never the copy people actually have to read. */
+   Phone scale: 32px hero, 30px page title, 24px section title, 18px card
+   title, and 16px body copy. More panel padding and a 1.65 body line height
+   keep the smaller type comfortable rather than packing more text together. */
 @media (max-width: 1023px) {
   /* Complete two-line brand name instead of truncation; controls stay 44px
      even when the text grows. */
@@ -2851,7 +2829,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   }
   .site-header .brand-logo { display: flex; gap: 4px; }
   .site-header .brand-mark { width: 38px; height: 38px; }
-  .site-header .brand-name { overflow: visible; text-overflow: clip; }
+  .site-header .brand-name { overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
   .site-header .brand-name > span { display: block; }
   .site-header .brand-name > span:first-child { font-weight: 700; }
   .header-right { gap: 6px; }
@@ -2868,24 +2846,25 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
 }
 
 @media (max-width: 767px) {
+  body { font-size: 1rem; line-height: 1.65; }
   .hero .display-xl {
-    font-size: 2.25rem;
-    line-height: 1.12;
+    font-size: 2rem;
+    line-height: 1.15;
     letter-spacing: -0.02em;
   }
 
   /* Interior page heroes step down from the homepage's one big moment. */
   h1 {
-    font-size: 2rem;        /* 32px */
-    line-height: 1.18;
+    font-size: 1.875rem;    /* 30px */
+    line-height: 1.2;
     letter-spacing: -0.02em;
   }
 
   /* Section headings hold ONE size all the way down the page. */
   h2,
   .cta-copy h2 {
-    font-size: 1.625rem;    /* 26px */
-    line-height: 1.23;
+    font-size: 1.5rem;      /* 24px */
+    line-height: 1.3;
     letter-spacing: -0.015em;
   }
   /* 20ch at 30px in a ~330px column forces a 5-line rag with orphans. Let the
@@ -2901,22 +2880,23 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   .cards--tiles .card h3,
   .compare-col h3,
   .def-row dt,
-  .post-row h3 {
-    font-size: 1.25rem;     /* 20px */
-    line-height: 1.25;
+  .post-row h3,
+  .eligibility-heading,
+  .git-step > h3 {
+    font-size: 1.125rem;    /* 18px */
+    line-height: 1.4;
     letter-spacing: -0.005em;
   }
 
   .lead,
   .page-hero-intro,
   .hero-sub {
-    font-size: 1.125rem;    /* 18px — the body floor; leads no longer outsize copy */
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: 1.65;
     letter-spacing: 0;
   }
 
-  /* Body copy stays 18px. Card and step copy were running at 1.02rem (16.3px),
-     under the project's own floor. */
+  /* Keep prose, nested cards, reviews, and lead copy on one phone scale. */
   .card p,
   .steps p,
   .compare-col dd,
@@ -2924,9 +2904,11 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   .post-row p,
   .prose li,
   .carrier-card p,
-  .embed-slot p {
-    font-size: 1.125rem;    /* 18px */
-    line-height: 1.6;
+  .embed-slot p,
+  .post-body,
+  .review-card blockquote {
+    font-size: 1rem;
+    line-height: 1.65;
   }
 
   /* Legal and micro copy: 13px floor, comfortable leading. */
@@ -2940,22 +2922,23 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     line-height: 1.5;
   }
 
-  /* Panels already separate sections. Use a 48px outer rhythm, 24–28px
-     between groups, and 8–16px between related text. */
+  /* Separate sections with 56px vertical padding and keep copy comfortably
+     inset from panel edges, including on the narrowest phones. */
   :root {
-    /* 8px panel gutter + 16px container padding = 24px to the text. */
-    --container-pad: 16px;
-    --panel-gap: 12px;
+    --gutter: 12px;
+    --container-pad: clamp(20px, 6vw, 24px);
+    --card-pad: clamp(20px, 6vw, 24px);
+    --panel-gap: 16px;
+    --radius-panel: 24px;
   }
 
-  .section { padding-block: 48px; }
-  .cta-band { padding-block: 48px; }
-  .trust-band + .section { padding-top: 48px; }
-  .trust-band { padding-block: 20px; }
+  .section { padding-block: 56px; }
+  .cta-band { padding-block: 56px; }
+  .trust-band + .section { padding-top: 56px; }
+  .trust-band { padding-block: 24px; }
 
-  /* Every authored gap inside a section, capped at 32px. These were 36–40px
-     and set independently, which is what flattened the ratio. */
-  .section-intro { margin-bottom: 28px; max-width: none; }
+  /* Group related copy tightly, then leave a clear break before cards. */
+  .section-intro { margin-bottom: 32px; max-width: none; }
   .medicare-cta { margin-top: 32px; }
   .video-placeholder { margin-top: 32px; }
   .reviews-actions { margin-top: 32px; }
@@ -2972,10 +2955,12 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   .lead { margin-top: 16px; }
   .page-hero-intro { margin-top: 16px; }
   .lead, .page-hero-intro, .hero-sub { text-wrap: pretty; }
-  .card, .compare-col { padding: 20px; }
+  .card, .compare-col { padding: var(--card-pad); }
+  .cards { gap: 20px; }
   .cards--2, .cards--3, .cards--4 { grid-template-columns: minmax(0, 1fr); }
-  .split, .cta-grid, .dental-split, .faq-split { gap: 28px; }
+  .split, .cta-grid, .dental-split, .faq-split { gap: 36px; }
   .dental-carriers { margin-top: 32px; padding-top: 24px; }
+  .eligibility-row { font-size: 1.0625rem; line-height: 1.5; }
 }
 
 /* ---------- Tablet (768–1023) --------------------------------------------
@@ -3024,7 +3009,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
      failure mode than one that is. */
   .hero {
     min-height: 0;
-    min-height: min(calc(100svh - var(--gutter) * 2), 760px);
+    min-height: min(calc(100svh - var(--gutter) * 2), 720px);
     --hero-wash: 0.88;
     --hero-gap: 32px;
     padding-bottom: 28px;
@@ -3074,7 +3059,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
      each one be as tall as it is. */
   .cards--tiles .card {
     min-height: 0;
-    padding: 20px;
+    padding: var(--card-pad);
   }
   .cards--tiles .card:has(.btn) p { margin-bottom: 20px; }
   .cards--tiles .card .btn { margin-top: 0; align-self: stretch; }
@@ -3083,7 +3068,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   /* Medicare Supplement vs Advantage: keep the pairing legible. Both tiles
      get the same internal rhythm so they still read as a comparison rather
      than as two unrelated cards that happen to be adjacent. */
-  #medicare .cards--2 { gap: 12px; }
+  #medicare .cards--2 { gap: 20px; }
 
   /* ---------- Four-up cards become a divided list ------------------------
      "Why Lisa" and About's "How I work" are four one-line claims each. As
@@ -3097,7 +3082,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     border: 0;
     border-top: 1px solid var(--surface-line);
     border-radius: 0;
-    padding: 20px 0;
+    padding: 24px 0;
   }
   .cards--4 .card:first-child { border-top: 0; padding-top: 0; }
   .cards--4 .card:last-child { padding-bottom: 0; }
@@ -3201,7 +3186,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   .faq-list summary {
     min-height: 56px;
     padding: 1.1rem 2.75rem 1.1rem 0;
-    font-size: 1.125rem;    /* 18px — the body floor; was 19px */
+    font-size: 1rem;
     line-height: 1.4;
   }
   .faq-list summary::after { right: 0.25rem; font-size: 1.75rem; }
@@ -3211,7 +3196,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
      Single column, every field full width, visible label above each input,
      and a full-width submit. Inputs stay at 16.8px: anything under 16px makes
      iOS zoom the page on focus, which then leaves it zoomed. */
-  .git-form { gap: 18px; }
+  .git-form { gap: 22px; }
   .git-field input,
   .git-field textarea {
     min-height: 52px;
@@ -3222,13 +3207,14 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     width: 100%;
     min-height: 56px;
   }
-  .contact-card { padding: 20px; }
+  .contact-card { padding: var(--card-pad); }
 
   /* ---------- Actions ----------------------------------------------------
      Primary actions go full width and 56px tall; 12px between adjacent
      targets clears the 8px minimum with room for a wobble. */
   .actions,
   .reviews-actions { gap: 12px; }
+  .btn { font-size: 0.9375rem; }
   .actions .btn,
   .reviews-actions .btn,
   .medicare-cta .btn,
@@ -3251,16 +3237,16 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
 
   /* ---------- Footer -----------------------------------------------------
      The two link groups collapse; the contact block above them never does. */
-  .site-footer { padding-block: 36px 24px; }
+  .site-footer { padding-block: 44px 28px; }
   .footer-grid { gap: 0; }
   .footer-brand { padding-bottom: 28px; }
-  .footer-brand .wordmark { white-space: normal; font-size: 1.125rem; overflow: visible; }
+  .footer-brand .wordmark { white-space: normal; font-size: 1rem; overflow: visible; }
   .footer-brand .brand-logo { display: flex; }
   .footer-brand .brand-name { overflow: visible; }
-  .footer-brand .mission { font-size: 1.125rem; line-height: 1.6; margin-top: 12px; }
+  .footer-brand .mission { font-size: 1rem; line-height: 1.65; margin-top: 12px; }
   .footer-contact {
-    margin-top: 20px;
-    padding: 16px;
+    margin-top: 24px;
+    padding: 20px;
     border: 1px solid var(--surface-line);
     border-radius: 16px;
     background: var(--surface-card);
@@ -3280,7 +3266,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   }
   .footer-group > summary h3 {
     margin-bottom: 0;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 500;
     text-transform: none;
     letter-spacing: 0;
@@ -3361,9 +3347,9 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     background: var(--surface-card);
     border: 1px solid var(--surface-line);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: var(--card-pad);
   }
-  .table-scroll--stack tr + tr { margin-top: 12px; }
+  .table-scroll--stack tr + tr { margin-top: 20px; }
   .table-scroll--stack th[scope="row"] {
     display: block;
     position: static;
@@ -3372,7 +3358,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     border-right: 0;
     border-bottom: 1px solid var(--surface-line);
     background: none;
-    font-size: 1.3125rem;   /* 21px — card title */
+    font-size: 1.125rem;    /* 18px — card title */
     font-weight: 500;
     letter-spacing: -0.005em;
   }
@@ -3391,7 +3377,7 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     text-transform: uppercase;
     color: var(--surface-label);
   }
-  .table-scroll--stack .cell-part { font-size: 1.125rem; }
+  .table-scroll--stack .cell-part { font-size: 1rem; }
 
   /* The Medigap scroller keeps its box, but the pinned column can't eat half
      a phone screen. */

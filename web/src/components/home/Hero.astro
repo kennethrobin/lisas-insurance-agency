@@ -14,7 +14,7 @@
 // the hero was removed too (2026-09): mobile now matches desktop section for
 // section.
 import { site } from '../../data/site';
-import MotionToggle from '../MotionToggle.astro';
+import MotionPreferences from '../MotionPreferences.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -50,7 +50,7 @@ import MotionToggle from '../MotionToggle.astro';
 
       <a class="btn btn--accent" href={site.phoneHref}><span class="phone-label">Talk to Lisa · <span class="phone-number">{site.phone}</span></span></a>
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
-      <MotionToggle />
+      <MotionPreferences />
     </div>
   </div>
 </section>

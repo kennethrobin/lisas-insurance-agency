@@ -81,6 +81,27 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
       await page.setViewportSize({ width, height: 844 });
       await load(page);
       await googleFixture(page);
+      const scale = await page.evaluate(() => {
+        const style = (selector) => getComputedStyle(document.querySelector(selector));
+        return {
+          body: parseFloat(style('body').fontSize),
+          hero: parseFloat(style('.hero .display-xl').fontSize),
+          heading: parseFloat(style('.section h2').fontSize),
+          gutter: parseFloat(style('body').paddingLeft),
+          inset: parseFloat(style('.hero > .container').paddingLeft),
+          section: parseFloat(style('.section').paddingTop),
+          card: parseFloat(style('.cards--tiles .card').paddingLeft),
+          input: parseFloat(style('.git-field input').fontSize),
+        };
+      });
+      assert.equal(scale.body, 16, 'Phone body scale');
+      assert.equal(scale.hero, 32, 'Phone hero scale');
+      assert.equal(scale.heading, 24, 'Phone section scale');
+      assert.equal(scale.gutter, 12, 'Phone panel gutter');
+      assert.ok(scale.inset >= 20 && scale.inset <= 24, 'Phone panel padding');
+      assert.ok(scale.card >= 20 && scale.card <= 24, 'Phone card padding');
+      assert.equal(scale.section, 56, 'Phone section spacing');
+      assert.ok(scale.input >= 16, 'Input text avoids automatic iOS zoom');
       await widthSafe(page, 'Google-shaped reviews');
       const taps = (await page.evaluate(probeTapTargets)).filter((target) => !target.inline);
       assert.deepEqual(taps, [], 'Mobile controls below 44px');
@@ -204,35 +225,32 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
     await widthSafe(page, 'Animated home');
   });
 
-  await test('keyboard animation controls and motion preference changes', async () => {
+  await test('no pause controls and device motion preference changes', async () => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await load(page);
-    const toggle = page.locator('[data-motion-toggle]').first();
-    assert.equal(await toggle.isVisible(), true);
-    await toggle.focus();
-    await page.keyboard.press('Space');
-    assert.ok(await page.locator('[data-motion-toggle]').evaluateAll(
-      (buttons) => buttons.every((button) => button.getAttribute('aria-pressed') === 'true')
-    ));
-    assert.ok(await page.locator('.carrier-track').evaluateAll(
-      (tracks) => tracks.every((track) => getComputedStyle(track).animationPlayState === 'paused')
-    ));
-    assert.equal(await page.locator('.hero-video').evaluate((video) => video.paused), true);
-    // Pausing must persist after focus leaves the control.
-    await page.keyboard.press('Tab');
-    assert.equal(await page.locator('html').getAttribute('data-motion-paused'), '');
-    await toggle.focus();
-    await page.keyboard.press('Space');
-    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.locator('[data-motion-toggle], .motion-toggle').count(), 0);
+    assert.equal(await page.getByRole('button', { name: /pause animations/i }).count(), 0);
     assert.equal(await page.locator('html').getAttribute('data-motion-paused'), null);
+    assert.ok(await page.locator('.carrier-track').evaluateAll(
+      (tracks) => tracks.every((track) => getComputedStyle(track).animationName === 'carrier-roll')
+    ));
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForTimeout(100);
-    assert.equal(await toggle.isVisible(), false);
     assert.equal(await page.locator('.hero-video').evaluate((video) => video.paused), true);
     assert.ok(await page.locator('.carrier-track').evaluateAll(
       (tracks) => tracks.every((track) => getComputedStyle(track).animationName === 'none')
     ));
-    await widthSafe(page, 'Motion controls');
+    await widthSafe(page, 'Reduced motion without controls');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.waitForTimeout(100);
+    assert.equal(await page.locator('html').getAttribute('data-motion-paused'), null);
+    await load(page, '/dental-insurance');
+    assert.equal(await page.locator('[data-motion-toggle], .motion-toggle').count(), 0);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForTimeout(100);
+    assert.ok(await page.locator('.carrier-track').evaluateAll(
+      (tracks) => tracks.every((track) => getComputedStyle(track).animationName === 'none')
+    ));
   });
 
   await test('logo assets and keyboard skip link', async () => {
