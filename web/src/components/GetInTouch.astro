@@ -295,10 +295,15 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
         ),
       ).filter((el) => el !== honeypot && el !== consent);
 
-    // Validate on blur (not every keystroke).
-    requiredControls().forEach((control) =>
-      control.addEventListener('blur', () => validateField(control)),
-    );
+    // Report new errors on blur, but clear an existing error as soon as it is
+    // corrected. Waiting until the next tap removed an error row underneath
+    // the pointer, moving the consent checkbox before Safari dispatched click.
+    requiredControls().forEach((control) => {
+      control.addEventListener('blur', () => validateField(control));
+      control.addEventListener('input', () => {
+        if (control.hasAttribute('aria-invalid')) validateField(control);
+      });
+    });
     consent?.addEventListener('change', () => {
       if (consent.checked) clearError(consent);
     });
@@ -339,6 +344,7 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
       };
       const showFallback = () => {
         hideLoading();
+        mount.hidden = true;
         if (fallback) fallback.hidden = false;
       };
 

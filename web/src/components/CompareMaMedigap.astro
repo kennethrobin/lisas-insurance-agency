@@ -60,13 +60,13 @@ const supplement = {
 const columns = stay === 'advantage' ? [advantage, supplement] : [supplement, advantage];
 ---
 
-<div class="compare" data-compare data-view="both" aria-labelledby={id}>
-  {/* Tabs, not a checkbox: three states (both / one / the other) is a choice,
-      and a choice reads as tabs. Hidden until JS confirms it can do anything. */}
-  <div class="compare-switch" role="tablist" aria-label="Compare view" data-compare-switch hidden>
-    <button type="button" role="tab" aria-selected="true" data-view="both">Side by side</button>
-    <button type="button" role="tab" aria-selected="false" data-view="advantage">Advantage only</button>
-    <button type="button" role="tab" aria-selected="false" data-view="supplement">Supplement only</button>
+<div class="compare" role="group" data-compare data-view="both" aria-labelledby={id}>
+  {/* View filters, not ARIA tabs: "both" displays two articles at once.
+      Native buttons support Tab, Enter and Space without a custom tab pattern. */}
+  <div class="compare-switch" role="group" aria-label="Compare view" data-compare-switch hidden>
+    <button type="button" aria-pressed="true" data-view="both">Both plans</button>
+    <button type="button" aria-pressed="false" data-view="advantage">Advantage only</button>
+    <button type="button" aria-pressed="false" data-view="supplement">Supplement only</button>
   </div>
 
   <div class="compare-cols">
@@ -120,7 +120,7 @@ const columns = stay === 'advantage' ? [advantage, supplement] : [supplement, ad
 
     const select = (view: string) => {
       compare.dataset.view = view;
-      tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.view === view)));
+      tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.view === view)));
     };
 
     tabs.forEach((tab) => {

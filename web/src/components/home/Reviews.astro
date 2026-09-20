@@ -181,6 +181,7 @@ const summary =
   if (track) {
     const cards = [...track.querySelectorAll<HTMLElement>('.review-card')];
     let dots: HTMLElement | null = null;
+    let observer: IntersectionObserver | null = null;
 
     const build = () => {
       if (dots || cards.length < 2) return;
@@ -196,15 +197,18 @@ const summary =
           String(i + 1);
         const dot = document.createElement('button');
         dot.type = 'button';
-        dot.setAttribute('aria-label', who);
+        dot.setAttribute('aria-label', `Show review ${i + 1} of ${cards.length}: ${who}`);
         if (i === 0) dot.setAttribute('aria-current', 'true');
         dot.addEventListener('click', () => {
-          card.scrollIntoView({
+          // Scroll only the track, never the document or another ancestor.
+          const padding = parseFloat(getComputedStyle(track).paddingLeft);
+          const left = card.getBoundingClientRect().left -
+            track.getBoundingClientRect().left + track.scrollLeft - padding;
+          track.scrollTo({
+            left,
             behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
               ? 'auto'
               : 'smooth',
-            block: 'nearest',
-            inline: 'start',
           });
         });
         dots!.appendChild(dot);
@@ -215,8 +219,9 @@ const summary =
       /* Keep the dots honest about which card is showing. An
          IntersectionObserver on the track beats a scroll listener: it reports
          the card that is actually in view rather than a position guess. */
-      const io = new IntersectionObserver(
+      observer = new IntersectionObserver(
         (entries) => {
+          if (!dots) return;
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             const i = cards.indexOf(entry.target as HTMLElement);
@@ -229,10 +234,12 @@ const summary =
         },
         { root: track, threshold: 0.6 }
       );
-      cards.forEach((card) => io.observe(card));
+      cards.forEach((card) => observer?.observe(card));
     };
 
     const teardown = () => {
+      observer?.disconnect();
+      observer = null;
       dots?.remove();
       dots = null;
     };

@@ -12,6 +12,7 @@
  * the animation stops and the clones hide, leaving a plain wrapped row.
  */
 export type Carrier = { name: string; note?: string };
+import MotionPreferences from './MotionPreferences.astro';
 
 interface Props {
   /** Optional label above this lane, e.g. "Enroll online". */
@@ -25,6 +26,7 @@ const { label, carriers, reverse = false } = Astro.props;
 
 <div class:list={['carrier-lane', { 'carrier-lane--reverse': reverse }]}>
   {label && <p class="carrier-lane-label">{label}</p>}
+  <MotionPreferences />
 
   <div class="carrier-strip">
     {/* The list is decorative repetition of names already in the page copy, so

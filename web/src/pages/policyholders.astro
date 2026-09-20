@@ -61,7 +61,7 @@ const directLinePending = isPending(links.policyholderDirectLine);
                 links.policyholderDirectLine is filled in, this falls back to the
                 agency number rather than rendering a dead control, following the
                 same rule as every other pending link on this site. */}
-            <a class="btn btn--accent" href={site.phoneHref}>Call · {site.phone}</a>
+            <a class="btn btn--accent" href={site.phoneHref}><span class="phone-label">Call · <span class="phone-number">{site.phone}</span></span></a>
             <span class="chip">Lisa's direct line is being confirmed; this is the agency number</span>
           </>
         ) : (

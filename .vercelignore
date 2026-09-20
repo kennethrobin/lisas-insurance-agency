@@ -1,0 +1,14 @@
+# This project's configured Root Directory is web.
+/*
+!/web
+!/web/**
+
+# Never upload credentials, local audits, dependencies, or generated output.
+web/.env
+web/.env.*
+web/.vercel
+web/.astro
+web/.mobile-audit
+web/node_modules
+web/dist
+**/.DS_Store

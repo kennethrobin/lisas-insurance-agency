@@ -39,8 +39,9 @@ win over the catch-all.
 
 - `web/src/styles/brand.css` is the whole visual design (tokens, type scale, components) — the
   "clean" direction. It is the only stylesheet; import it, never anything else.
-- Type: self-hosted Open Sans (variable, latin) at `web/public/fonts/`. Body 18px minimum — the
-  audience skews senior, so legibility rules over density.
+- Type: self-hosted Open Sans (variable, latin) at `web/public/fonts/`. Body 18px on desktop/tablet.
+  Phones (≤767px) use 16px body copy with 1.65 line height, per the owner's mobile sizing revision.
+  Inputs stay at least 16px; readable leading and generous padding take priority over density.
 - Colour: navy `#20344F`, gold `#C68A3C` **on primary action buttons only**, green `#34704F` for
   reassurance marks only, ink `#22303D` for all body text. No grey body text.
 

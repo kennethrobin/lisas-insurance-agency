@@ -42,14 +42,11 @@ const reviewLinks = [
         </div>
       </div>
 
-      {/* Below 768px these two collapse to accordions, so the footer isn't a
-          twelve-link wall at the end of every page. <details open> is the whole
-          mechanism: it works before any JS, it prints expanded, and Ctrl-F
-          still finds the links inside it. At >=768px CSS forces it open and
-          makes the summary inert, so the desktop footer is unchanged — the
-          contact block above is never collapsible at any width. */}
+      {/* Native disclosures start closed, including before JS and without JS.
+          The script expands them into static desktop columns. Contact details
+          and insurance disclosures are never collapsed. */}
       <nav class="footer-col" aria-label="Quick links">
-        <details class="footer-group" open>
+        <details class="footer-group">
           <summary><h3>Quick links</h3></summary>
           <ul>
             {footerNav.map((link) => (
@@ -61,8 +58,10 @@ const reviewLinks = [
       </nav>
 
       <nav class="footer-col" aria-label="Get started">
-        <details class="footer-group" open>
-          <summary><h3>Ready to explore your options? Start Here</h3></summary>
+        <details class="footer-group">
+          <summary>
+            <h3><span class="footer-desktop-label">Ready to explore your options? Start Here</span><span class="footer-mobile-label">Get started</span></h3>
+          </summary>
           <ul>
             {/* "Policyholder Service" removed at the owner's request. The
                 /policyholders page still exists but is no longer linked here.
@@ -94,6 +93,7 @@ const reviewLinks = [
     )}
 
     <div class="footer-disclaimers">
+      <h3 class="footer-disclosures-heading">Insurance disclosures</h3>
       <p>
         We do not offer every plan available in your area. Any information we
         provide is limited to those plans we do offer in your area. Please contact
@@ -126,24 +126,24 @@ const reviewLinks = [
 </footer>
 
 <script>
-  /* The groups ship `open`, and CSS keeps them open at >=768px. The one case
-     CSS can't cover is someone collapsing a group on a phone and then rotating
-     to a wide layout: the attribute would still be off. Re-open on the way up. */
   const groups = document.querySelectorAll<HTMLDetailsElement>('.footer-group');
   const wide = window.matchMedia('(min-width: 768px)');
-  const sync = () => {
-    groups.forEach((group) => {
-      const summary = group.querySelector('summary');
+  groups.forEach((group) => {
+    const summary = group.querySelector('summary');
+    let mobileOpen = false;
+    const sync = () => {
       if (wide.matches) {
+        mobileOpen = group.open;
         group.open = true;
-        // CSS already makes it unclickable up here; this stops a keyboard user
-        // collapsing a group that has no visible way to reopen it.
+        group.dataset.static = '';
         summary?.setAttribute('tabindex', '-1');
       } else {
+        group.open = mobileOpen;
+        delete group.dataset.static;
         summary?.removeAttribute('tabindex');
       }
-    });
-  };
-  wide.addEventListener('change', sync);
-  sync();
+    };
+    wide.addEventListener('change', sync);
+    sync();
+  });
 </script>

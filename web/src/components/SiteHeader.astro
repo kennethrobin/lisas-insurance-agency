@@ -124,7 +124,7 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
           href={site.phoneHref}
           aria-label={`Call ${site.phone}. Calling connects you with Lisa, a licensed insurance agent.`}
         >
-          Talk to Lisa · {site.phone}
+          <span class="phone-label">Talk to Lisa · <span class="phone-number">{site.phone}</span></span>
         </a>
         <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
       </div>
@@ -149,6 +149,27 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
     const height = (bar?.offsetHeight ?? 0) + getBarPadding();
     document.documentElement.style.setProperty('--header-actual', `${height}px`);
   };
+  const background = [...document.querySelectorAll<HTMLElement>(
+    'main, .site-footer, .skip-link, [data-callbar], .site-header > .container > .wordmark, .header-phone'
+  )];
+  const priorInert = new Map<HTMLElement, boolean>();
+  const setModal = (modal: boolean) => {
+    if (modal) {
+      header?.setAttribute('role', 'dialog');
+      header?.setAttribute('aria-modal', 'true');
+      header?.setAttribute('aria-label', 'Main menu');
+      background.forEach((element) => {
+        priorInert.set(element, element.inert);
+        element.inert = true;
+      });
+    } else {
+      header?.removeAttribute('role');
+      header?.removeAttribute('aria-modal');
+      header?.removeAttribute('aria-label');
+      priorInert.forEach((inert, element) => { element.inert = inert; });
+      priorInert.clear();
+    }
+  };
 
   const getBarPadding = () => {
     if (!header) return 0;
@@ -161,6 +182,8 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
   window.addEventListener('orientationchange', syncHeaderHeight);
   window.addEventListener('load', syncHeaderHeight);
   if (document.fonts?.ready) document.fonts.ready.then(syncHeaderHeight);
+  const headerBar = header?.querySelector<HTMLElement>(':scope > .container');
+  if (headerBar) new ResizeObserver(syncHeaderHeight).observe(headerBar);
 
   /* Transparent-ish over the hero, frosted once the page scrolls under it. */
   const syncSolid = () => {
@@ -195,7 +218,7 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
     if (!document.body.classList.contains('is-menu-locked')) return;
     document.body.classList.remove('is-menu-locked');
     document.body.style.top = '';
-    window.scrollTo(0, savedScroll);
+    window.scrollTo({ left: 0, top: savedScroll, behavior: 'instant' });
   };
 
   const FOCUSABLE =
@@ -213,13 +236,18 @@ const groupCurrent = (item: (typeof mainNav)[number]) =>
   const setOpen = (open: boolean) => {
     if (!toggle || !drawer) return;
     toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
     drawer.hidden = !open;
     // The header tab is deliberately NOT restyled while the menu is open — its
     // appearance is driven only by scroll.
     if (open) {
-      if (overlay.matches) lockScroll();
-      drawer.querySelector<HTMLElement>('a, summary')?.focus();
+      if (overlay.matches) {
+        lockScroll();
+        setModal(true);
+      }
+      drawer.querySelector<HTMLElement>('a, summary')?.focus({ preventScroll: true });
     } else {
+      setModal(false);
       unlockScroll();
     }
   };
