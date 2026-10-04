@@ -296,16 +296,11 @@ const faqs = [
 
       <div class="actions actions--stack">
         {acaPending ? (
-          <>
-            {/* TODO: links.healthSherpaAca — Lisa's branded HealthSherpa link.
-                NOTE: this is the ONE enrollment path still pending. The Sunfire
-                link fixed the two Medicare pages, but it is a Medicare portal
-                and must not be wired to the under-65 ACA button. Until the
-                HealthSherpa URL exists this stays the call path, not a dead
-                button. */}
-            <a class="btn btn--accent" href={site.phoneHref}>Get Marketplace Coverage</a>
-            <span class="chip">Online enrollment is on its way. For now, call or text</span>
-          </>
+          /* TODO: links.healthSherpaAca — Lisa's branded HealthSherpa link.
+             The Sunfire link is Medicare-only and must not be used here. Until
+             the HealthSherpa URL exists this stays the call path, not a dead
+             button. */
+          <a class="btn btn--accent" href={site.phoneHref}>Get Marketplace Coverage</a>
         ) : (
           <a class="btn btn--accent" href={links.healthSherpaAca} {...externalAttrs}>
             Get Marketplace Coverage
