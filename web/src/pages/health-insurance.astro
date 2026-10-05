@@ -11,9 +11,9 @@
 import Page from '../layouts/Page.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
-import MediaSlot from '../components/MediaSlot.astro';
 import { Picture } from 'astro:assets';
 import familyAtHome from '../assets/photos/family-at-home.jpg';
+import holdingHands from '../assets/photos/holding-hands.jpg';
 import { site } from '../data/site';
 import { links, isPending, externalAttrs } from '../data/links';
 
@@ -295,7 +295,18 @@ const faqs = [
         </div>
 
         <div class="media-grid">
-          <MediaSlot label="couple in their early sixties, at a kitchen table" ratio="4 / 3" />
+          {/* Adobe Stock #2015611727, same optimisation as the family photo. */}
+          <Picture
+            class="media-photo"
+            src={holdingHands}
+            formats={['avif', 'webp']}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 1280px) 560px, (min-width: 900px) 44vw, calc(100vw - 72px)"
+            quality={70}
+            loading="lazy"
+            decoding="async"
+            alt="A younger woman gently holds an older woman's hand as they sit together on a sofa."
+          />
         </div>
       </div>
 
