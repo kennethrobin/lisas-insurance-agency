@@ -64,6 +64,17 @@ const faqs = [
   heading="Prescription drug coverage."
   intro="Part D is how Medicare covers the medicines you pick up at a pharmacy. Understanding it now helps you plan for the future."
 >
+  {/* Simply Enroll appears here and again after the three steps below
+      (owner's request, 2026-10), so visitors don't have to scroll to find it. */}
+  <Fragment slot="hero-actions">
+    <div class="actions hero-actions">
+      <a class="btn btn--accent" href={links.sunfirePartD} {...externalAttrs}>
+        Compare &amp; enroll with Simply Enroll
+        <span class="visually-hidden"> (opens in a new tab)</span>
+      </a>
+    </div>
+    <p class="microline">Have your medication list and preferred pharmacy ready.</p>
+  </Fragment>
   <!-- ─── What Part D is ──────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
