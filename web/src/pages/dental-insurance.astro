@@ -17,23 +17,22 @@ import CarrierStrip from '../components/CarrierStrip.astro';
 import DentalCarrierTable from '../components/DentalCarrierTable.astro';
 import Faq from '../components/Faq.astro';
 import { site } from '../data/site';
+import { carrierLogos as logo } from '../data/carriers';
 
 const title = 'Dental & Vision Insurance Plans | Lisa’s Insurance Agency';
 const description =
   'Compare dental and vision coverage — enroll online with a network check, or have a licensed agent walk you through it. Standalone plans work alongside Medicare.';
 
-/* PLACEHOLDER LOGOS: in-brand text chips until real carrier artwork is
-   licensed. Carrier marks are trademarked; a fake logo is worse than none. */
 const selfEnroll = [
-  { name: 'Ameritas', note: 'Large network' },
-  { name: 'Manhattan Life' },
-  { name: 'Allstate' },
+  { name: 'Ameritas', note: 'Large network', ...logo.ameritas },
+  { name: 'Manhattan Life', ...logo.manhattanLife },
+  { name: 'Allstate', ...logo.allstate },
 ];
 
 const agentAssisted = [
-  { name: 'Healthspring' },
-  { name: 'Aetna' },
-  { name: 'Mutual of Omaha' },
+  { name: 'Healthspring', ...logo.healthspring },
+  { name: 'Aetna', ...logo.aetna },
+  { name: 'Mutual of Omaha', ...logo.mutualOfOmaha },
 ];
 
 const whatToCompare = [
@@ -119,8 +118,8 @@ const faqs = [
 
       <p class="source-note">
         Availability, plan designs and pricing vary by state and by carrier. Online
-        dental enrollment is available in 43 states; it is not available in CT, VT,
-        UT, HI, WY, WV or RI.
+        dental enrollment is available in 39 states; it is not available in CT, VT,
+        UT, HI, WY, WV, RI or NH.
       </p>
 
       <div class="actions actions--stack">

@@ -6,16 +6,16 @@
 // it. The carrier strip sits underneath as proof there is something to compare.
 import CarrierStrip from '../CarrierStrip.astro';
 import DentalEligibility from './DentalEligibility.astro';
+import { carrierLogos as logo } from '../../data/carriers';
 
-/* PLACEHOLDER LOGOS: in-brand name chips until real carrier artwork is
-   licensed. Carrier marks are trademarked; a fake logo is worse than none. */
 const carriers = [
-  { name: 'Ameritas', note: 'Large network' },
-  { name: 'Manhattan Life' },
-  { name: 'Allstate' },
-  { name: 'Healthspring' },
-  { name: 'Aetna' },
-  { name: 'Mutual of Omaha' },
+  { name: 'Ameritas', note: 'Large network', ...logo.ameritas },
+  { name: 'Manhattan Life', ...logo.manhattanLife },
+  { name: 'Allstate', ...logo.allstate },
+  { name: 'Healthspring', ...logo.healthspring },
+  { name: 'Aetna', ...logo.aetna },
+  { name: 'Mutual of Omaha', ...logo.mutualOfOmaha },
+  { name: 'Devoted Health', ...logo.devotedHealth },
 ];
 ---
 
@@ -45,7 +45,7 @@ const carriers = [
       <CarrierStrip label="Carrier partners" carriers={carriers} />
 
       <p class="reviews-footnote">
-        Online enrollment available in 43 states. Not available in CT, VT, UT, HI, WY, WV, RI.
+        Online enrollment available in 39 states. Not available in CT, VT, UT, HI, WY, WV, RI, NH.
       </p>
     </div>
   </div>
