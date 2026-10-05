@@ -13,7 +13,7 @@ import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import { Picture } from 'astro:assets';
 import familyAtHome from '../assets/photos/family-at-home.jpg';
-import holdingHands from '../assets/photos/holding-hands.jpg';
+import coupleOnBeach from '../assets/photos/couple-on-beach.jpg';
 import { site } from '../data/site';
 import { links, isPending, externalAttrs } from '../data/links';
 
@@ -295,17 +295,17 @@ const faqs = [
         </div>
 
         <div class="media-grid">
-          {/* Adobe Stock #2015611727, same optimisation as the family photo. */}
+          {/* Adobe Stock #47266329, same optimisation as the family photo. */}
           <Picture
             class="media-photo"
-            src={holdingHands}
+            src={coupleOnBeach}
             formats={['avif', 'webp']}
             widths={[480, 800, 1200, 1600]}
             sizes="(min-width: 1280px) 560px, (min-width: 900px) 44vw, calc(100vw - 72px)"
             quality={70}
             loading="lazy"
             decoding="async"
-            alt="A younger woman gently holds an older woman's hand as they sit together on a sofa."
+            alt="An older couple walks arm in arm along a sandy beach, smiling at each other, with the ocean behind them."
           />
         </div>
       </div>
