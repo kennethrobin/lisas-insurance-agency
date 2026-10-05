@@ -2,16 +2,23 @@
 /**
  * Rolling strip of carrier partners.
  *
- * The chips are in-brand text plates, not logos: real carrier marks are
- * trademarked assets that need permission and the right files, so shipping a
- * fake logo would be worse than shipping none. Swap `logo` in for the real
- * artwork when it arrives — the chip's shape is already the right one.
+ * Each chip shows the carrier's own logo in its real colours on a white
+ * capsule (owner's request, 2026-10). Files live in /public/logos/carriers and come
+ * from the carriers' official sites (see docs/carrier-logos.md). A carrier without
+ * a `logo` falls back to its name as text.
  *
  * The list is duplicated in the markup and the track is translated by exactly
  * half its width, which is what makes the loop seamless. Under reduced motion
  * the animation stops and the clones hide, leaving a plain wrapped row.
  */
-export type Carrier = { name: string; note?: string };
+export type Carrier = {
+  name: string;
+  note?: string;
+  /** White logo under /public, e.g. '/logos/carriers/aetna.svg'. */
+  logo?: string;
+  /** Height multiplier for tall marks whose wordmark would otherwise read small. */
+  logoScale?: number;
+};
 import MotionPreferences from './MotionPreferences.astro';
 
 interface Props {
@@ -22,6 +29,8 @@ interface Props {
   reverse?: boolean;
 }
 const { label, carriers, reverse = false } = Astro.props;
+/* The loop renders the list twice; the second copy is marked as the clone. */
+const halves = [false, true];
 ---
 
 <div class:list={['carrier-lane', { 'carrier-lane--reverse': reverse }]}>
@@ -33,19 +42,22 @@ const { label, carriers, reverse = false } = Astro.props;
         the whole strip is hidden from assistive tech — a screen reader hearing
         every carrier twice is noise, not information. */}
     <div class="carrier-track" aria-hidden="true">
-      {carriers.map((carrier) => (
-        <span class="carrier-chip">
-          {carrier.name}
+      {/* The duplicate half carries `data-clone` so reduced motion can drop it.
+          alt is empty because the whole track is aria-hidden. */}
+      {halves.map((clone) => carriers.map((carrier) => (
+        <span class:list={['carrier-chip', { 'carrier-chip--logo': carrier.logo }]} data-clone={clone || undefined}>
+          {carrier.logo ? (
+            <img
+              class="carrier-logo"
+              src={carrier.logo}
+              alt=""
+              decoding="async"
+              style={carrier.logoScale ? `--logo-scale:${carrier.logoScale}` : undefined}
+            />
+          ) : carrier.name}
           {carrier.note && <span class="chip-tag">{carrier.note}</span>}
         </span>
-      ))}
-      {/* The duplicate half. `data-clone` so reduced motion can drop it. */}
-      {carriers.map((carrier) => (
-        <span class="carrier-chip" data-clone>
-          {carrier.name}
-          {carrier.note && <span class="chip-tag">{carrier.note}</span>}
-        </span>
-      ))}
+      )))}
     </div>
   </div>
 </div>
