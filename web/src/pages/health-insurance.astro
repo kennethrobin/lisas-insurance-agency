@@ -81,6 +81,17 @@ const faqs = [
   heading="Coverage for you and your family, before Medicare."
   intro="If you’re under 65 and buying your own health insurance, the Marketplace is where most people start. Here’s how it works, what the plan types actually mean, and when you’re allowed to enroll."
 >
+  {!acaPending && (
+    <Fragment slot="hero-actions">
+      <div class="actions hero-actions">
+        <a class="btn btn--accent" href={links.healthSherpaAca} {...externalAttrs}>
+          Compare &amp; enroll in Marketplace plans
+          <span class="visually-hidden"> (opens HealthSherpa in a new tab)</span>
+        </a>
+      </div>
+      <p class="microline">Opens HealthSherpa, where you can compare and enroll in ACA Marketplace plans.</p>
+    </Fragment>
+  )}
   <!-- ─── What the Marketplace is ─────────────────────────────────────── -->
   <section class="section" id="marketplace" aria-labelledby="marketplace-heading">
     <div class="container">

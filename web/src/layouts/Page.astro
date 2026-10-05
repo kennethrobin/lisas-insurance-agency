@@ -74,7 +74,10 @@ const {
         heading={heading ?? title}
         subhead={subhead}
         intro={intro}
-      />
+      >
+        {/* Optional hero actions, e.g. a primary enrolment button. */}
+        <slot name="hero-actions" />
+      </PageHero>
     )}
     <slot />
   </main>
