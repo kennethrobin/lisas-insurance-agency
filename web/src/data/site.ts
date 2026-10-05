@@ -15,7 +15,7 @@ export const site = {
   phone: '(972) 639-7639',
   phoneHref: 'tel:+19726397639',
   smsHref: 'sms:+19726397639',
-  email: 'lisa@lisasinsuranceagency.com',
+  email: 'lisa.picou@hotmail.com',
 
   /**
    * Agent licensing, shown in the footer for compliance and trust. Left EMPTY
@@ -24,7 +24,7 @@ export const site = {
    * only when a value is set (see SiteFooter.astro), so an empty value simply
    * shows nothing rather than a placeholder.
    *   npn        National Producer Number, e.g. '1234567'
-   *   statement  Optional free-form line, e.g. 'Licensed in 43 states'
+   *   statement  Optional free-form line, e.g. 'Licensed in 39 states'
    */
   license: {
     npn: '',
