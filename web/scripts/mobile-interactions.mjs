@@ -132,7 +132,9 @@ for (const [name, engine] of Object.entries({ chromium, webkit })) {
       await page.setViewportSize({ width, height: 844 });
       await page.waitForTimeout(100);
       assert.equal(await group.evaluate((element) => element.open), true, 'Lost mobile disclosure choice');
-      assert.equal(await page.locator('.footer-group').last().evaluate((element) => element.open), false);
+      // Only Quick links remains after "Create a profile" was removed.
+      assert.equal(await page.locator('.footer-group').count(), 1, 'Unexpected footer groups');
+      assert.equal(await page.getByRole('link', { name: 'Create a profile' }).count(), 0);
       await page.locator('.footer-legal').scrollIntoViewIfNeeded();
       await page.waitForTimeout(150);
       assert.equal(await page.locator('[data-callbar]').isVisible(), false, 'Call bar covers footer');

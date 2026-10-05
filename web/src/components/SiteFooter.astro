@@ -56,28 +56,8 @@ const reviewLinks = [
           </ul>
         </details>
       </nav>
-
-      <nav class="footer-col" aria-label="Get started">
-        <details class="footer-group">
-          <summary>
-            <h3><span class="footer-desktop-label">Ready to explore your options? Start Here</span><span class="footer-mobile-label">Get started</span></h3>
-          </summary>
-          <ul>
-            {/* "Policyholder Service" removed at the owner's request. The
-                /policyholders page still exists but is no longer linked here.
-                That decision post-dates the mobile pass, so this column keeps
-                the single link — only the accordion wrapper came across.
-                DEFERRED: no auth/CRM is built. While profileSignup is "#" this
-                points at the contact page, where Lisa can set someone up by hand
-                — a link that goes nowhere would be worse than one extra step. */}
-            <li>
-              <a href={isPending(links.profileSignup) ? '/contact' : links.profileSignup}>
-                Create a profile
-              </a>
-            </li>
-          </ul>
-        </details>
-      </nav>
+      {/* The "Ready to explore your options? / Create a profile" column was
+          removed at the owner's request (2026-10): no profile system exists. */}
     </div>
 
     {reviewLinks.length > 0 && (
@@ -104,8 +84,8 @@ const reviewLinks = [
         Medicare program.
       </p>
       <p>
-        Secure online dental enrollment is available in 43 states. Coverage is
-        currently unavailable in CT, VT, UT, HI, WY, WV, and RI.
+        Secure online dental enrollment is available in 39 states. Coverage is
+        currently unavailable in CT, VT, UT, HI, WY, WV, RI, and NH.
       </p>
       {/* Agent licence line. Renders only once site.license is filled in, so
           nothing placeholder ships in this compliance-sensitive spot. */}
