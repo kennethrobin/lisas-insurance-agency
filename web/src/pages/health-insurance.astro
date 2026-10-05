@@ -12,6 +12,8 @@ import Page from '../layouts/Page.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
 import MediaSlot from '../components/MediaSlot.astro';
+import { Picture } from 'astro:assets';
+import familyAtHome from '../assets/photos/family-at-home.jpg';
 import { site } from '../data/site';
 import { links, isPending, externalAttrs } from '../data/links';
 
@@ -131,7 +133,20 @@ const faqs = [
         </div>
 
         <div class="media-grid">
-          <MediaSlot label="a family at home, warm and unposed" ratio="4 / 3" />
+          {/* Adobe Stock #562627474. The repo keeps a 2400px master;
+              Astro builds AVIF/WebP/JPEG at the widths below, so a phone
+              downloads roughly a 480–800px file, not the full image. */}
+          <Picture
+            class="media-photo"
+            src={familyAtHome}
+            formats={['avif', 'webp']}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 1280px) 560px, (min-width: 900px) 44vw, calc(100vw - 72px)"
+            quality={70}
+            loading="lazy"
+            decoding="async"
+            alt="A father on the sofa lifts his young son into the air while the mother and older son look at a tablet beside them."
+          />
         </div>
       </div>
 
