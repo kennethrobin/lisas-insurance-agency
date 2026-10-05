@@ -2449,11 +2449,16 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   .media-grid--3 { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* Three trust items sit on one row from tablet up; below that the phone
+   layer stacks them 2 + 1. */
+@media (min-width: 768px) {
+  .trust-band ul { grid-template-columns: repeat(3, auto); justify-content: space-between; }
+}
+
 @media (min-width: 1024px) {
   .cards--3 { grid-template-columns: repeat(3, 1fr); }
   .cards--3.cards--connected { grid-template-columns: 1fr auto 1fr auto 1fr; }
   .cards--4 { grid-template-columns: repeat(4, 1fr); }
-  .trust-band ul { grid-template-columns: repeat(4, auto); justify-content: space-between; }
   .cta-grid { grid-template-columns: 1.15fr 1fr; }
   .footer-grid { grid-template-columns: 1.6fr 1fr 1fr; }
 }
@@ -3076,6 +3081,13 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
     border-right: 1px solid var(--surface-line);
   }
   .trust-band li:nth-child(even) { padding-right: 0; }
+  /* Three items: the last one spans the full row under the first two, so the
+     2x2 grid never leaves an empty cell. */
+  .trust-band li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    border-right: 0;
+    padding-right: 0;
+  }
   .trust-band .mark { margin-top: 1px; }
 
   /* ---------- Tiles ------------------------------------------------------
