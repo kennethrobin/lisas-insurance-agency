@@ -2,10 +2,10 @@
 /**
  * Medicare Advantage (Part C).
  *
- * Order matters here: what it is, then how it differs from the alternative
- * (the compare component), then how to choose one — and only then the enroll
- * button. Someone who reaches "Simply Enroll" has been told to check the
- * network, the doctor, and the drug list first, which is the whole point.
+ * Order: what it is, how it differs from the alternative (the compare
+ * component), then how to choose one. "Simply Enroll" appears twice: in the
+ * hero for returning visitors ready to compare (owner's request, 2026-10), with
+ * a reminder of the three checks, and again after the checks themselves.
  */
 import Page from '../../layouts/Page.astro';
 import CtaBand from '../../components/CtaBand.astro';
@@ -82,6 +82,15 @@ const faqs = [
   heading="Medicare Advantage, start to finish."
   intro="An all-in-one alternative to Original Medicare, run by private insurance companies. Here’s how it works, how it differs from a Supplement, and the three checks to make before you sign anything."
 >
+  <Fragment slot="hero-actions">
+    <div class="actions hero-actions">
+      <a class="btn btn--accent" href={links.sunfireMedicareAdvantage} {...externalAttrs}>
+        Compare &amp; enroll with Simply Enroll
+        <span class="visually-hidden"> (opens in a new tab)</span>
+      </a>
+    </div>
+    <p class="microline">Before you choose, check the plan’s network, your doctors, and your prescriptions.</p>
+  </Fragment>
   <!-- ─── What it is ────────────────────────────────────────────── -->
   <section class="section" id="what-it-is" aria-labelledby="what-heading">
     <div class="container">
