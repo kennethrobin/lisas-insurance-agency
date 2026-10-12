@@ -2193,8 +2193,9 @@ main {
 
 /* ---------- Carrier strip ----------
    A rolling row of carrier chips. Duplicated in the markup and translated by
-   exactly half its width, so the loop is seamless. It pauses on hover and stops
-   dead under reduced motion, where it becomes a plain wrapped row. */
+   exactly half its width, so the loop is seamless. It keeps moving on hover
+   (owner's request, 2026-10) and stops dead under reduced motion, where it
+   becomes a plain wrapped row. */
 .carrier-strip {
   margin-top: clamp(1.5rem, 3vw, 2.25rem);
   overflow: hidden;
@@ -2213,8 +2214,6 @@ main {
 html[data-motion-ready] .carrier-track { flex-wrap: nowrap; width: max-content; animation: carrier-roll 38s linear infinite; }
 html:not([data-motion-ready]) .carrier-track [data-clone] { display: none; }
 html[data-motion-paused] .carrier-track { animation-play-state: paused; }
-.carrier-strip:hover .carrier-track,
-.carrier-strip:focus-within .carrier-track { animation-play-state: paused; }
 @keyframes carrier-roll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
