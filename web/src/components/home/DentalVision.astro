@@ -3,20 +3,9 @@
 //
 // "Compare dental plans" lands on /dental-insurance#compare, which is where the
 // chart lives, rather than dropping people at the top of the page to hunt for
-// it. The carrier strip sits underneath as proof there is something to compare.
-import CarrierStrip from '../CarrierStrip.astro';
+// it. The carrier logo scroll that used to sit here moved to the dark-blue band
+// under the homepage hero (owner's request, 2026-10); see TrustBand.astro.
 import DentalEligibility from './DentalEligibility.astro';
-import { carrierLogos as logo } from '../../data/carriers';
-
-const carriers = [
-  { name: 'Ameritas', note: 'Large network', ...logo.ameritas },
-  { name: 'Manhattan Life', ...logo.manhattanLife },
-  { name: 'Allstate', ...logo.allstate },
-  { name: 'Healthspring', ...logo.healthspring },
-  { name: 'Aetna', ...logo.aetna },
-  { name: 'Mutual of Omaha', ...logo.mutualOfOmaha },
-  { name: 'Devoted Health', ...logo.devotedHealth },
-];
 ---
 
 <section class="section section--navy" id="dental" aria-labelledby="dental-heading">
@@ -42,8 +31,6 @@ const carriers = [
     </div>
 
     <div class="dental-carriers">
-      <CarrierStrip label="Carrier partners" carriers={carriers} />
-
       <p class="reviews-footnote">
         Online enrollment available in 39 states. Not available in CT, VT, UT, HI, WY, WV, RI, NH.
       </p>
