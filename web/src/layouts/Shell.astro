@@ -37,6 +37,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical.href} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     {noindex && <meta name="robots" content="noindex" />}
     <slot name="head" />
   </head>
