@@ -13,8 +13,9 @@
  *  - Dollar amounts that change every year (the K and L out-of-pocket limits).
  *  - Plan N's office and emergency-room copays.
  * Both are real published figures, but they are year- and situation-specific,
- * and a stale number on this page would be worse than no number. They render as
- * marked confirm slots. Fill them from the current-year official chart.
+ * and a stale number on this page would be worse than no number. The K and L
+ * cells say "Yes" (both plans have a yearly limit) and the footnote sends
+ * visitors to Medicare.gov or Lisa for the current amounts.
  *
  * Massachusetts, Minnesota and Wisconsin standardize Medigap differently. The
  * note below says so rather than quietly showing the wrong grid to someone
@@ -22,8 +23,10 @@
  */
 import { links, externalAttrs } from '../data/links';
 
-/** '' = not covered · 'yes' = covered in full · anything else prints verbatim. */
-type Cell = 'yes' | 'no' | 'todo' | string;
+/** 'no' = not covered · 'yes' = covered in full · 'has-limit' = the plan has
+    the benefit (no dollar figure shown) · 'todo' = unconfirmed, renders a
+    visible CONFIRM marker · anything else prints verbatim as a share. */
+type Cell = 'yes' | 'no' | 'has-limit' | 'todo' | string;
 
 const plans = ['A', 'B', 'C', 'D', 'F', 'G', 'K', 'L', 'M', 'N'] as const;
 
@@ -67,12 +70,14 @@ const rows: { benefit: string; cells: Cell[]; foot?: string }[] = [
   },
   {
     benefit: 'Yearly out-of-pocket limit',
-    cells: ['no', 'no', 'no', 'no', 'no', 'no', 'todo', 'todo', 'no', 'no'],
-    foot: 'Plans K and L are the only two with a yearly out-of-pocket limit. Once you reach it, the plan pays 100% of covered services for the rest of the year. The limit is set federally and changes each year. [CONFIRM: current-year amounts for K and L].',
+    cells: ['no', 'no', 'no', 'no', 'no', 'no', 'has-limit', 'has-limit', 'no', 'no'],
+    foot: 'Plans K and L are the only two with a yearly out-of-pocket limit. Once you reach it, the plan pays 100% of covered services for the rest of the year. The limit is set by Medicare and changes each year; Medicare.gov lists the current amounts, or ask me.',
   },
 ];
 
 const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
+/* Only explain the CONFIRM marker if one is actually on the chart. */
+const hasPending = rows.some((row) => row.cells.includes('todo'));
 ---
 
 {/* tabindex="0" + role + name: the wrapper is a scroll container (sticky
@@ -111,6 +116,8 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
                   <span class="cell-no" aria-hidden="true">—</span>
                   <span class="visually-hidden">Not covered</span>
                 </>
+              ) : cell === 'has-limit' ? (
+                <span class="cell-part">Yes<span class="visually-hidden">, has a yearly limit</span></span>
               ) : cell === 'todo' ? (
                 <span class="cell-todo">CONFIRM</span>
               ) : (
@@ -129,7 +136,7 @@ const footnotes = rows.map((row) => row.foot).filter(Boolean) as string[];
   <span><span class="cell-yes" aria-hidden="true">●</span> Covered in full</span>
   <span><span class="cell-no" aria-hidden="true">—</span> Not covered</span>
   <span>50% / 75% / 80%: the share the plan pays</span>
-  <span><span class="cell-todo">CONFIRM</span>: figure pending</span>
+  {hasPending && <span><span class="cell-todo">CONFIRM</span>: figure pending</span>}
 </p>
 
 {footnotes.map((note) => <p class="source-note">{note}</p>)}
