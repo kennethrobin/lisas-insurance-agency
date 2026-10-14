@@ -73,13 +73,15 @@ import MotionPreferences from '../MotionPreferences.astro';
     if (reduceMotion || saveData) return; // poster only — nothing is fetched
 
     function start() {
-      // One MP4 for every size — the source clip ships as a single MP4. If a
-      // smaller mobile encode or a WebM is produced later, branch on
-      // window.matchMedia('(max-width: 899px)') here and append extra <source>s
-      // before the MP4 (the browser picks the first it can play).
+      // Two H.264 encodes of the same 9s clip (2026-10 performance pass; the
+      // original was an 8.9MB 2048px HEVC file that Firefox and many Windows
+      // PCs could not play at all). Phones get 768px (~0.6MB), larger screens
+      // 1280px (~1.3MB). The clip sits under an 88% navy wash, so neither
+      // needs more resolution than that.
+      var small = window.matchMedia('(max-width: 899px)').matches;
       var source = document.createElement('source');
       source.type = 'video/mp4';
-      source.src = '/media/hero.mp4';
+      source.src = small ? '/media/hero-768.mp4' : '/media/hero-1280.mp4';
       video.appendChild(source);
 
       video.addEventListener('playing', function () {
