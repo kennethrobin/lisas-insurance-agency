@@ -2193,9 +2193,9 @@ main {
 
 /* ---------- Carrier strip ----------
    A rolling row of carrier chips. Duplicated in the markup and translated by
-   exactly half its width, so the loop is seamless. It keeps moving on hover
-   (owner's request, 2026-10) and stops dead under reduced motion, where it
-   becomes a plain wrapped row. */
+   exactly half its width, so the loop is seamless. It pauses while hovered
+   (restored at the owner's request, 2026-10) and stops dead under reduced
+   motion, where it becomes a plain wrapped row. */
 .carrier-strip {
   margin-top: clamp(1.5rem, 3vw, 2.25rem);
   overflow: hidden;
@@ -2214,6 +2214,8 @@ main {
 html[data-motion-ready] .carrier-track { flex-wrap: nowrap; width: max-content; animation: carrier-roll 38s linear infinite; }
 html:not([data-motion-ready]) .carrier-track [data-clone] { display: none; }
 html[data-motion-paused] .carrier-track { animation-play-state: paused; }
+.carrier-strip:hover .carrier-track,
+.carrier-strip:focus-within .carrier-track { animation-play-state: paused; }
 @keyframes carrier-roll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -2326,6 +2328,12 @@ html[data-motion-ready] .carrier-lane--reverse .carrier-track { animation-direct
   border-left-color: var(--surface-line);
   background: var(--surface-card);
 }
+/* CMS requires the Marketplace disclaimer to be no smaller than most of the
+   page's text, so it inherits body size rather than the callout's slightly
+   smaller copy. `anywhere` lets the unbreakable "HealthCare.gov" wrap at 200%
+   text on the narrowest phones. */
+.callout.aca-disclaimer p { font-size: inherit; }
+.aca-disclaimer { overflow-wrap: anywhere; }
 
 /* ---------- Post list (Education hub) ---------- */
 .post-list { display: grid; gap: 0; border-top: 1px solid var(--surface-line); }
