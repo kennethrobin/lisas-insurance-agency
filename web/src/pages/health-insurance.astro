@@ -11,6 +11,7 @@
 import Page from '../layouts/Page.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
+import AcaDisclaimer from '../components/AcaDisclaimer.astro';
 import { Picture } from 'astro:assets';
 import familyAtHome from '../assets/photos/family-at-home.jpg';
 import coupleOnBeach from '../assets/photos/couple-on-beach.jpg';
@@ -346,6 +347,10 @@ const faqs = [
         <a class="btn btn--ghost" href="/contact">Ask me a question first</a>
       </div>
       <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+
+      {/* Required Marketplace disclaimer, at body size beside the enrollment
+          buttons (see AcaDisclaimer.astro). */}
+      <AcaDisclaimer callout />
 
       <div class="callout" style="margin-top: clamp(40px, 5vw, 64px)">
         <h3>Dental and vision are separate</h3>

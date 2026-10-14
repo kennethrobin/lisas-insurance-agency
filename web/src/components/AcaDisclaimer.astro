@@ -1,0 +1,54 @@
+---
+/**
+ * CMS "General non-FFM Disclaimer" for agent/broker websites that help people
+ * enroll in Health Insurance Marketplace® (ACA) plans. 45 CFR 155.220(c)(3);
+ * text from CMS guidance (CCIIO, "Guidance for Web-brokers…"), with the
+ * company name filled in. Added at Lisa's request, 2026-10.
+ *
+ * STANDARDIZED TEXT: use the exact wording. Don't edit, shorten or split it.
+ * CMS also requires it to be "prominently displayed": readable without a
+ * click, in a font no smaller than most of the page's text, with a working
+ * link to HealthCare.gov. The Health Insurance page renders it at body size;
+ * the sitewide footer repeats it as an extra copy.
+ */
+import { site } from '../data/site';
+import { links, externalAttrs } from '../data/links';
+
+interface Props {
+  /** Wraps it in the page's callout styling with a heading. */
+  callout?: boolean;
+}
+const { callout = false } = Astro.props;
+const name = site.name;
+---
+
+{callout ? (
+  <div class="callout callout--note aca-disclaimer" role="note" aria-labelledby="aca-disclaimer-heading">
+    <h3 id="aca-disclaimer-heading">About the Health Insurance Marketplace®</h3>
+    <p>
+      Attention: This website is operated by {name} and is not the Health
+      Insurance Marketplace® website. In offering this website, {name} is
+      required to comply with all applicable federal law, including the standards
+      established under 45 CFR 155.220(c) and (d) and standards established under
+      45 CFR 155.260 to protect the privacy and security of personally
+      identifiable information. This website may not display all data on
+      Qualified Health Plans (QHPs) being offered in your state through the
+      Health Insurance Marketplace® website. To see all available data on QHP
+      options in your state, go to the Health Insurance Marketplace® website at{' '}
+      <a href={links.healthcareGov} {...externalAttrs}>HealthCare.gov</a>.
+    </p>
+  </div>
+) : (
+  <p class="aca-disclaimer">
+    Attention: This website is operated by {name} and is not the Health
+    Insurance Marketplace® website. In offering this website, {name} is
+    required to comply with all applicable federal law, including the standards
+    established under 45 CFR 155.220(c) and (d) and standards established under
+    45 CFR 155.260 to protect the privacy and security of personally
+    identifiable information. This website may not display all data on
+    Qualified Health Plans (QHPs) being offered in your state through the
+    Health Insurance Marketplace® website. To see all available data on QHP
+    options in your state, go to the Health Insurance Marketplace® website at{' '}
+    <a href={links.healthcareGov} {...externalAttrs}>HealthCare.gov</a>.
+  </p>
+)}

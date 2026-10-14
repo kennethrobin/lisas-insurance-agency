@@ -5,10 +5,14 @@
  *
  * The TPMO disclaimers ship verbatim on every page — they are the generic,
  * no-numbers wording, which stays accurate however many plans Lisa represents.
+ * Lisa confirmed (2026-10) using this generic wording for pages viewed without
+ * a ZIP code. The ACA Marketplace (General non-FFM) disclaimer is repeated
+ * here from AcaDisclaimer.astro.
  */
 import { site, footerNav, legalNav } from '../data/site';
 import { links, isPending, externalAttrs } from '../data/links';
 import Logo from './Logo.astro';
+import AcaDisclaimer from './AcaDisclaimer.astro';
 
 const reviewLinks = [
   { label: 'Google', href: links.reviewGoogle },
@@ -83,6 +87,7 @@ const reviewLinks = [
         Not affiliated with or endorsed by the U.S. government or the federal
         Medicare program.
       </p>
+      <AcaDisclaimer />
       <p>
         Secure online dental enrollment is available in 39 states. Coverage is
         currently unavailable in CT, VT, UT, HI, WY, WV, RI, and NH.
