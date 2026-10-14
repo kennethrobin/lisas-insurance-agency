@@ -18,17 +18,19 @@ export const site = {
   email: 'lisa.picou@hotmail.com',
 
   /**
-   * Agent licensing, shown in the footer for compliance and trust. Left EMPTY
-   * on purpose: a licence line is a compliance-sensitive spot, so nothing ships
-   * here until Lisa confirms her real numbers. The footer renders this block
-   * only when a value is set (see SiteFooter.astro), so an empty value simply
-   * shows nothing rather than a placeholder.
+   * Agent licensing, shown in the footer for compliance and trust. Only real,
+   * Lisa-confirmed numbers go here. The footer renders this block only when a
+   * value is set (see SiteFooter.astro), so an empty value simply shows
+   * nothing rather than a placeholder.
    *   npn        National Producer Number, e.g. '1234567'
    *   statement  Optional free-form line, e.g. 'Licensed in 39 states'
    */
   license: {
-    npn: '',
-    statement: '',
+    /* Supplied by Lisa, 2026-10. Several states require the agent's license
+       number on advertising; update here if a license is added or renewed. */
+    npn: '4724061',
+    statement:
+      'Texas License No. 1484235 · California License No. 0H50706 · Florida License No. W052783',
   },
 };
 
