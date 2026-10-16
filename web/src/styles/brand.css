@@ -1788,6 +1788,17 @@ main {
   color: var(--surface-label);
   text-decoration: none;
 }
+/* A 44px tap area at every width (it was the 22px height of the text on
+   desktop, sitting just under the fixed header, so near-miss clicks landed on
+   the header and nothing happened). The padding is offset by negative margins
+   so the text doesn't move. Phones/tablets already get 12px padding below. */
+@media (min-width: 1024px) {
+  .back-link {
+    padding-block: 11px;
+    margin-top: -11px;
+    margin-bottom: calc(clamp(1.75rem, 3.5vw, 2.75rem) - 11px);
+  }
+}
 .back-link svg { flex: 0 0 auto; transition: transform 0.15s ease; }
 .back-link:hover { color: var(--surface-heading); text-decoration: underline; }
 .back-link:hover svg { transform: translateX(-2px); }
