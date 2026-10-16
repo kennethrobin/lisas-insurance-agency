@@ -13,7 +13,11 @@
 // which pulls from Google. The phone-only NeedsSelector that survived under
 // the hero was removed too (2026-09): mobile now matches desktop section for
 // section.
-import { site } from '../../data/site';
+//
+// 2026-10 (owner's request): the hero action is the same "Compare & enroll
+// with Simply Enroll" button as the Medicare Advantage page, replacing Talk to
+// Lisa. The phone number stays in the header and the call bar.
+import { links, externalAttrs } from '../../data/links';
 import MotionPreferences from '../MotionPreferences.astro';
 ---
 
@@ -48,8 +52,11 @@ import MotionPreferences from '../MotionPreferences.astro';
         and vision coverage, and I stay with you long after you enroll.
       </p>
 
-      <a class="btn btn--accent" href={site.phoneHref}><span class="phone-label">Talk to Lisa · <span class="phone-number">{site.phone}</span></span></a>
-      <p class="microline">Calling connects you with Lisa, a licensed insurance agent.</p>
+      <a class="btn btn--accent" href={links.sunfireMedicareAdvantage} {...externalAttrs}>
+        Compare &amp; enroll with Simply Enroll
+        <span class="visually-hidden"> (opens in a new tab)</span>
+      </a>
+      <p class="microline">Before you choose, check the plan’s network, your doctors, and your prescriptions.</p>
       <MotionPreferences />
     </div>
   </div>
