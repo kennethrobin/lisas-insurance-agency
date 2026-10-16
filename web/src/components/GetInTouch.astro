@@ -105,12 +105,15 @@ const calSizing = `--git-cal-min:${scheduler.minHeightDesktop};--git-cal-min-mob
           aria-describedby={`${id}-consent-error`} />
         <label for={`${id}-consent`}>
           By checking this box, I agree that Lisa’s Insurance Agency may contact
-          me at the phone number and email I provided — including by phone call,
-          text message, and email — about Medicare, health, dental, and vision
-          insurance options, even if my number is on a Do Not Call list. Consent
-          is not a condition of purchase. Message and data rates may apply; reply
-          STOP to opt out of texts. See our{' '}
-          <a href="/privacy">Privacy Policy</a>.
+          me by phone, text, or email regarding my inquiry about Medicare,
+          health, dental, or vision insurance options. Consent is voluntary and
+          is not a condition of purchasing insurance. Message and data rates may
+          apply. Reply STOP to opt out of text messages. Contact the agency to
+          opt out of calls or emails. See our{' '}
+          <a href="/privacy">Privacy Policy</a>{' '}
+          for details on how your information is collected and used. Calls will
+          be made by a live person; no artificial or prerecorded voices or
+          automated dialing systems will be used.
         </label>
         <p class="git-error" id={`${id}-consent-error`} data-git-error hidden></p>
       </div>

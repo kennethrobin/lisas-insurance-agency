@@ -71,11 +71,12 @@ export const crm = {
    * record can be tied to the exact language the visitor agreed to. Bump this
    * (date-stamp it) whenever the consent copy in GetInTouch.astro changes.
    *
-   * v1 is the TCPA express-consent wording now shown in the form. If Lisa's
-   * compliance contact revises that wording before or after launch, change the
-   * copy AND bump this tag together so records stay tied to what was shown.
+   * v1 (2026-09-19) was the original TCPA express-consent wording. v2 is Lisa's
+   * revised wording (2026-10-16): inquiry-scoped consent, voluntary, opt-out
+   * for each channel, and a live-caller statement. Change the copy AND bump
+   * this tag together so records stay tied to what was shown.
    */
-  consentTextVersion: 'consent-v1-2026-09-19',
+  consentTextVersion: 'consent-v2-2026-10-16',
 
   /** Upstream request timeout, ms. */
   timeoutMs: 10_000,
