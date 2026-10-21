@@ -20,11 +20,33 @@ interface Props {
 
 const { title, description, noindex = false, rawTitle = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+
+/* Google Analytics 4 (Lisa's property, added 2026-10). Every page renders
+   through this shell, so this is the one place the tag lives; never add it
+   anywhere else (Google: one tag per page). Production builds only, so local
+   development and the automated audits don't send traffic to her reports.
+   Disclosed in src/pages/privacy.astro under "Cookies and analytics".
+   The snippet is Google's, verbatim (ID G-E73WLC76W4): don't wrap it, so
+   gtag() stays a global function. */
+const analytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
+    {analytics && (
+      <>
+        <!-- Google tag (gtag.js) -->
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-E73WLC76W4"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-E73WLC76W4');
+        </script>
+      </>
+    )}
     <meta charset="utf-8" />
     {/* viewport-fit=cover is required for env(safe-area-inset-*) to resolve to
         real values on notched / Dynamic-Island iPhones. Without it the fixed

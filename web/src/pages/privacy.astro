@@ -7,7 +7,9 @@
  *    them to AgencyBloc (the CRM) via /api/lead;
  *  - the optional Step-2 scheduler is a cal.com embed, loaded only if used;
  *  - homepage reviews are pulled from Google at BUILD time (no visitor tracking);
- *  - fonts are self-hosted; there are no advertising or analytics trackers.
+ *  - fonts are self-hosted; there are no advertising trackers;
+ *  - Google Analytics 4 (added 2026-10, tag in layouts/Shell.astro) measures
+ *    site usage. Disclosed under "Cookies and analytics".
  *
  * REVIEW BEFORE LAUNCH (owner / compliance / counsel):
  *  - Have Lisa / her compliance contact confirm the data-sharing and retention
@@ -27,8 +29,8 @@ const description =
   'How Lisa’s Insurance Agency collects, uses, shares and protects the information you provide, and the choices you have.';
 
 /** Kept in code so the shown date and the <time> attribute never drift. */
-const effectiveISO = '2026-09-19';
-const effectiveLabel = 'September 19, 2026';
+const effectiveISO = '2026-10-21';
+const effectiveLabel = 'October 21, 2026';
 ---
 
 <Page
@@ -61,10 +63,17 @@ const effectiveLabel = 'September 19, 2026';
 
         <h3>Information I collect</h3>
         <p>
-          I only collect what you choose to give me. When you use the contact
-          form on this site, that is your <strong>name, email address, phone
-          number, and whatever you write in the message</strong>. If you call,
-          text or email me, I keep the information you share so I can help you.
+          When you use the contact form on this site, I collect what you choose
+          to give me: your <strong>name, email address, phone number, and
+          whatever you write in the message</strong>. If you call, text or email
+          me, I keep the information you share so I can help you.
+        </p>
+        <p>
+          Like most websites, this site also collects general information about
+          how it is used, such as which pages are visited, roughly where visitors
+          are located (city or region), and the type of device and browser. This
+          is measured with Google Analytics and is described under “Cookies and
+          analytics” below. It is not used to identify you personally.
         </p>
         <p>
           This site does not use advertising trackers, and I do not buy or sell
@@ -113,12 +122,31 @@ const effectiveLabel = 'September 19, 2026';
           share it for anyone else’s marketing.
         </p>
 
-        <h3>Cookies and tracking</h3>
+        <h3>Cookies and analytics</h3>
         <p>
-          This website does not set advertising or analytics cookies of its own.
-          If you open the optional scheduling calendar, that feature is provided
-          by a third party (cal.com) and may set its own cookies so it can work;
-          that is the only place a cookie is involved, and only if you use it.
+          This site uses <strong>Google Analytics</strong>, a service from
+          Google, to understand how visitors use the site, for example which
+          pages are most helpful, so I can improve it. Google Analytics uses
+          cookies and similar technology to collect information such as the
+          pages you view, how long you stay, the website that referred you, your
+          general location, and your device and browser type. This information
+          is aggregated into reports; I do not use it to identify you, and the
+          details you type into the contact form are not sent to Google
+          Analytics. Google processes this information under its own privacy
+          policy; you can learn more at{' '}
+          <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses information from sites that use its services</a>.
+        </p>
+        <p>
+          You can block or delete cookies in your browser settings, or install
+          the{' '}
+          <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>{' '}
+          to stop Google Analytics from measuring your visits. The site works
+          normally either way.
+        </p>
+        <p>
+          This site does not use advertising cookies. If you open the optional
+          scheduling calendar, that feature is provided by a third party
+          (cal.com) and may set its own cookies so it can work.
         </p>
 
         <h3>Reviews shown on this site</h3>
