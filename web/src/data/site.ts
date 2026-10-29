@@ -23,7 +23,7 @@ export const site = {
    * value is set (see SiteFooter.astro), so an empty value simply shows
    * nothing rather than a placeholder.
    *   npn        National Producer Number, e.g. '1234567'
-   *   statement  Optional free-form line, e.g. 'Licensed in 39 states'
+   *   statement  Optional free-form line, e.g. 'Licensed in 42 states'
    */
   license: {
     /* Supplied by Lisa, 2026-10. Several states require the agent's license
