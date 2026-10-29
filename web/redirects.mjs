@@ -58,7 +58,8 @@ const map = {
   '/accident-insurance-quote.html': '/',
   '/final-expense-insurance.html': '/',
   '/final-expenselife-insurance.html': '/',
-  '/final-expense-life-insurance-quote.html': '/',
+  // Still gets Google traffic; Lisa asked for it to land on Contact (2026-10-29).
+  '/final-expense-life-insurance-quote.html': '/contact',
   '/final-expense-insurance-quote.html': '/',
 
   // Medicare

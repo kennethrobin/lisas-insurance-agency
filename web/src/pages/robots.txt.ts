@@ -8,7 +8,7 @@ import type { APIRoute } from 'astro';
  * is the reliable way to keep a page out of search results.
  */
 export const GET: APIRoute = ({ site }) => {
-  const sitemap = new URL('sitemap-index.xml', site);
+  const sitemap = new URL('sitemap.xml', site);
   const body = `User-agent: *
 Allow: /
 Disallow: /api/
