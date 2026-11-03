@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
+import { copyFile } from 'node:fs/promises';
 import { legacyRedirects } from './redirects.mjs';
 
 /* Pages that carry `noindex`; they stay out of the sitemap too. */
@@ -20,6 +21,17 @@ export default defineConfig({
     sitemap({
       filter: (page) => !unlisted.some((pattern) => pattern.test(new URL(page).pathname)),
     }),
+    // Search Console and most crawlers look for /sitemap.xml. Publish the full
+    // page list there (a copy of the generated sitemap-0.xml, rebuilt on every
+    // deploy so new pages appear automatically). sitemap-index.xml still works.
+    {
+      name: 'sitemap-xml-alias',
+      hooks: {
+        'astro:build:done': async ({ dir }) => {
+          await copyFile(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
+        },
+      },
+    },
   ],
 
   // The whole site stays statically rendered (the default). The Vercel adapter
