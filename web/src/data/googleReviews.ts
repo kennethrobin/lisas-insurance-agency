@@ -22,9 +22,9 @@
  * REFRESHING
  * Google's terms also cap how long Places content may be cached (30 days; the
  * Place ID itself is exempt and may be stored indefinitely). A static build is
- * a cache, so the site must rebuild at least monthly. A Vercel Deploy Hook on a
- * weekly cron is the simplest way — otherwise the baked reviews go stale and
- * out of terms at the same time.
+ * a cache, so the site must rebuild at least monthly. This is automated:
+ * .github/workflows/refresh-reviews.yml calls a Vercel Deploy Hook every day,
+ * so new reviews appear within about a day of being posted on Google.
  *
  * SETUP  (both values are read from the environment, never committed)
  *   GOOGLE_PLACES_API_KEY  Google Cloud console -> APIs & Services ->

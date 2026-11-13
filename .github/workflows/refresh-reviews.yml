@@ -1,0 +1,43 @@
+# Rebuilds the live site once a day so new Google reviews (and the review
+# count) show up without anyone pushing code.
+#
+# Why: the site is static, and web/src/data/googleReviews.ts fetches reviews
+# from Google only while the site is being BUILT. Google's terms also require
+# that cached Places content be refreshed at least every 30 days.
+#
+# How: POSTs to a Vercel Deploy Hook (stored in the repo secret
+# VERCEL_DEPLOY_HOOK_URL), which rebuilds and deploys `main` to production.
+# Run it by hand any time from GitHub -> Actions -> "Refresh Google reviews"
+# -> Run workflow.
+name: Refresh Google reviews
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # every day, ~6 AM Central
+  workflow_dispatch:
+
+permissions:
+  actions: write # only for the keep-alive step below
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a production rebuild on Vercel
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::VERCEL_DEPLOY_HOOK_URL secret is not set"
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "$HOOK" -o /dev/null
+          echo "Rebuild requested."
+
+      # GitHub switches off scheduled workflows in public repos after 60 days
+      # without commits. Re-enabling this workflow via the API resets that
+      # clock, so the daily refresh keeps running when the site isn't edited.
+      - name: Keep this schedule alive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/refresh-reviews.yml/enable"
